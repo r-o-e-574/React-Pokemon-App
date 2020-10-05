@@ -1,9 +1,9 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Card, ListGroup, ListGroupItem } from 'react-bootstrap'
-import './PokemonCard.css'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Card, ListGroup, ListGroupItem } from 'react-bootstrap';
+import './PokemonCard.css';
 
-function PokemonCard({pokemon}) {
+function PokemonCard({ pokemon }) {
     return (
         <div className='pokeBackground'>
             <Card className='pokeDetails' style={{ width: '28rem' }} >
@@ -14,7 +14,7 @@ function PokemonCard({pokemon}) {
                         <Card.Title style={{ fontSize: '30px' }}>Abilities:</Card.Title>
                         <Card.Text style={{ textTransform: 'capitalize' }}>
                             {pokemon.abilities.map(({ ability }) => ability).map(({ name: abilityName }) => (
-                                <li>{abilityName} </li>
+                                <li key={abilityName}>{abilityName} </li>
                             ))}
                         </Card.Text>
                     </ListGroupItem>
@@ -22,7 +22,7 @@ function PokemonCard({pokemon}) {
                         <Card.Title style={{ fontSize: '30px' }}>Type:</Card.Title>
                         <Card.Text style={{ textTransform: 'capitalize' }}>
                             {pokemon.types.map(({ type }) => type).map(({ name: typeName }) => (
-                                <li>{typeName} </li>
+                                <li key={typeName}>{typeName} </li>
                             ))}
                         </Card.Text>
                     </ListGroupItem>
@@ -38,7 +38,7 @@ function PokemonCard({pokemon}) {
 
 PokemonCard.propTypes = {
     pokemon: PropTypes.instanceOf(Object)
-}
+};
 
 PokemonCard.defaultProps = {
     pokemon: {
@@ -47,6 +47,6 @@ PokemonCard.defaultProps = {
         types: [],
         sprites: {}
     }
-}
+};
 
 export default PokemonCard;

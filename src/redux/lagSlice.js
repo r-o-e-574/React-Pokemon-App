@@ -1,4 +1,4 @@
-import { createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 const lagSlice = createSlice({
     name: 'lag',
@@ -10,4 +10,4 @@ const lagSlice = createSlice({
 
 export const { toggle } = lagSlice.actions;
 
-export default lagSlice.reducer
+export default lagSlice.reducer;
