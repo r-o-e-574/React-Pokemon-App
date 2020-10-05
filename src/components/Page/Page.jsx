@@ -5,10 +5,10 @@ import LagSwitch from './LagSwitch'
 function Page({ children }) {
     return (
         <Fragment>
-            <LagSwitch/>
-            { children }
+            <LagSwitch />
+            { children}
         </Fragment>
-    )
-}
+    );
+};
 
 export default Page;
