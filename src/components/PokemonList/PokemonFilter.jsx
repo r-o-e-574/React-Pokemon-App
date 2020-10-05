@@ -8,7 +8,7 @@ function PokemonFilter({ filterTypes }) {
     const dispatch = useDispatch();
     const handleFilter = (filterType) => {
         dispatch(setFilterType(filterType));
-    }
+    };
 
     return (
         <div className='pokeList'>

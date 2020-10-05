@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const lagSlice = createSlice({
-    name: 'lag',
-    initialState: false,
-    reducers: {
-        toggle: state => !state
-    }
+  name: 'lag',
+  initialState: false,
+  reducers: {
+    toggle: state => !state
+  }
 });
 
 export const { toggle } = lagSlice.actions;
