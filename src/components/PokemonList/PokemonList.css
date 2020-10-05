@@ -1,13 +1,20 @@
 @import url(//db.onlinewebfonts.com/c/f4d1593471d222ddebd973210265762a?family=Pokemon);
 
-
-
 .pokeList {
   font-family: "Pokemon";
   font-size: 25px;
   color: rgb(228, 228, 6);
   text-shadow: 3px 3px 0 #0261c6, -1px -1px 0 #0261c6, 1px -1px 0 #0261c6,
     -1px 1px 0 #0261c6, 1px 1px 0 #0261c6;
+}
+
+.pokeHeader {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: 60px;
 }
 
 .pokeListColor {

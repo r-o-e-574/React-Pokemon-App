@@ -17,6 +17,7 @@ function PokemonViewData() {
         const url = 'https://pokeapi.co/api/v2/pokemon/' + pokemonName
         fetchUrl({url, shouldLag: isLagging, callback: (data) => setPokemon(data)});
     }, [isLagging, pokemonName]);
+    console.log({pokemon})
 
     return (
         <Page>

@@ -1,30 +1,62 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useFetchUrl } from '../../hooks'
+import { useSelector } from 'react-redux'
 import PokemonList from './PokemonList'
-import { fetchUrl } from '../../api'
+import PokemonFilter from './PokemonFilter'
 import Page from '../Page'
-import PokemonFilter from '../PokemonFilter'
-
 
 function PokemonListData() {
     const [pokemons, setPokemons] = useState([]);
-    const isLagging = useSelector(({ lag }) => lag);
-    
+    const [filteredPokemon, setFilteredPokemon] = useState([]);
+    const [filterTypes, setFilterTypes] = useState([])
+    const fetchUrl = useFetchUrl()
+    const selectedFilterType = useSelector(({ filterType }) => filterType)
 
     useEffect(() => {
-        const url = 'https://pokeapi.co/api/v2/pokemon?limit=151'
-        fetchUrl({ url, shouldLag: isLagging, callback: ({ results }) => setPokemons(results) })
-        
-    }, [isLagging]);
+        const url = 'https://pokeapi.co/api/v2/generation/1'
+        fetchUrl(url, ({ types, pokemon_species }) => {
+            setFilterTypes(types)
+            const pokemonObjects = pokemon_species.map(({name, url}) => {
+                const id = parseInt(url.replace('https://pokeapi.co/api/v2/pokemon-species/', ''))
+                return {name, url, id }
+            })
+            setPokemons(pokemonObjects)
+            setFilteredPokemon(pokemonObjects)
+        })
+    }, []);
 
-    
-    console.log({pokemons})
-    
+    useEffect(() => {
+        if (selectedFilterType) {
+            console.log({ selectedFilterType })
+            const url = `https://pokeapi.co/api/v2/type/${selectedFilterType}`
+            fetchUrl(url, (data) => {
+                const pokemonIds = data.pokemon.map(({ pokemon: { url } }) => {
+                    return parseInt(url.replace('https://pokeapi.co/api/v2/pokemon/', ''))
+                })
+                setFilteredPokemon(pokemons.filter(({ id }) => pokemonIds.includes(id)))
+            })
+        } else {
+            setFilteredPokemon(pokemons)
+        }
+    }, [selectedFilterType, pokemons])
+
+
+    console.log({ pokemons })
+
 
     return (
         <Page>
-            <PokemonFilter />
-            <PokemonList pokemons={pokemons}  />
+            <div className='pokeList'>
+                <div className='pokeHeader'>
+                    Welcome
+                <br />
+                    {/* <img src={pokeball} alt='pokeball' /> */}
+                    <br />
+                Pokémon Fans!
+            </div>
+            </div>
+            <PokemonFilter filterTypes={filterTypes} />
+            <PokemonList pokemons={filteredPokemon} />
         </Page>
     )
 };
