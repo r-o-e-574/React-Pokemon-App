@@ -1,22 +1,21 @@
-import React from 'react';
+import React from 'react'
 import {
   BrowserRouter as Router,
   Switch,
   Route
-} from "react-router-dom";
+} from 'react-router-dom'
 import PokemonList from './components/PokemonList'
 import PokemonView from './components/PokemonView'
 
-function App() {
-
+function App () {
   return (
     <Router>
       <Switch>
-        <Route path="/:name" children={<PokemonView />} />
+        <Route path="/:name" ><PokemonView /></Route>
         <Route path="/"><PokemonList /></Route>
       </Switch>
     </Router>
-  );
+  )
 };
 
-export default App;
+export default App

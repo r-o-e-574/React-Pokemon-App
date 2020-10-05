@@ -23,5 +23,4 @@ function PokemonViewData() {
     );
 };
 
-
 export default PokemonViewData;
