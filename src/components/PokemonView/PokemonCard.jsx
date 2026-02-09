@@ -13,16 +13,16 @@ function PokemonCard({ pokemon }) {
                     <ListGroupItem>
                         <Card.Title style={{ fontSize: '30px' }}>Abilities:</Card.Title>
                         <Card.Text style={{ textTransform: 'capitalize' }}>
-                            {pokemon.abilities.map(({ ability }) => ability).map(({ name: abilityName }) => (
-                                <li key={abilityName}>{abilityName} </li>
+                            {pokemon.abilities.map(({ ability }) => (
+                                <li key={ability.name}>{ability.name}</li>
                             ))}
                         </Card.Text>
                     </ListGroupItem>
                     <ListGroupItem>
                         <Card.Title style={{ fontSize: '30px' }}>Type:</Card.Title>
                         <Card.Text style={{ textTransform: 'capitalize' }}>
-                            {pokemon.types.map(({ type }) => type).map(({ name: typeName }) => (
-                                <li key={typeName}>{typeName} </li>
+                            {pokemon.types.map(({ type }) => (
+                                <li key={type.name}>{type.name}</li>
                             ))}
                         </Card.Text>
                     </ListGroupItem>
@@ -37,7 +37,22 @@ function PokemonCard({ pokemon }) {
 };
 
 PokemonCard.propTypes = {
-    pokemon: PropTypes.instanceOf(Object)
+    pokemon: PropTypes.shape({
+        name: PropTypes.string,
+        abilities: PropTypes.arrayOf(PropTypes.shape({
+            ability: PropTypes.shape({
+                name: PropTypes.string.isRequired
+            }).isRequired
+        })),
+        types: PropTypes.arrayOf(PropTypes.shape({
+            type: PropTypes.shape({
+                name: PropTypes.string.isRequired
+            }).isRequired
+        })),
+        sprites: PropTypes.shape({
+            front_default: PropTypes.string
+        })
+    })
 };
 
 PokemonCard.defaultProps = {

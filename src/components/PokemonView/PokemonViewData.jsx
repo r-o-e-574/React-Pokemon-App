@@ -14,7 +14,7 @@ function PokemonViewData() {
     useEffect(() => {
         const url = 'https://pokeapi.co/api/v2/pokemon/' + pokemonName
         fetchUrl(url, (data) => setPokemon(data));
-    }, [pokemonName]);
+    }, [pokemonName, fetchUrl]);
 
     return (
         <Page>

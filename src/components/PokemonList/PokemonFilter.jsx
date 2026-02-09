@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Card, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
 import './PokemonList.css';
 import { useDispatch } from 'react-redux';
@@ -29,6 +30,16 @@ function PokemonFilter({ filterTypes }) {
             <br />
         </div>
     );
+};
+
+PokemonFilter.propTypes = {
+    filterTypes: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string.isRequired
+    }))
+};
+
+PokemonFilter.defaultProps = {
+    filterTypes: []
 };
 
 export default PokemonFilter;

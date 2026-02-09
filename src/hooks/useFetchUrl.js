@@ -1,13 +1,11 @@
-import { useSelector } from 'react-redux';
+import { useCallback } from 'react';
 
 const useFetchUrl = () => {
-  const shouldLag = useSelector(({ lag }) => lag)
-  return async (url, callback) => {
+  return useCallback(async (url, callback) => {
     const res = await fetch(url);
     const data = await res.json();
-    if (shouldLag) await new Promise(resolve => setTimeout(resolve, 2000));
     callback(data);
-  };
+  }, []);
 };
 
 export default useFetchUrl;

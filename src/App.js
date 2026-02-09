@@ -12,7 +12,7 @@ function App () {
     <Router>
       <Switch>
         <Route path="/:name" ><PokemonView /></Route>
-        <Route path="/"><PokemonList /></Route>
+        <Route exact path="/"><PokemonList /></Route>
       </Switch>
     </Router>
   )

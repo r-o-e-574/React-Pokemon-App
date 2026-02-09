@@ -27,14 +27,13 @@ function PokemonList({ pokemons }) {
 };
 
 PokemonList.propTypes = {
-    pokemons: PropTypes.instanceOf(Object)
+    pokemons: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string.isRequired
+    }))
 };
 
 PokemonList.defaultProps = {
-    pokemons: {
-        pokemon_species: [],
-        types: []
-    }
+    pokemons: []
 };
 
 export default PokemonList;
