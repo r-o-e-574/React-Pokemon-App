@@ -11,7 +11,11 @@ npm install
 ```
 Start the server:
 ```bash
-npm run
+npm run dev
+```
+Run tests:
+```bash
+npm test
 ```
 Finally, [navigate to the app at http://localhost:3000/](http://localhost:3000/)
 ## API

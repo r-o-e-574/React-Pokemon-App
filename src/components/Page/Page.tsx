@@ -1,6 +1,8 @@
 import React from 'react';
 
-function Page({ children }) {
+type PageProps = { children: React.ReactNode };
+
+function Page({ children }: PageProps) {
     return (
         <>
             { children}

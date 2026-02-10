@@ -1,10 +1,10 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 const filterTypeSlice = createSlice({
   name: 'filterType',
-  initialState: '',
+  initialState: '' as string,
   reducers: {
-    setFilterType: (_state, { payload }) => payload
+    setFilterType: (_state, { payload }: PayloadAction<string>) => payload
   }
 });
 
