@@ -39,6 +39,7 @@ type TtsButtonProps = {
     disabled?: boolean;
     onSpeakStart?: (label: string) => void;
     onSpeakStop?: () => void;
+    style?: React.CSSProperties;
 };
 
 function TtsButton({
@@ -49,7 +50,8 @@ function TtsButton({
     announceLabel,
     disabled,
     onSpeakStart,
-    onSpeakStop
+    onSpeakStop,
+    style
 }: TtsButtonProps) {
     const canSpeak = typeof window !== 'undefined' && 'speechSynthesis' in window;
     const trimmedText = text.trim();
@@ -85,6 +87,7 @@ function TtsButton({
             disabled={disabled || !trimmedText || !canSpeak}
             onClick={handleClick}
             label={label}
+            style={style}
         />
     );
 }
@@ -109,6 +112,11 @@ function PokemonCard({
     const statItems = pokemon.stats ?? [];
     const weightKg = pokemon.weight ? (pokemon.weight / 10).toFixed(1) : '';
     const heightM = pokemon.height ? (pokemon.height / 10).toFixed(1) : '';
+    const heightInches = pokemon.height ? pokemon.height * 3.93701 : 0;
+    const heightFeet = heightInches ? Math.floor(heightInches / 12) : 0;
+    const heightRemainder = heightInches ? Math.round(heightInches % 12) : 0;
+    const heightUs = heightInches ? `${heightFeet} ft ${heightRemainder} in` : '';
+    const weightLbs = pokemon.weight ? (pokemon.weight * 0.220462).toFixed(1) : '';
     const varietyList = (speciesMeta?.varieties ?? []).filter((item) => !item.is_default);
     const traitChips = [
         ...(speciesMeta?.eggGroups ?? []).map((name) => ({ label: name, kind: 'Egg group' })),
@@ -144,7 +152,7 @@ function PokemonCard({
         const parts: string[] = [];
         const trigger = detail.trigger?.name ?? '';
         if (trigger === 'level-up') {
-            if (detail.min_level) parts.push(`level ${detail.min_level}`);
+            if (detail.min_level) parts.push(`Level ${detail.min_level}`);
         } else if (trigger === 'trade') {
             parts.push('trade');
             if (detail.held_item?.name) {
@@ -214,26 +222,38 @@ function PokemonCard({
     ]
         .filter(Boolean)
         .join('. ');
-    const evolutionEntries = evolutionStages.flatMap((stage) => stage.entries);
-    const evolutionText = evolutionEntries.length
+    const evolutionGroups = evolutionStages.map((stage) => stage.entries).filter((entries) => entries.length > 0);
+    const evolutionText = evolutionGroups.length
         ? (() => {
-              const base = normalizeSpeech(evolutionEntries[0]?.name ?? '');
-              const steps = evolutionEntries.slice(1).map((entry) => {
+              const base = normalizeSpeech(evolutionGroups[0]?.[0]?.name ?? '');
+              const hasBranches = evolutionGroups.some((group, index) => index > 0 && group.length > 1);
+              const formatEntry = (entry: { name: string; details: any }) => {
                   const name = normalizeSpeech(entry.name);
                   const detail = entry.details ? normalizeSpeech(formatEvolutionDetail(entry.details)) : '';
                   return detail ? `${name} at ${detail}` : name;
-              });
-              if (steps.length === 0) return `${base}.`;
-              if (steps.length === 1) return `${base} evolves into ${steps[0]}.`;
-              const first = steps[0];
-              const rest = steps.slice(1);
-              return `${base} evolves into ${first}, then into ${naturalList(rest)}.`;
+              };
+              if (!hasBranches && evolutionGroups.length <= 3) {
+                  const steps = evolutionGroups.slice(1).flat().map(formatEntry);
+                  if (steps.length === 0) return `${base}.`;
+                  if (steps.length === 1) return `${base} evolves into ${steps[0]}.`;
+                  const first = steps[0];
+                  const rest = steps.slice(1);
+                  return `${base} evolves into ${first}, then into ${naturalList(rest)}.`;
+              }
+              const stageOne = evolutionGroups[1] ? naturalList(evolutionGroups[1].map(formatEntry)) : '';
+              const later = evolutionGroups.slice(2).flat();
+              const laterText = later.length ? naturalList(later.map(formatEntry)) : '';
+              const parts = [];
+              if (stageOne) parts.push(`${base} can evolve into ${stageOne}.`);
+              if (laterText) parts.push(`Later evolutions include ${laterText}.`);
+              if (parts.length === 0) return `${base}.`;
+              return parts.join(' ');
           })()
         : '';
     const varietiesText = naturalList(varietyList.map((item) => item.name));
     const physicalText = [
-        heightM ? `Height ${heightM} meters` : '',
-        weightKg ? `Weight ${weightKg} kilograms` : '',
+        heightUs ? `Height ${heightUs}` : '',
+        weightLbs ? `Weight ${weightLbs} pounds` : '',
         pokemon.base_experience ? `Base experience ${pokemon.base_experience}` : ''
     ]
         .filter(Boolean)
@@ -247,6 +267,45 @@ function PokemonCard({
         const daniel = voices.find((voice) => voice.name.toLowerCase() === 'daniel');
         return (daniel ?? voices[0])?.voiceURI;
     }, [voices]);
+    const primaryType = pokemon.types[0]?.type.name;
+    const isLightColor = (hex: string) => {
+        const normalized = hex.replace('#', '');
+        if (normalized.length !== 6) return false;
+        const r = parseInt(normalized.slice(0, 2), 16) / 255;
+        const g = parseInt(normalized.slice(2, 4), 16) / 255;
+        const b = parseInt(normalized.slice(4, 6), 16) / 255;
+        const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        return luminance > 0.6;
+    };
+    const hexToRgba = (hex: string, alpha: number) => {
+        const normalized = hex.replace('#', '');
+        if (normalized.length !== 6) return `rgba(15, 23, 42, ${alpha})`;
+        const r = parseInt(normalized.slice(0, 2), 16);
+        const g = parseInt(normalized.slice(2, 4), 16);
+        const b = parseInt(normalized.slice(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+    const playButtonStyle = React.useMemo(() => {
+        if (!primaryType) return undefined;
+        const palette = getTypeTheme(primaryType);
+        const accent = palette.accent || '#94a3b8';
+        const textColor = isLightColor(accent) ? '#1f2937' : '#111827';
+        const borderColor = hexToRgba(accent, 0.6);
+        const borderHover = hexToRgba(accent, 0.85);
+        const bgTint = hexToRgba(accent, 0.14);
+        const bgHover = hexToRgba(accent, 0.22);
+        const baseGradient = `linear-gradient(120deg, rgba(255, 255, 255, 0.98), ${bgTint})`;
+        const hoverGradient = `linear-gradient(120deg, rgba(255, 255, 255, 1), ${bgHover})`;
+        return {
+            '--play-bg': baseGradient,
+            '--play-bg-hover': hoverGradient,
+            '--play-border': borderColor,
+            '--play-border-hover': borderHover,
+            '--play-ink': textColor,
+            '--play-shadow': `0 6px 12px rgba(15, 23, 42, 0.12), inset 0 0 0 1px ${borderColor}`,
+            '--play-shadow-hover': `0 10px 16px rgba(15, 23, 42, 0.16), inset 0 0 0 1px ${borderHover}`
+        } as React.CSSProperties;
+    }, [primaryType]);
     const isSpeaking = Boolean(activeSpeechLabel);
     const stopCryAudio = () => {
         if (!cryAudioRef.current) return;
@@ -276,6 +335,13 @@ function PokemonCard({
         setActiveSpeechLabel(null);
     };
 
+    const handleOverlayClose = () => {
+        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+        }
+        setActiveSpeechLabel(null);
+    };
+
     return (
         <div className={classes.pokeBackground}>
             <div className={classes.pokeBackgroundTiles} />
@@ -287,6 +353,7 @@ function PokemonCard({
                 label={activeSpeechLabel ?? ''}
                 imageSrc={professorImage}
                 backgroundSrc={labImage}
+                onClose={handleOverlayClose}
                 classes={classes}
             />
             <div className={`${classes.pokeDetails} ${classes.pokeBackgroundLayer}`}>
@@ -302,6 +369,7 @@ function PokemonCard({
                                 disabled={isSpeaking}
                                 onSpeakStart={handleSpeakStart}
                                 onSpeakStop={handleSpeakStop}
+                                style={playButtonStyle}
                             />
                         </div>
                     ) : null}
@@ -326,8 +394,8 @@ function PokemonCard({
                         ) : null}
                         {speciesText ? <p className={classes.pokeFact}>{speciesText}</p> : null}
                         <div className={classes.pokeMetaRow}>
-                            {heightM ? <span className={classes.pokeMeta}>Height: {heightM} m</span> : null}
-                            {weightKg ? <span className={classes.pokeMeta}>Weight: {weightKg} kg</span> : null}
+                            {heightUs ? <span className={classes.pokeMeta}>Height: {heightUs}</span> : null}
+                            {weightLbs ? <span className={classes.pokeMeta}>Weight: {weightLbs} lb</span> : null}
                             {pokemon.base_experience ? (
                                 <span className={classes.pokeMeta}>Base XP: {pokemon.base_experience}</span>
                             ) : null}
@@ -340,6 +408,7 @@ function PokemonCard({
                                         type='button'
                                         onClick={handlePlayCry}
                                         label='Play cry'
+                                        style={playButtonStyle}
                                     />
                                 ) : null}
                             </div>
@@ -358,6 +427,7 @@ function PokemonCard({
                                 disabled={isSpeaking}
                                 onSpeakStart={handleSpeakStart}
                                 onSpeakStop={handleSpeakStop}
+                                style={playButtonStyle}
                             />
                         </div>
                         <ul className={classes.pokeSectionList}>
@@ -380,6 +450,7 @@ function PokemonCard({
                                 disabled={isSpeaking}
                                 onSpeakStart={handleSpeakStart}
                                 onSpeakStop={handleSpeakStop}
+                                style={playButtonStyle}
                             />
                         </div>
                         <div className={classes.pokeChipGrid}>
@@ -405,6 +476,7 @@ function PokemonCard({
                                 disabled={isSpeaking}
                                 onSpeakStart={handleSpeakStart}
                                 onSpeakStop={handleSpeakStop}
+                                style={playButtonStyle}
                             />
                         </div>
                         <ul className={classes.pokeSectionList}>
@@ -427,6 +499,7 @@ function PokemonCard({
                                 disabled={isSpeaking}
                                 onSpeakStart={handleSpeakStart}
                                 onSpeakStop={handleSpeakStop}
+                                style={playButtonStyle}
                             />
                         </div>
                         <div className={classes.pokeChipGrid}>
@@ -448,6 +521,7 @@ function PokemonCard({
                                 disabled={isSpeaking}
                                 onSpeakStart={handleSpeakStart}
                                 onSpeakStop={handleSpeakStop}
+                                style={playButtonStyle}
                             />
                         </div>
                         <ul className={classes.pokeSectionList}>
@@ -473,6 +547,7 @@ function PokemonCard({
                                 disabled={isSpeaking}
                                 onSpeakStart={handleSpeakStart}
                                 onSpeakStop={handleSpeakStop}
+                                style={playButtonStyle}
                             />
                         </div>
                         <div className={classes.pokeMatchups}>
@@ -533,31 +608,42 @@ function PokemonCard({
                                 disabled={isSpeaking}
                                 onSpeakStart={handleSpeakStart}
                                 onSpeakStop={handleSpeakStop}
+                                style={playButtonStyle}
                             />
                         </div>
                         <div className={classes.pokeEvolutionRow}>
-                            {evolutionStages.flatMap((stage) => stage.entries).map((entry, index, list) => (
-                                <React.Fragment key={entry.name}>
-                                    <Link className={classes.pokeEvolutionLink} to={`/main/${entry.name}`}>
-                                        <div className={classes.pokeEvolutionCard}>
-                                        {evolutionSprites[entry.name] ? (
-                                            <img
-                                                className={classes.pokeEvolutionSprite}
-                                                src={evolutionSprites[entry.name]}
-                                                alt={entry.name}
-                                            />
-                                        ) : null}
-                                        <div>
-                                            <p className={classes.pokeEvolutionName}>{entry.name}</p>
-                                            {entry.details ? (
-                                                <p className={classes.pokeEvolutionDetail}>
-                                                    {formatEvolutionDetail(entry.details)}
-                                                </p>
-                                            ) : null}
-                                        </div>
-                                        </div>
-                                    </Link>
-                                    {index < list.length - 1 ? (
+                            {evolutionStages.map((stage, stageIndex) => (
+                                <React.Fragment key={`stage-${stage.stage ?? stageIndex}`}>
+                                    <div className={classes.pokeEvolutionStageGroup}>
+                                        {stage.entries.map((entry) => (
+                                            <Link
+                                                key={entry.name}
+                                                className={classes.pokeEvolutionLink}
+                                                to={`/main/${entry.name}`}
+                                            >
+                                                <div className={classes.pokeEvolutionCard}>
+                                                    {evolutionSprites[entry.name] ? (
+                                                        <img
+                                                            className={classes.pokeEvolutionSprite}
+                                                            src={evolutionSprites[entry.name]}
+                                                            alt={entry.name}
+                                                        />
+                                                    ) : null}
+                                                    <div>
+                                                        <div className={classes.pokeEvolutionText}>
+                                                            <p className={classes.pokeEvolutionName}>{entry.name}</p>
+                                                            {entry.details ? (
+                                                                <p className={classes.pokeEvolutionDetail}>
+                                                                    {formatEvolutionDetail(entry.details)}
+                                                                </p>
+                                                            ) : null}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                    {stageIndex < evolutionStages.length - 1 ? (
                                         <div className={classes.pokeEvolutionArrow} aria-hidden='true'>→</div>
                                     ) : null}
                                 </React.Fragment>
@@ -577,6 +663,7 @@ function PokemonCard({
                                 disabled={isSpeaking}
                                 onSpeakStart={handleSpeakStart}
                                 onSpeakStop={handleSpeakStop}
+                                style={playButtonStyle}
                             />
                         </div>
                         <div className={classes.pokeVarietyGrid}>

@@ -36,7 +36,8 @@ export const useListStyles = createUseStyles({
   },
   mainPageFill: {
     minHeight: '100vh',
-    background: 'linear-gradient(135deg, var(--theme-bg-1) 0%, var(--theme-bg-2) 45%, var(--theme-bg-3) 100%)',
+    background:
+      'linear-gradient(rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.08)), linear-gradient(135deg, var(--theme-bg-1) 0%, var(--theme-bg-2) 45%, var(--theme-bg-3) 100%)',
     position: 'relative',
     height: '100vh',
     overflow: 'auto'
@@ -368,15 +369,27 @@ export const useListStyles = createUseStyles({
     padding: '8px 14px',
     borderRadius: 999,
     background: 'var(--theme-accent)',
-    color: '#ffc94a',
+    color: 'var(--theme-accent-ink, #1f2937)',
     cursor: 'pointer',
-    textShadow: '2px 2px 0 rgba(31, 41, 55, 0.25)',
+    textShadow: '0 1px 2px rgba(15, 23, 42, 0.35)',
     position: 'relative',
-    zIndex: 2
+    zIndex: 2,
+    border: '1px solid rgba(15, 23, 42, 0.28)',
+    boxShadow: '0 8px 16px rgba(15, 23, 42, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.35)',
+    transition: 'transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease',
+    '&:hover': {
+      transform: 'translateY(-1px)',
+      boxShadow: '0 12px 18px rgba(15, 23, 42, 0.24), inset 0 0 0 1px rgba(255, 255, 255, 0.45)',
+      filter: 'brightness(0.98) saturate(1.05)'
+    },
+    '&:active': {
+      transform: 'translateY(0px)',
+      boxShadow: '0 6px 12px rgba(15, 23, 42, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.25)'
+    }
   },
   filterControls: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
+    gridTemplateColumns: '1fr',
     gap: 12,
     marginBottom: 8
   },

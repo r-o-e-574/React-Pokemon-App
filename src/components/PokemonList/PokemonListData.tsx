@@ -3,7 +3,7 @@ import PokemonList from './PokemonList';
 import pokeball from '../../img/pokeball.png';
 import PokemonFilter from './PokemonFilter';
 import Page from '../Page';
-import type { NamedApiResource, PokedexResponse, RegionResponse, TypeResponse } from '../../types/pokeapi';
+import type { NamedApiResource, TypeResponse } from '../../types/pokeapi';
 import { Link } from 'react-router-dom';
 import { useListStyles } from '../../styles/listStyles';
 import { getTypeTheme } from '../../styles/typeTheme';
@@ -11,14 +11,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../../redux';
 import { mergePokemonMedia, type PokemonMedia } from '../../redux/pokemonMediaSlice';
 import {
-    useGetRegionListQuery,
-    useGetSpeciesListQuery,
+    useGetPokemonListQuery,
     useGetTypeListQuery,
     useLazyGetByUrlQuery
 } from '../../redux/pokeApi';
 
 const SPECIES_URL_PREFIX = 'https://pokeapi.co/api/v2/pokemon-species/';
-const TYPE_URL_PREFIX = 'https://pokeapi.co/api/v2/pokemon/';
+const POKEMON_URL_PREFIX = 'https://pokeapi.co/api/v2/pokemon/';
 
 interface PokemonSummary {
     name: string;
@@ -60,8 +59,8 @@ function PokemonListData() {
     const classes = useListStyles();
     const [pokemons, setPokemons] = useState<PokemonSummary[]>([]);
     const [typeOptions, setTypeOptions] = useState<NamedApiResource[]>([]);
-    const [regionOptions, setRegionOptions] = useState<NamedApiResource[]>([]);
     const [typeFilteredIds, setTypeFilteredIds] = useState<Set<number> | null>(null);
+    const [resolvedNameMap, setResolvedNameMap] = useState<Record<string, string>>({});
     const pokemonMedia = useSelector((state: RootState) => state.pokemonMedia);
     const dispatch = useDispatch<AppDispatch>();
     const [featuredIndex, setFeaturedIndex] = useState(0);
@@ -89,22 +88,8 @@ function PokemonListData() {
             return [];
         }
     });
-    const [selectedRegions, setSelectedRegions] = useState<string[]>(() => {
-        const stored = localStorage.getItem('pokeFilters');
-        if (!stored) {
-            return [];
-        }
-        try {
-            const parsed = JSON.parse(stored);
-            return parsed.regions ?? [];
-        } catch {
-            return [];
-        }
-    });
-    const [regionSpeciesMap, setRegionSpeciesMap] = useState<Record<string, Set<string>>>({});
     const { data: typeList } = useGetTypeListQuery();
-    const { data: regionList } = useGetRegionListQuery();
-    const { data: speciesList } = useGetSpeciesListQuery();
+    const { data: pokemonList } = useGetPokemonListQuery();
     const [fetchByUrl] = useLazyGetByUrlQuery();
     const theme = getTypeTheme(selectedTypes.length === 1 ? selectedTypes[0] : undefined);
     const featuredTimerRef = useRef<number | null>(null);
@@ -114,11 +99,10 @@ function PokemonListData() {
             'pokeFilters',
             JSON.stringify({
                 search: searchTerm,
-                types: selectedTypes,
-                regions: selectedRegions
+                types: selectedTypes
             })
         );
-    }, [searchTerm, selectedTypes, selectedRegions]);
+    }, [searchTerm, selectedTypes]);
 
     useEffect(() => {
         try {
@@ -130,22 +114,6 @@ function PokemonListData() {
 
     const filteredPokemon = useMemo(() => {
         let baseList = pokemons;
-        if (selectedRegions.length) {
-            const hasMissing = selectedRegions.some((region) => !regionSpeciesMap[region]);
-            if (hasMissing) {
-                return [];
-            }
-            const regionSpecies = selectedRegions.reduce<Set<string>>((acc, region) => {
-                const species = regionSpeciesMap[region];
-                if (species) {
-                    species.forEach((name) => acc.add(name));
-                }
-                return acc;
-            }, new Set<string>());
-            if (regionSpecies.size) {
-                baseList = baseList.filter(({ name }) => regionSpecies.has(name));
-            }
-        }
         if (typeFilteredIds) {
             baseList = baseList.filter(({ id }) => typeFilteredIds.has(id));
         }
@@ -154,7 +122,7 @@ function PokemonListData() {
             return baseList;
         }
         return baseList.filter(({ name }) => name.toLowerCase().includes(normalizedSearch));
-    }, [pokemons, typeFilteredIds, searchTerm, selectedRegions, regionSpeciesMap]);
+    }, [pokemons, typeFilteredIds, searchTerm]);
 
     const featuredPokemon = filteredPokemon[featuredIndex % Math.max(filteredPokemon.length, 1)];
 
@@ -169,33 +137,17 @@ function PokemonListData() {
     }, [typeList]);
 
     useEffect(() => {
-        if (!regionList?.results) {
+        if (!pokemonList?.results) {
             return;
         }
-        const sorted = [...regionList.results].sort((a, b) => a.name.localeCompare(b.name));
-        setRegionOptions(sorted);
-    }, [regionList]);
-
-    useEffect(() => {
-        if (selectedRegions.length) {
-            return;
-        }
-        if (!regionOptions.length) {
-            return;
-        }
-        setSelectedRegions(regionOptions.map((region) => region.name));
-    }, [regionOptions, selectedRegions.length]);
-
-    useEffect(() => {
-        if (!speciesList?.results) {
-            return;
-        }
-        const pokemonObjects = speciesList.results.map(({ name, url }) => {
-            const id = getIdFromUrl(url, SPECIES_URL_PREFIX);
-            return { name, url, id };
-        });
+        const pokemonObjects = pokemonList.results
+            .map(({ name, url }) => {
+                const id = getIdFromUrl(url, POKEMON_URL_PREFIX);
+                return { name, url, id };
+            })
+            .filter(({ name }) => !name.endsWith('-female') && !name.endsWith('-male'));
         setPokemons(pokemonObjects);
-    }, [speciesList]);
+    }, [pokemonList]);
 
     useEffect(() => {
         if (!filteredPokemon.length) {
@@ -219,27 +171,35 @@ function PokemonListData() {
                     }
                     let sprite = resolveSprite(data);
                     let cry = data?.cries?.latest ?? data?.cries?.legacy ?? '';
+                    let resolvedName = name;
 
-                    if (!sprite && url) {
-                        const speciesData = await fetchByUrl(url).unwrap();
-                        const defaultVariety = speciesData?.varieties?.find((item: any) => item.is_default);
-                        const fallbackName = defaultVariety?.pokemon?.name;
-                        if (fallbackName) {
-                            const fallbackData = await fetchByUrl(
-                                `https://pokeapi.co/api/v2/pokemon/${fallbackName}`
+                    if (!sprite) {
+                        try {
+                            const speciesData = await fetchByUrl(
+                                `${SPECIES_URL_PREFIX}${name}`
                             ).unwrap();
-                            sprite = resolveSprite(fallbackData);
-                            cry = cry || fallbackData?.cries?.latest || fallbackData?.cries?.legacy || '';
+                            const defaultVariety = speciesData?.varieties?.find((item: any) => item.is_default);
+                            const fallbackName = defaultVariety?.pokemon?.name;
+                            if (fallbackName) {
+                                const fallbackData = await fetchByUrl(
+                                    `https://pokeapi.co/api/v2/pokemon/${fallbackName}`
+                                ).unwrap();
+                                sprite = resolveSprite(fallbackData);
+                                cry = cry || fallbackData?.cries?.latest || fallbackData?.cries?.legacy || '';
+                                resolvedName = fallbackName;
+                            }
+                        } catch {
+                            // Ignore species fallback failures
                         }
                     }
 
                     if (!sprite) {
                         console.warn('[pokemon-media] missing sprite', name);
                     }
-                    return { name, sprite, cry };
+                    return { name, sprite, cry, resolvedName };
                 } catch (error) {
                     console.warn('[pokemon-media] error', name, error);
-                    return { name, sprite: '', cry: '' };
+                    return { name, sprite: '', cry: '', resolvedName: name };
                 }
             })
         ).then((mediaList) => {
@@ -251,6 +211,15 @@ function PokemonListData() {
                 return acc;
             }, {});
             dispatch(mergePokemonMedia(nextMedia));
+            const nextResolved = mediaList.reduce<Record<string, string>>((acc, item) => {
+                if (item.resolvedName && item.resolvedName !== item.name) {
+                    acc[item.name] = item.resolvedName;
+                }
+                return acc;
+            }, {});
+            if (Object.keys(nextResolved).length) {
+                setResolvedNameMap((prev) => ({ ...prev, ...nextResolved }));
+            }
         });
 
         return () => {
@@ -302,7 +271,7 @@ function PokemonListData() {
             selectedTypes.map(async (type) => {
                 const typeUrl = typeUrlMap.get(type) ?? `https://pokeapi.co/api/v2/type/${type}`;
                 const data = (await fetchByUrl(typeUrl).unwrap()) as TypeResponse;
-                return data.pokemon.map(({ pokemon: { url } }) => getIdFromUrl(url, TYPE_URL_PREFIX));
+                return data.pokemon.map(({ pokemon: { url } }) => getIdFromUrl(url, POKEMON_URL_PREFIX));
             })
         ).then((lists) => {
             if (cancelled) {
@@ -319,50 +288,6 @@ function PokemonListData() {
         };
     }, [selectedTypes, typeOptions, fetchByUrl]);
 
-    useEffect(() => {
-        if (!selectedRegions.length) {
-            return;
-        }
-        let cancelled = false;
-        const missingRegions = selectedRegions.filter((region) => !regionSpeciesMap[region]);
-        if (!missingRegions.length) {
-            return;
-        }
-
-        Promise.all(
-            missingRegions.map(async (region) => {
-                const regionUrl = `https://pokeapi.co/api/v2/region/${region}`;
-                const regionData = (await fetchByUrl(regionUrl).unwrap()) as RegionResponse;
-                const pokedexes = regionData.pokedexes ?? [];
-                const speciesNames = new Set<string>();
-                await Promise.all(
-                    pokedexes.map(async (pokedex) => {
-                        const pokedexData = (await fetchByUrl(pokedex.url).unwrap()) as PokedexResponse;
-                        pokedexData.pokemon_entries.forEach((entry) => {
-                            speciesNames.add(entry.pokemon_species.name);
-                        });
-                    })
-                );
-                return { region, speciesNames };
-            })
-        ).then((results) => {
-            if (cancelled) {
-                return;
-            }
-            setRegionSpeciesMap((prev) => {
-                const next = { ...prev };
-                results.forEach(({ region, speciesNames }) => {
-                    next[region] = speciesNames;
-                });
-                return next;
-            });
-        });
-
-        return () => {
-            cancelled = true;
-        };
-    }, [selectedRegions, regionSpeciesMap, fetchByUrl]);
-
     const handleAddType = (type: string) => {
         if (!type || selectedTypes.includes(type)) {
             return;
@@ -372,17 +297,6 @@ function PokemonListData() {
 
     const handleRemoveType = (type: string) => {
         setSelectedTypes((prev) => prev.filter((item) => item !== type));
-    };
-
-    const handleAddRegion = (region: string) => {
-        if (!region || selectedRegions.includes(region)) {
-            return;
-        }
-        setSelectedRegions((prev) => [...prev, region]);
-    };
-
-    const handleRemoveRegion = (region: string) => {
-        setSelectedRegions((prev) => prev.filter((item) => item !== region));
     };
 
     const handlePlayCry = (cry?: string) => {
@@ -395,6 +309,16 @@ function PokemonListData() {
     };
 
     const gridLine = getGridLineColor(theme.bg1);
+    const isLightColor = (hex: string) => {
+        const normalized = hex.replace('#', '');
+        if (normalized.length !== 6) return false;
+        const r = parseInt(normalized.slice(0, 2), 16) / 255;
+        const g = parseInt(normalized.slice(2, 4), 16) / 255;
+        const b = parseInt(normalized.slice(4, 6), 16) / 255;
+        const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        return luminance > 0.6;
+    };
+    const accentInk = isLightColor(theme.accent) ? '#1f2937' : '#f8fafc';
 
     return (
         <Page>
@@ -405,6 +329,7 @@ function PokemonListData() {
                     ['--theme-bg-2' as any]: theme.bg2,
                     ['--theme-bg-3' as any]: theme.bg3,
                     ['--theme-accent' as any]: theme.accent,
+                    ['--theme-accent-ink' as any]: accentInk,
                     ['--theme-card-bg' as any]: theme.cardBg,
                     ['--theme-border' as any]: theme.border,
                     ['--grid-line' as any]: gridLine
@@ -419,11 +344,15 @@ function PokemonListData() {
                     </div>
                     <div className={classes.listSection}>
                         <PokemonList
-                            pokemons={filteredPokemon.map((pokemon) => ({
-                                ...pokemon,
-                                sprite: pokemonMedia[pokemon.name]?.sprite,
-                                cry: pokemonMedia[pokemon.name]?.cry
-                            }))}
+                            pokemons={filteredPokemon.map((pokemon) => {
+                                const apiName = resolvedNameMap[pokemon.name] ?? pokemon.name;
+                                return {
+                                    ...pokemon,
+                                    apiName,
+                                    sprite: pokemonMedia[pokemon.name]?.sprite,
+                                    cry: pokemonMedia[pokemon.name]?.cry
+                                };
+                            })}
                             onPokemonInteract={restartFeaturedTimer}
                         />
                     </div>
@@ -442,18 +371,12 @@ function PokemonListData() {
                     </div>
                     <PokemonFilter
                         typeOptions={typeOptions}
-                        regionOptions={regionOptions}
                         selectedTypes={selectedTypes}
-                        selectedRegions={selectedRegions}
                         searchTerm={searchTerm}
                         onTypeSelect={(value) => {
                             handleAddType(value);
                         }}
-                        onRegionSelect={(value) => {
-                            handleAddRegion(value);
-                        }}
                         onRemoveType={handleRemoveType}
-                        onRemoveRegion={handleRemoveRegion}
                         onClearSearch={() => setSearchTerm('')}
                     />
                     <div className={`${classes.pokeFeatured} ${classes.metallicEdge}`}>

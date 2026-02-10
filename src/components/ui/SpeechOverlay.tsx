@@ -6,15 +6,16 @@ type SpeechOverlayProps = {
     imageSrc: string;
     title?: string;
     backgroundSrc?: string;
+    onClose?: () => void;
     classes: {
         pokeSpeechOverlay: string;
         pokeSpeechFrame: string;
-        pokeSpeechPortrait: string;
         pokeSpeechAvatar: string;
         pokeSpeechImage: string;
         pokeSpeechBubble: string;
         pokeSpeechTitle: string;
         pokeSpeechText: string;
+        pokeSpeechClose: string;
     };
 };
 
@@ -22,8 +23,9 @@ function SpeechOverlay({
     visible,
     label,
     imageSrc,
-    title = 'Professor Cedar',
+    title = 'Professor Espino',
     backgroundSrc,
+    onClose,
     classes
 }: SpeechOverlayProps) {
     const [showImage, setShowImage] = React.useState(true);
@@ -36,6 +38,11 @@ function SpeechOverlay({
                 className={classes.pokeSpeechFrame}
                 style={backgroundSrc ? { backgroundImage: `url(${backgroundSrc})` } : undefined}
             >
+                {onClose ? (
+                    <button className={classes.pokeSpeechClose} type='button' onClick={onClose}>
+                        Close
+                    </button>
+                ) : null}
                 {showImage ? (
                     <img
                         className={classes.pokeSpeechImage}

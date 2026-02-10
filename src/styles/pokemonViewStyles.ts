@@ -7,7 +7,7 @@ export const usePokemonViewStyles = createUseStyles({
     minHeight: '100vh',
     padding: '32px 16px',
     background:
-      'radial-gradient(circle at top, var(--theme-bg-1) 0%, var(--theme-bg-2) 50%, var(--theme-bg-3) 100%)',
+      'linear-gradient(rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.08)), radial-gradient(circle at top, var(--theme-bg-1) 0%, var(--theme-bg-2) 50%, var(--theme-bg-3) 100%)',
     position: 'relative'
   },
   pokeBackgroundTiles: {
@@ -77,10 +77,10 @@ export const usePokemonViewStyles = createUseStyles({
     display: 'inline-flex',
     alignItems: 'center',
     gap: 6,
-    border: '1px solid rgba(15, 23, 42, 0.18)',
+    border: '1px solid var(--play-border, rgba(15, 23, 42, 0.18))',
     borderRadius: 999,
-    background: 'linear-gradient(120deg, rgba(255, 255, 255, 0.95), rgba(236, 255, 230, 0.92))',
-    color: 'var(--play-ink)',
+    background: 'var(--play-bg, #ffffff)',
+    color: 'var(--play-ink, #111827)',
     padding: '5px 10px',
     cursor: 'pointer',
     width: 'fit-content',
@@ -89,17 +89,18 @@ export const usePokemonViewStyles = createUseStyles({
     fontSize: 11,
     textTransform: 'uppercase',
     letterSpacing: 1,
-    boxShadow: '0 6px 12px rgba(15, 23, 42, 0.14)',
-    transition: 'transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease',
+    boxShadow: 'var(--play-shadow, 0 6px 12px rgba(15, 23, 42, 0.14))',
+    transition: 'transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease, border-color 0.2s ease',
     '&::before': {
       content: '">"',
       fontSize: 12,
       lineHeight: 1
     },
     '&:hover': {
-      background: 'linear-gradient(120deg, rgba(255, 255, 255, 1), rgba(220, 255, 214, 0.95))',
+      background: 'var(--play-bg-hover, #ffffff)',
+      borderColor: 'var(--play-border-hover, var(--play-border, rgba(15, 23, 42, 0.18)))',
       transform: 'translateY(-1px)',
-      boxShadow: '0 10px 16px rgba(15, 23, 42, 0.18)'
+      boxShadow: 'var(--play-shadow-hover, 0 10px 16px rgba(15, 23, 42, 0.18))'
     },
     '&:active': {
       transform: 'translateY(0px)',
@@ -158,7 +159,8 @@ export const usePokemonViewStyles = createUseStyles({
     backgroundColor: 'rgba(245, 255, 238, 0.9)',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    boxShadow: '0 16px 30px rgba(15, 23, 42, 0.22)'
+    boxShadow: '0 16px 30px rgba(15, 23, 42, 0.22)',
+    position: 'relative'
   },
   pokeSpeechAvatar: {
     width: 64,
@@ -191,6 +193,21 @@ export const usePokemonViewStyles = createUseStyles({
     textAlign: 'left',
     minWidth: 220,
     marginTop: -6
+  },
+  pokeSpeechClose: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    border: '1px solid rgba(43, 63, 99, 0.35)',
+    background: 'rgba(255, 255, 255, 0.9)',
+    color: '#2b3f63',
+    borderRadius: 999,
+    padding: '4px 8px',
+    fontFamily: 'var(--ui-font)',
+    fontSize: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    cursor: 'pointer'
   },
   pokeSpeechTitle: {
     margin: 0,
@@ -350,6 +367,15 @@ export const usePokemonViewStyles = createUseStyles({
     rowGap: 14,
     padding: '4px 6px'
   },
+  pokeEvolutionStageGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexWrap: 'nowrap',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    gap: 14,
+    minWidth: 220
+  },
   pokeEvolutionLink: {
     textDecoration: 'none',
     color: 'inherit'
@@ -384,8 +410,14 @@ export const usePokemonViewStyles = createUseStyles({
     color: '#2b3f63',
     fontSize: 15
   },
+  pokeEvolutionText: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    gap: 2
+  },
   pokeEvolutionDetail: {
-    margin: '4px 0 0',
+    margin: '2px 0 0',
     fontSize: 12,
     color: 'rgba(31, 41, 55, 0.8)',
     fontFamily: 'var(--ui-font)'

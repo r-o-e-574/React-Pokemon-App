@@ -19,6 +19,9 @@ export const pokeApi = createApi({
     getSpeciesList: builder.query<TypeListResponse, void>({
       query: () => 'pokemon-species?limit=2000'
     }),
+    getPokemonList: builder.query<TypeListResponse, void>({
+      query: () => 'pokemon?limit=2000'
+    }),
     getPokemonByName: builder.query<any, string>({
       query: (name) => `pokemon/${name}`
     }),
@@ -38,6 +41,7 @@ export const {
   useGetTypeListQuery,
   useGetRegionListQuery,
   useGetSpeciesListQuery,
+  useGetPokemonListQuery,
   useGetPokemonByNameQuery,
   useGetTypeByNameQuery,
   useGetRegionByNameQuery,
