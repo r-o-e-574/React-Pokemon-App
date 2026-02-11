@@ -284,7 +284,7 @@ function PokemonViewData() {
                 ['--theme-bg-2' as any]: theme.bg2,
                 ['--theme-bg-3' as any]: theme.bg3,
                 ['--theme-accent' as any]: theme.accent,
-                ['--theme-card-bg' as any]: ensureCardOpacity(theme.cardBg, 0.45),
+                ['--theme-card-bg' as any]: theme.cardBg,
                 ['--theme-border' as any]: theme.border,
                 ['--grid-line' as any]: getGridLineColor(theme.bg1),
                 ['--theme-ink-strong' as any]: inkStrong,
@@ -309,20 +309,6 @@ function PokemonViewData() {
 export default PokemonViewData;
 
 type EvolutionEntry = { name: string; details: EvolutionDetail | null };
-
-const ensureCardOpacity = (color: string, minAlpha: number) => {
-    const match = color.match(/rgba?\(([^)]+)\)/i);
-    if (!match) {
-        return color;
-    }
-    const parts = match[1].split(',').map((part) => part.trim());
-    if (parts.length < 3) {
-        return color;
-    }
-    const [r, g, b, a] = parts;
-    const alpha = a ? Math.max(Number(a), minAlpha) : minAlpha;
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-};
 
 const resolveSprite = (data: any) => {
     return (

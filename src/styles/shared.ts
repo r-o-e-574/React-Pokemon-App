@@ -26,3 +26,21 @@ export const uiLabelStrong = {
   fontFamily: 'var(--ui-font)',
   color: 'var(--theme-ink-strong)'
 };
+
+export const contentShimmerBase = {
+  position: 'relative',
+  overflow: 'hidden',
+  background:
+    'linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.18) 35%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0.18) 65%, rgba(255, 255, 255, 0) 100%), var(--theme-card-bg)',
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: '300% 300%',
+  backgroundPosition: '-150% -150%',
+  animation: '$containerShimmer 12s linear infinite'
+};
+
+export const contentShimmerKeyframes = {
+  '@keyframes containerShimmer': {
+    '0%': { backgroundPosition: '-150% -150%' },
+    '100%': { backgroundPosition: '150% 150%' }
+  }
+};

@@ -1,5 +1,7 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import PokemonList from '../components/PokemonList';
+import PokePanel from '../components/PokePanel';
+import { usePanelStyles } from '../styles/panelStyles';
 import pokeball from '../images/pokeball.png';
 import bugIcon from '../images/type-icons/bug.png';
 import darkIcon from '../images/type-icons/dark.png';
@@ -136,6 +138,7 @@ const mixHex = (from: string, to: string, amount = 0.5) => {
 
 function PokemonListData() {
     const classes = useListStyles();
+    const panelClasses = usePanelStyles();
     const [pokemons, setPokemons] = useState<PokemonSummary[]>([]);
     const [typeOptions, setTypeOptions] = useState<NamedApiResource[]>([]);
     const [typeFilteredIds, setTypeFilteredIds] = useState<Set<number> | null>(null);
@@ -926,7 +929,12 @@ function PokemonListData() {
                 ) : null}
                 <section className={`${classes.mainColumn} ${classes.mainLayer}`}>
                     <div className={classes.featuredRow}>
-                        <div className={`${classes.greetingCard} ${classes.metallicEdge}`}>
+                        <PokePanel
+                            className={`${panelClasses.panel} ${classes.greetingCard} ${classes.metallicEdge}`}
+                            headerClassName={panelClasses.header}
+                            titleClassName={panelClasses.title}
+                            bodyClassName={panelClasses.body}
+                        >
                             <div className={classes.greetingTop}>
                                 <p className={classes.greetingHello}>{greeting}, Trainer.</p>
                                 <p className={classes.greetingKicker}>Local time</p>
@@ -941,8 +949,13 @@ function PokemonListData() {
                                 <p className={classes.greetingTipLabel}>Tips &amp; Fun Facts</p>
                                 <p className={classes.greetingTip}>{tipText}</p>
                             </div>
-                        </div>
-                        <div className={`${classes.pokeFeatured} ${classes.metallicEdge}`}>
+                        </PokePanel>
+                        <PokePanel
+                            className={`${panelClasses.panel} ${classes.pokeFeatured} ${classes.metallicEdge}`}
+                            headerClassName={panelClasses.header}
+                            titleClassName={panelClasses.title}
+                            bodyClassName={panelClasses.body}
+                        >
                             {featuredPokemon ? (
                                 <div className={`${classes.pokeFeaturedContent} ${classes.pokeFeaturedContentCarousel}`}>
                                     <h2 className={`${classes.pokeCardTitle} ${classes.pokeFeaturedTitle}`}>Featured</h2>
@@ -1014,7 +1027,7 @@ function PokemonListData() {
                                     </div>
                                 </div>
                             ) : null}
-                        </div>
+                        </PokePanel>
                     </div>
                     <div className={classes.listSection}>
                         <PokemonList

@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useListStyles } from '../styles/listStyles';
+import { usePanelStyles } from '../styles/panelStyles';
+import PokePanel from './PokePanel';
 
 type PokemonListItem = { name: string; apiName?: string; sprite?: string; cry?: string };
 type PokemonListProps = {
@@ -10,6 +12,7 @@ type PokemonListProps = {
 function PokemonList({ pokemons = [] }: PokemonListProps) {
     const classes = useListStyles();
     const history = useHistory();
+    const panelClasses = usePanelStyles();
     const [sparkleId, setSparkleId] = useState<string | null>(null);
     const sparkleTimeoutRef = useRef<number | null>(null);
     const navigateTimeoutRef = useRef<number | null>(null);
@@ -67,8 +70,13 @@ function PokemonList({ pokemons = [] }: PokemonListProps) {
 
     return (
         <div className={classes.pokeListContainer}>
-            <div className={`${classes.listContainer} ${classes.metallicEdge}`}>
-                <h2 className={classes.listTitle}>Pokemon Library</h2>
+            <PokePanel
+                className={`${panelClasses.panel} ${classes.listContainer} ${classes.metallicEdge}`}
+                headerClassName={panelClasses.header}
+                titleClassName={panelClasses.title}
+                bodyClassName={panelClasses.body}
+                title={<h2 className={classes.listTitle}>Pokemon Library</h2>}
+            >
                 <div className={classes.listBody}>
                 <ul className={classes.pokeListItems}>
                     {pokemons.map(({ name: pokeName, apiName, sprite, cry }) => {
@@ -104,7 +112,7 @@ function PokemonList({ pokemons = [] }: PokemonListProps) {
                     })}
                 </ul>
                 </div>
-            </div>
+            </PokePanel>
         </div>
     );
 };

@@ -1,5 +1,5 @@
 import { createUseStyles } from 'react-jss';
-import { glassPanel, pokemonText, uiLabel } from './shared';
+import { contentShimmerBase, contentShimmerKeyframes, glassPanel, pokemonText, uiLabel } from './shared';
 import naturePokemon from '../images/nature_pokemon.jpg';
 
 export const useListStyles = createUseStyles({
@@ -95,7 +95,7 @@ export const useListStyles = createUseStyles({
         '0 0 16px rgba(255, 210, 79, 0.6), 0 0 30px rgba(123, 92, 255, 0.45)'
     },
     '&:disabled': {
-      opacity: 0.5,
+      opacity: 0.6,
       cursor: 'not-allowed',
       boxShadow: '0 0 10px rgba(255, 255, 255, 0.2)'
     }
@@ -622,11 +622,7 @@ export const useListStyles = createUseStyles({
     height: 300
   },
   greetingCard: {
-    ...glassPanel,
-    background:
-      'linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.05)), var(--theme-card-bg)',
-    border: '1px solid var(--theme-border)',
-    borderRadius: 18,
+    background: 'transparent',
     padding: '18px 18px 16px',
     display: 'flex',
     flexDirection: 'column',
@@ -737,10 +733,6 @@ export const useListStyles = createUseStyles({
     alignSelf: 'stretch'
   },
   listContainer: {
-    ...glassPanel,
-    background: 'var(--theme-card-bg)',
-    border: '1px solid var(--theme-border)',
-    borderRadius: 18,
     display: 'flex',
     flexDirection: 'column',
     height: '55vh',
@@ -785,11 +777,7 @@ export const useListStyles = createUseStyles({
     minHeight: 0
   },
   pokeCard: {
-    ...glassPanel,
-    background: 'var(--theme-card-bg)',
     padding: 10,
-    borderRadius: 18,
-    border: '1px solid var(--theme-border)',
     position: 'relative',
     overflow: 'hidden'
   },
@@ -900,12 +888,9 @@ export const useListStyles = createUseStyles({
     background: 'var(--play-ink)'
   },
   pokeFeatured: {
-    ...glassPanel,
-    background: 'var(--theme-card-bg)',
+    background: 'transparent',
     color: 'var(--play-ink)',
     padding: 12,
-    borderRadius: 18,
-    border: '1px solid var(--theme-border)',
     position: 'relative',
     overflow: 'hidden',
     width: '100%',
@@ -1217,6 +1202,10 @@ export const useListStyles = createUseStyles({
     '50%': { backgroundPosition: '100% 50%', opacity: 1 },
     '100%': { backgroundPosition: '0% 50%', opacity: 0.7 }
   },
+  contentShimmer: {
+    ...contentShimmerBase
+  },
+  ...contentShimmerKeyframes,
   metallicEdge: {
     position: 'relative',
     '&::after': {

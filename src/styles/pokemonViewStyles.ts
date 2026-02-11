@@ -1,5 +1,5 @@
 import { createUseStyles } from 'react-jss';
-import { uiLabel } from './shared';
+import { contentShimmerBase, contentShimmerKeyframes, uiLabel } from './shared';
 
 export const usePokemonViewStyles = createUseStyles({
   pokeBackground: {
@@ -55,13 +55,7 @@ export const usePokemonViewStyles = createUseStyles({
     display: 'grid',
     gridTemplateColumns: 'minmax(220px, 280px) 1fr',
     gap: 16,
-    alignItems: 'center',
-    background: 'var(--theme-card-bg)',
-    borderRadius: 18,
-    border: '1px solid var(--theme-border)',
-    padding: 16,
-    boxShadow: '0 10px 24px rgba(15, 23, 42, 0.18)',
-    position: 'relative'
+    alignItems: 'center'
   },
   pokeHeroTopRight: {
     position: 'absolute',
@@ -307,6 +301,33 @@ export const usePokemonViewStyles = createUseStyles({
     gap: 15,
     flexWrap: 'wrap'
   },
+  pokeCryButton: {
+    width: 46,
+    height: 46,
+    borderRadius: 999,
+    border: '1px solid var(--theme-border)',
+    background: 'var(--theme-card-bg)',
+    color: 'var(--theme-ink-strong)',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    boxShadow: '0 8px 16px rgba(15, 23, 42, 0.14)',
+    transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+    '&:hover': {
+      transform: 'translateY(-1px)',
+      boxShadow: '0 12px 20px rgba(15, 23, 42, 0.18)'
+    },
+    '&:active': {
+      transform: 'translateY(0px)',
+      boxShadow: '0 6px 14px rgba(15, 23, 42, 0.14)'
+    }
+  },
+  pokeCryIcon: {
+    width: 22,
+    height: 22,
+    display: 'block'
+  },
   pokeHeroImageWrap: {
     display: 'flex',
     flexDirection: 'column',
@@ -385,27 +406,11 @@ export const usePokemonViewStyles = createUseStyles({
     flex: '1 1 0'
   },
   pokeSectionCard: {
-    background: 'var(--theme-card-bg)',
-    border: '1px solid var(--theme-border)',
-    borderRadius: 16,
-    padding: 16,
-    boxShadow: '0 8px 20px rgba(15, 23, 42, 0.16)'
+    padding: 0,
+    boxShadow: 'none'
   },
   pokeSectionTitle: {
-    margin: '0 0 8px 0',
-    fontSize: 18,
-    fontWeight: 700,
-    color: 'var(--theme-ink-strong)',
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-    fontFamily: 'var(--ui-font)'
-  },
-  pokeSectionHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 12,
-    marginBottom: 8
+    margin: 0
   },
   pokeSectionList: {
     margin: 0,
@@ -573,6 +578,10 @@ export const usePokemonViewStyles = createUseStyles({
     letterSpacing: 0.6,
     textShadow: '1px 1px 0 rgba(255, 255, 255, 0.7)'
   },
+  contentShimmer: {
+    ...contentShimmerBase
+  },
+  ...contentShimmerKeyframes,
   '@media (max-width: 820px)': {
     pokeInfoRowPrimary: {
       flexDirection: 'column'

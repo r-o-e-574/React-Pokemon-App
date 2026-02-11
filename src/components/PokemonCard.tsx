@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { useSpeech, useVoices } from 'react-text-to-speech';
 import { getTypeTheme } from '../styles/typeTheme';
 import { usePokemonViewStyles } from '../styles/pokemonViewStyles';
+import { usePanelStyles } from '../styles/panelStyles';
+import PokePanel from './PokePanel';
 import PlayButton from './PlayButton';
 import SpeechOverlay from './SpeechOverlay';
 import professorImage from '../images/VSScientist_SV.png';
@@ -104,6 +106,7 @@ function PokemonCard({
     typeMatchups = { weak: [], resist: [], immune: [] }
 }: PokemonCardProps) {
     const classes = usePokemonViewStyles();
+    const panelClasses = usePanelStyles();
     const { voices } = useVoices();
     const [activeSpeechLabel, setActiveSpeechLabel] = React.useState<string | null>(null);
     const cryAudioRef = React.useRef<HTMLAudioElement | null>(null);
@@ -379,9 +382,14 @@ function PokemonCard({
                         <span className={classes.pokeBackArrow}>←</span>
                     </Link>
                 </div>
-                <div className={classes.pokeHeroCard}>
-                    {heroText ? (
-                        <div className={classes.pokeHeroTopRight}>
+                <PokePanel
+                    className={panelClasses.panel}
+                    headerClassName={panelClasses.header}
+                    titleClassName={panelClasses.title}
+                    bodyClassName={`${panelClasses.body} ${classes.pokeHeroCard}`}
+                    title={pokemon.name}
+                    action={
+                        heroText ? (
                             <TtsButton
                                 className={classes.pokePlayButton}
                                 text={heroText}
@@ -393,8 +401,9 @@ function PokemonCard({
                                 onSpeakStop={handleSpeakStop}
                                 style={playButtonStyle}
                             />
-                        </div>
-                    ) : null}
+                        ) : null
+                    }
+                >
                     <div className={classes.pokeHeroImageWrap}>
                         <img className={classes.pokeImage} src={imageSrc} alt={pokemon.name} />
                         <div className={classes.pokeHeroBadges}>
@@ -408,9 +417,38 @@ function PokemonCard({
                                 </span>
                             ))}
                         </div>
+                        {cryUrl ? (
+                            <button
+                                className={classes.pokeCryButton}
+                                type='button'
+                                onClick={handlePlayCry}
+                                aria-label={`Play ${pokemon.name} cry`}
+                            >
+                                <svg
+                                    className={classes.pokeCryIcon}
+                                    viewBox='0 0 24 24'
+                                    fill='none'
+                                    xmlns='http://www.w3.org/2000/svg'
+                                    aria-hidden='true'
+                                >
+                                    <path d='M11 5L6 9H3v6h3l5 4V5z' fill='currentColor' />
+                                    <path
+                                        d='M15.5 8.5a4 4 0 010 7'
+                                        stroke='currentColor'
+                                        strokeWidth='2'
+                                        strokeLinecap='round'
+                                    />
+                                    <path
+                                        d='M18 6a7 7 0 010 12'
+                                        stroke='currentColor'
+                                        strokeWidth='2'
+                                        strokeLinecap='round'
+                                    />
+                                </svg>
+                            </button>
+                        ) : null}
                     </div>
                     <div className={classes.pokeHeroText}>
-                        <h2 className={classes.pokeName}>{pokemon.name}</h2>
                         {genus ? (
                             <p className={`${classes.pokeFact} ${classes.pokeFactStrong}`}>{genus}</p>
                         ) : null}
@@ -464,38 +502,30 @@ function PokemonCard({
                                 </div>
                             </div>
                         </div>
-                        {cryUrl || heroText ? (
-                            <div className={classes.pokeHeroActions}>
-                                {cryUrl ? (
-                                    <PlayButton
-                                        className={classes.pokePlayButton}
-                                        type='button'
-                                        onClick={handlePlayCry}
-                                        label='Play cry'
-                                        style={playButtonStyle}
-                                    />
-                                ) : null}
-                            </div>
-                        ) : null}
                     </div>
-                </div>
+                </PokePanel>
                 <div className={classes.pokeScrollArea}>
                     <div className={classes.pokeInfoRows}>
                         <div className={classes.pokeInfoRowSecondary}>
-                            <section className={`${classes.pokeSectionCard} ${classes.pokeCardStretch}`}>
-                            <div className={classes.pokeSectionHeader}>
-                                <h3 className={classes.pokeSectionTitle}>Type Matchups</h3>
-                                <TtsButton
-                                    className={classes.pokePlayButton}
-                                    text={matchupsText}
-                                    voiceURI={preferredVoiceURI}
-                                    announceLabel='Type matchups'
-                                    disabled={isSpeaking}
-                                    onSpeakStart={handleSpeakStart}
-                                    onSpeakStop={handleSpeakStop}
-                                    style={playButtonStyle}
-                                />
-                            </div>
+                            <PokePanel
+                                className={`${panelClasses.panel} ${classes.pokeCardStretch}`}
+                                headerClassName={panelClasses.header}
+                                titleClassName={panelClasses.title}
+                                bodyClassName={panelClasses.body}
+                                title='Type Matchups'
+                                action={
+                                    <TtsButton
+                                        className={classes.pokePlayButton}
+                                        text={matchupsText}
+                                        voiceURI={preferredVoiceURI}
+                                        announceLabel='Type matchups'
+                                        disabled={isSpeaking}
+                                        onSpeakStart={handleSpeakStart}
+                                        onSpeakStop={handleSpeakStop}
+                                        style={playButtonStyle}
+                                    />
+                                }
+                            >
                             <div className={classes.pokeMatchups}>
                                 <div>
                                     <p className={classes.pokeMatchTitle}>Weak to</p>
@@ -540,21 +570,26 @@ function PokemonCard({
                                     </div>
                                 </div>
                             </div>
-                            </section>
-                            <section className={`${classes.pokeSectionCard} ${classes.pokeCardStretch}`}>
-                            <div className={classes.pokeSectionHeader}>
-                                <h3 className={classes.pokeSectionTitle}>Traits</h3>
-                                <TtsButton
-                                    className={classes.pokePlayButton}
-                                    text={traitsText}
-                                    voiceURI={preferredVoiceURI}
-                                    announceLabel='Traits'
-                                    disabled={isSpeaking}
-                                    onSpeakStart={handleSpeakStart}
-                                    onSpeakStop={handleSpeakStop}
-                                    style={playButtonStyle}
-                                />
-                            </div>
+                            </PokePanel>
+                            <PokePanel
+                                className={`${panelClasses.panel} ${classes.pokeCardStretch}`}
+                                headerClassName={panelClasses.header}
+                                titleClassName={panelClasses.title}
+                                bodyClassName={panelClasses.body}
+                                title='Traits'
+                                action={
+                                    <TtsButton
+                                        className={classes.pokePlayButton}
+                                        text={traitsText}
+                                        voiceURI={preferredVoiceURI}
+                                        announceLabel='Traits'
+                                        disabled={isSpeaking}
+                                        onSpeakStart={handleSpeakStart}
+                                        onSpeakStop={handleSpeakStop}
+                                        style={playButtonStyle}
+                                    />
+                                }
+                            >
                             <div className={classes.pokeChipGrid}>
                                 {traitChips.map((chip) => (
                                     <span key={`${chip.kind}-${chip.label}`} className={classes.pokeChip}>
@@ -562,21 +597,26 @@ function PokemonCard({
                                     </span>
                                 ))}
                             </div>
-                            </section>
-                            <section className={`${classes.pokeSectionCard} ${classes.pokeCardStretch}`}>
-                            <div className={classes.pokeSectionHeader}>
-                                <h3 className={classes.pokeSectionTitle}>Care & Capture</h3>
-                                <TtsButton
-                                    className={classes.pokePlayButton}
-                                    text={careText}
-                                    voiceURI={preferredVoiceURI}
-                                    announceLabel='Care and capture'
-                                    disabled={isSpeaking}
-                                    onSpeakStart={handleSpeakStart}
-                                    onSpeakStop={handleSpeakStop}
-                                    style={playButtonStyle}
-                                />
-                            </div>
+                            </PokePanel>
+                            <PokePanel
+                                className={`${panelClasses.panel} ${classes.pokeCardStretch}`}
+                                headerClassName={panelClasses.header}
+                                titleClassName={panelClasses.title}
+                                bodyClassName={panelClasses.body}
+                                title='Care & Capture'
+                                action={
+                                    <TtsButton
+                                        className={classes.pokePlayButton}
+                                        text={careText}
+                                        voiceURI={preferredVoiceURI}
+                                        announceLabel='Care and capture'
+                                        disabled={isSpeaking}
+                                        onSpeakStart={handleSpeakStart}
+                                        onSpeakStop={handleSpeakStop}
+                                        style={playButtonStyle}
+                                    />
+                                }
+                            >
                             <ul className={classes.pokeSectionList}>
                                 {speciesMeta?.captureRate !== undefined ? (
                                     <li>Capture rate: {speciesMeta.captureRate}</li>
@@ -588,13 +628,17 @@ function PokemonCard({
                                     <li>Hatch counter: {speciesMeta.hatchCounter}</li>
                                 ) : null}
                             </ul>
-                            </section>
+                            </PokePanel>
                         </div>
                     </div>
                     {evolutionStages.length ? (
-                        <section className={`${classes.pokeSectionCard} ${classes.pokeWideCard}`}>
-                            <div className={classes.pokeSectionHeader}>
-                                <h3 className={classes.pokeSectionTitle}>Evolution Chain</h3>
+                        <PokePanel
+                            className={`${panelClasses.panel} ${classes.pokeWideCard}`}
+                            headerClassName={panelClasses.header}
+                            titleClassName={panelClasses.title}
+                            bodyClassName={panelClasses.body}
+                            title='Evolution Chain'
+                            action={
                                 <TtsButton
                                     className={classes.pokePlayButton}
                                     text={evolutionText}
@@ -605,7 +649,8 @@ function PokemonCard({
                                     onSpeakStop={handleSpeakStop}
                                     style={playButtonStyle}
                                 />
-                            </div>
+                            }
+                        >
                             <div className={classes.pokeEvolutionRow}>
                                 {evolutionStages.map((stage, stageIndex) => (
                                     <React.Fragment key={`stage-${stage.stage ?? stageIndex}`}>
@@ -644,12 +689,16 @@ function PokemonCard({
                                     </React.Fragment>
                                 ))}
                             </div>
-                        </section>
+                        </PokePanel>
                     ) : null}
                     {varietyList.length ? (
-                        <section className={`${classes.pokeSectionCard} ${classes.pokeWideCard}`}>
-                            <div className={classes.pokeSectionHeader}>
-                                <h3 className={classes.pokeSectionTitle}>Varieties</h3>
+                        <PokePanel
+                            className={`${panelClasses.panel} ${classes.pokeWideCard}`}
+                            headerClassName={panelClasses.header}
+                            titleClassName={panelClasses.title}
+                            bodyClassName={panelClasses.body}
+                            title='Varieties'
+                            action={
                                 <TtsButton
                                     className={classes.pokePlayButton}
                                     text={varietiesText}
@@ -660,7 +709,8 @@ function PokemonCard({
                                     onSpeakStop={handleSpeakStop}
                                     style={playButtonStyle}
                                 />
-                            </div>
+                            }
+                        >
                             <div className={classes.pokeVarietyGrid}>
                                 {varietyList.map((item) => (
                                     <Link key={item.name} className={classes.pokeVarietyLink} to={`/main/${item.name}`}>
@@ -677,7 +727,7 @@ function PokemonCard({
                                     </Link>
                                 ))}
                             </div>
-                        </section>
+                        </PokePanel>
                     ) : null}
                 </div>
             </div>

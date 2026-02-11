@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useListStyles } from '../styles/listStyles';
+import { usePanelStyles } from '../styles/panelStyles';
+import PokePanel from './PokePanel';
 import { getTypeTheme } from '../styles/typeTheme';
 
 type FilterOption = { name: string };
@@ -23,6 +25,7 @@ function PokemonFilter({
 }: PokemonFilterProps) {
     const classes = useListStyles();
     const [typeOpen, setTypeOpen] = useState(false);
+    const panelClasses = usePanelStyles();
     const typeRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -38,8 +41,13 @@ function PokemonFilter({
 
     return (
         <div>
-            <div className={`${classes.pokeCard} ${classes.filterCard} ${classes.metallicEdge}`}>
-                <h2 className={classes.pokeCardTitle}>Filters</h2>
+            <PokePanel
+                className={`${panelClasses.panel} ${classes.pokeCard} ${classes.filterCard} ${classes.metallicEdge}`}
+                headerClassName={panelClasses.header}
+                titleClassName={panelClasses.title}
+                bodyClassName={panelClasses.body}
+                title={<h2 className={classes.pokeCardTitle}>Filters</h2>}
+            >
                 <div className={classes.filterControls}>
                     <div className={classes.filterGroup} ref={typeRef}>
                         <label className={classes.filterLabel}>Type</label>
@@ -99,7 +107,7 @@ function PokemonFilter({
                         </button>
                     ) : null}
                 </div>
-            </div>
+            </PokePanel>
         </div>
     );
 };
