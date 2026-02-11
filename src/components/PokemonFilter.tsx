@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useListStyles } from '../../styles/listStyles';
-import { getTypeTheme } from '../../styles/typeTheme';
+import { useListStyles } from '../styles/listStyles';
+import { getTypeTheme } from '../styles/typeTheme';
 
 type FilterOption = { name: string };
 

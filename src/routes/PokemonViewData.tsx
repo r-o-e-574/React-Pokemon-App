@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import PokemonCard from './PokemonCard';
+import PokemonCard from '../components/PokemonCard';
 import { useFetchUrl } from '../../hooks';
 import Page from '../Page';
 import type { Pokemon } from '../../types/pokemon';
@@ -12,7 +12,7 @@ import type {
     TypeDamageRelations,
     TypeResponse
 } from '../../types/pokeapi';
-import { getTypeTheme } from '../../styles/typeTheme';
+import { getTypeTheme } from '../styles/typeTheme';
 
 const emptyPokemon: Pokemon = { name: '', abilities: [], types: [], sprites: {}, cries: {} };
 

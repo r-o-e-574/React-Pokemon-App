@@ -4,17 +4,17 @@ import {
   Switch,
   Route
 } from 'react-router-dom'
-import PokemonList from './components/PokemonList'
-import PokemonView from './components/PokemonView'
-import Landing from './components/Landing/Landing'
+import Landing from './routes/Landing'
+import PokemonListData from './routes/PokemonListData'
+import PokemonViewData from './routes/PokemonViewData'
 
 function App () {
   return (
     <Router>
       <Switch>
         <Route exact path="/"><Landing /></Route>
-        <Route exact path="/main"><PokemonList /></Route>
-        <Route path="/main/:name" ><PokemonView /></Route>
+        <Route exact path="/main"><PokemonListData /></Route>
+        <Route path="/main/:name" ><PokemonViewData /></Route>
       </Switch>
     </Router>
   )

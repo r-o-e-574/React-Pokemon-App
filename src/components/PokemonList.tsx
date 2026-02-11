@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { useListStyles } from '../../styles/listStyles';
+import { useListStyles } from '../styles/listStyles';
 
 type PokemonListItem = { name: string; apiName?: string; sprite?: string; cry?: string };
 type PokemonListProps = {

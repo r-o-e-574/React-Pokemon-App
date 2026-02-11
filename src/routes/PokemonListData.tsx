@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
-import PokemonList from './PokemonList';
-import pokeball from '../../img/pokeball.png';
+import PokemonList from '../components/PokemonList';
+import pokeball from '../images/pokeball.png';
 import bugIcon from '../../images/type-icons/bug.png';
 import darkIcon from '../../images/type-icons/dark.png';
 import dragonIcon from '../../images/type-icons/dragon.png';
@@ -22,8 +22,8 @@ import waterIcon from '../../images/type-icons/water.png';
 import Page from '../Page';
 import type { NamedApiResource, TypeResponse } from '../../types/pokeapi';
 import { Link } from 'react-router-dom';
-import { useListStyles } from '../../styles/listStyles';
-import { getTypeTheme } from '../../styles/typeTheme';
+import { useListStyles } from '../styles/listStyles';
+import { getTypeTheme } from '../styles/typeTheme';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../../redux';
 import { mergePokemonMedia, type PokemonMedia } from '../../redux/pokemonMediaSlice';
@@ -33,7 +33,7 @@ import {
     useLazyGetByUrlQuery
 } from '../../redux/pokeApi';
 import { useVoices } from 'react-text-to-speech';
-import SpeechOverlay from '../ui/SpeechOverlay';
+import SpeechOverlay from '../components/SpeechOverlay';
 import professorImage from '../../images/VSScientist_SV.png';
 import labImage from '../../images/lab.jpeg';
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { useLandingStyles } from '../../styles/landingStyles';
+import { useLandingStyles } from '../styles/landingStyles';
 
 const legendaryTiles = [
   { name: 'mewtwo', id: 150 },

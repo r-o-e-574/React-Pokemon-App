@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSpeech, useVoices } from 'react-text-to-speech';
-import { getTypeTheme } from '../../styles/typeTheme';
-import { usePokemonViewStyles } from '../../styles/pokemonViewStyles';
-import PlayButton from '../ui/PlayButton';
-import SpeechOverlay from '../ui/SpeechOverlay';
+import { getTypeTheme } from '../styles/typeTheme';
+import { usePokemonViewStyles } from '../styles/pokemonViewStyles';
+import PlayButton from './PlayButton';
+import SpeechOverlay from './SpeechOverlay';
 import professorImage from '../../images/VSScientist_SV.png';
 import labImage from '../../images/lab.jpeg';
 import type { Pokemon } from '../../types/pokemon';
