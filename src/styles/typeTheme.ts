@@ -8,12 +8,12 @@ export type TypeTheme = {
 };
 
 const defaultTheme: TypeTheme = {
-  bg1: '#0f1026',
-  bg2: '#2a1b4f',
-  bg3: '#5b2a7a',
-  accent: '#9b7bff',
-  cardBg: 'rgba(255, 255, 255, 0.16)',
-  border: 'rgba(255, 255, 255, 0.7)'
+  bg1: '#0f182e',
+  bg2: '#1f2a48',
+  bg3: '#2f3c63',
+  accent: '#ffb6d5',
+  cardBg: 'rgba(255, 255, 255, 0.14)',
+  border: 'rgba(255, 255, 255, 0.6)'
 };
 
 const typeThemes: Record<string, TypeTheme> = {

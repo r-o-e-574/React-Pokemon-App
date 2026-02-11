@@ -1,5 +1,5 @@
 import { createUseStyles } from 'react-jss';
-import { glassPanel, pokemonText } from './shared';
+import { glassPanel, pokemonText, uiLabel } from './shared';
 
 export const useListStyles = createUseStyles({
   mainPage: {
@@ -10,6 +10,7 @@ export const useListStyles = createUseStyles({
     position: 'relative',
     zIndex: 1,
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'stretch',
     gap: 12,
     minHeight: 0,
@@ -18,7 +19,7 @@ export const useListStyles = createUseStyles({
   mainColumn: {
     display: 'flex',
     flexDirection: 'column',
-    gap: 12,
+    gap: 10,
     flex: 1,
     minWidth: 0,
     minHeight: 0,
@@ -40,7 +41,7 @@ export const useListStyles = createUseStyles({
       'linear-gradient(rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.08)), linear-gradient(135deg, var(--theme-bg-1) 0%, var(--theme-bg-2) 45%, var(--theme-bg-3) 100%)',
     position: 'relative',
     height: '100vh',
-    overflow: 'auto'
+    overflow: 'hidden'
   },
   mainPageTiles: {
     position: 'absolute',
@@ -56,11 +57,226 @@ export const useListStyles = createUseStyles({
     position: 'relative',
     zIndex: 1
   },
-  mainHeader: {
+  mainToolbar: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 16
+    gap: 16,
+    position: 'sticky',
+    top: 0,
+    zIndex: 5,
+    padding: '8px 4px 12px',
+    backdropFilter: 'blur(6px)',
+    width: '100%',
+    flex: '0 0 100%'
+  },
+  toolbarRight: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12
+  },
+  toolbarSearch: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 6,
+    background:
+      'linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.08)), var(--theme-card-bg)',
+    border: '1px solid var(--theme-border)',
+    borderRadius: 16,
+    padding: '10px 12px 14px',
+    boxShadow: '0 10px 20px rgba(31, 41, 55, 0.16)',
+    backdropFilter: 'blur(10px)',
+    width: 280,
+    boxSizing: 'border-box'
+  },
+  filterToggleButton: {
+    border: '1px solid var(--theme-border)',
+    background: 'rgba(255, 255, 255, 0.92)',
+    color: '#1f2a44',
+    borderRadius: 999,
+    width: 40,
+    height: 40,
+    padding: 0,
+    fontFamily: 'var(--ui-font)',
+    fontSize: 18,
+    lineHeight: 1,
+    cursor: 'pointer',
+    boxShadow: '0 8px 18px rgba(31, 41, 55, 0.18)',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    '&:hover': {
+      transform: 'translateY(-1px)',
+      boxShadow: '0 12px 20px rgba(31, 41, 55, 0.22)'
+    },
+    '&:active': {
+      transform: 'translateY(0)',
+      boxShadow: '0 6px 14px rgba(31, 41, 55, 0.18)'
+    }
+  },
+  filterDrawer: {
+    position: 'fixed',
+    left: 12,
+    right: 12,
+    top: 12,
+    width: 'auto',
+    maxHeight: 'calc(100vh - 24px)',
+    ...glassPanel,
+    background:
+      'linear-gradient(135deg, rgba(15, 23, 42, 0.55), rgba(15, 23, 42, 0.35)), var(--theme-card-bg)',
+    borderRadius: 18,
+    border: '1px solid var(--theme-border)',
+    boxShadow: '0 24px 40px rgba(10, 15, 30, 0.45)',
+    padding: 14,
+    transform: 'translateY(-110%)',
+    transition: 'transform 0.22s ease',
+    zIndex: 25,
+    overflow: 'auto'
+  },
+  filterDrawerOpen: {
+    transform: 'translateY(0%)'
+  },
+  rightPanelBackdrop: {
+    position: 'fixed',
+    inset: 0,
+    background: 'rgba(10, 15, 30, 0.35)',
+    zIndex: 15
+  },
+  filterDrawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+    marginBottom: 10
+  },
+  filterDrawerTitle: {
+    margin: 0,
+    fontSize: 18,
+    fontFamily: 'Pokemon',
+    color: 'var(--theme-ink-strong)',
+    letterSpacing: 0.6
+  },
+  filterDrawerActions: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8
+  },
+  filterDrawerClose: {
+    border: '1px solid rgba(255, 255, 255, 0.35)',
+    background: 'rgba(255, 255, 255, 0.12)',
+    color: 'var(--theme-ink-strong)',
+    width: 32,
+    height: 32,
+    borderRadius: 999,
+    cursor: 'pointer',
+    fontSize: 18,
+    lineHeight: 1
+  },
+  filterDrawerClear: {
+    border: '1px solid rgba(255, 255, 255, 0.35)',
+    background: 'rgba(255, 255, 255, 0.12)',
+    color: 'var(--theme-ink-strong)',
+    borderRadius: 999,
+    padding: '6px 12px',
+    fontFamily: 'var(--ui-font)',
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 1.2,
+    cursor: 'pointer',
+    transition: 'filter 0.15s ease, opacity 0.15s ease',
+    '&:not(:disabled)': {
+      background: 'rgba(255, 255, 255, 0.2)',
+      filter: 'brightness(1.05)'
+    },
+    '&:disabled': {
+      opacity: 0.45,
+      cursor: 'not-allowed'
+    }
+  },
+  filterDrawerList: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+    gap: 12
+  },
+  filterOption: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    background: 'rgba(15, 23, 42, 0.35)',
+    borderRadius: 12,
+    padding: '8px 10px',
+    cursor: 'pointer',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+    '&:hover': {
+      transform: 'translateY(-1px)',
+      boxShadow: '0 8px 16px rgba(10, 14, 30, 0.35)'
+    },
+    '&:has(input:checked)': {
+      boxShadow: '0 10px 18px rgba(10, 14, 30, 0.45)',
+      borderColor: 'rgba(255, 255, 255, 0.35)'
+    }
+  },
+  filterCheckbox: {
+    position: 'absolute',
+    opacity: 0,
+    width: 1,
+    height: 1,
+    pointerEvents: 'none'
+  },
+  filterToggle: {
+    width: 34,
+    height: 20,
+    borderRadius: 999,
+    background: 'rgba(255, 255, 255, 0.2)',
+    border: '1px solid rgba(255, 255, 255, 0.35)',
+    position: 'relative',
+    flex: '0 0 auto',
+    boxShadow: 'inset 0 2px 6px rgba(10, 14, 30, 0.35)',
+    transition: 'background 0.2s ease, border-color 0.2s ease',
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      top: 2,
+      left: 2,
+      width: 14,
+      height: 14,
+      borderRadius: 999,
+      background: '#f8fafc',
+      boxShadow: '0 4px 8px rgba(10, 14, 30, 0.35)',
+      transition: 'transform 0.2s ease'
+    },
+    '$filterCheckbox:checked + &': {
+      background: 'var(--type-accent, var(--theme-accent))',
+      borderColor: 'rgba(255, 255, 255, 0.55)'
+    },
+    '$filterCheckbox:checked + &::after': {
+      transform: 'translateX(14px)'
+    }
+  },
+  filterTypeIconWrap: {
+    width: 28,
+    height: 28,
+    borderRadius: 999,
+    background: 'rgba(15, 23, 42, 0.35)',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 8px 14px rgba(8, 12, 26, 0.5)',
+    border: '1px solid rgba(8, 12, 26, 0.55)'
+  },
+  filterTypeIcon: {
+    width: 22,
+    height: 22,
+    objectFit: 'contain',
+    borderRadius: 999
+  },
+  filterOptionText: {
+    color: 'var(--theme-ink-strong)',
+    fontSize: 13,
+    textTransform: 'capitalize',
+    fontFamily: 'var(--ui-font)',
+    textAlign: 'center'
   },
   mainHeaderBrand: {
     display: 'flex',
@@ -100,13 +316,9 @@ export const useListStyles = createUseStyles({
     boxSizing: 'border-box'
   },
   mainSearchLabel: {
-    fontSize: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 2,
-    color: '#f5f7ff',
+    ...uiLabel,
     fontWeight: 600,
-    textShadow: '0 1px 2px rgba(15, 23, 42, 0.35)',
-    fontFamily: 'var(--ui-font)'
+    textShadow: '0 1px 2px rgba(15, 23, 42, 0.35)'
   },
   mainSearchInput: {
     border: '1px solid rgba(31, 41, 55, 0.25)',
@@ -128,12 +340,110 @@ export const useListStyles = createUseStyles({
     gridTemplateRows: 'auto 1fr',
     gap: 14
   },
+  featuredRow: {
+    display: 'flex',
+    gap: 12,
+    alignItems: 'stretch',
+    height: 300
+  },
+  greetingCard: {
+    ...glassPanel,
+    background:
+      'linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.05)), var(--theme-card-bg)',
+    border: '1px solid var(--theme-border)',
+    borderRadius: 18,
+    padding: '18px 18px 16px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 12,
+    minHeight: 0,
+    flex: '0 0 320px'
+  },
+  greetingTop: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 6,
+    paddingLeft: 10,
+    borderLeft: '3px solid rgba(255, 214, 138, 0.7)'
+  },
+  greetingHello: {
+    margin: 0,
+    fontSize: 19,
+    fontFamily: 'var(--ui-font)',
+    color: 'var(--theme-ink-strong)',
+    letterSpacing: 0.2
+  },
+  greetingKicker: {
+    margin: 0,
+    ...uiLabel,
+    fontSize: 13,
+    letterSpacing: 2.4
+  },
+  greetingTime: {
+    margin: 0,
+    fontSize: 42,
+    lineHeight: 1.05,
+    fontFamily: 'Pokemon',
+    color: '#ffe6b0',
+    letterSpacing: 0.6,
+    textShadow: '0 6px 18px rgba(10, 12, 28, 0.35)',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '10px 18px',
+    borderRadius: 999,
+    border: '1px solid rgba(255, 230, 176, 0.45)',
+    background: 'rgba(15, 20, 40, 0.35)',
+    boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 10px 18px rgba(10, 12, 28, 0.32)'
+  },
+  greetingMeta: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 6,
+    flexWrap: 'wrap'
+  },
+  greetingTips: {
+    marginTop: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 6
+  },
+  greetingTipLabel: {
+    margin: 0,
+    ...uiLabel,
+    fontSize: 13
+  },
+  greetingTip: {
+    margin: 0,
+    fontSize: 16,
+    color: 'var(--theme-ink-strong)',
+    fontFamily: 'var(--ui-font)',
+    lineHeight: 1.3
+  },
+  greetingDate: {
+    fontSize: 15,
+    color: 'var(--theme-ink-strong)',
+    fontFamily: 'var(--ui-font)'
+  },
+  greetingDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 999,
+    background: 'rgba(255, 213, 138, 0.85)'
+  },
+  greetingZone: {
+    fontSize: 13,
+    letterSpacing: 1.6,
+    textTransform: 'uppercase',
+    color: 'var(--theme-ink-muted)',
+    fontFamily: 'var(--ui-font)'
+  },
   listSection: {
     position: 'relative',
     zIndex: 1,
     overflow: 'hidden',
     minHeight: 0,
-    height: '100%',
     flex: 1,
     display: 'flex',
     alignSelf: 'stretch'
@@ -145,12 +455,13 @@ export const useListStyles = createUseStyles({
     borderRadius: 18,
     display: 'flex',
     flexDirection: 'column',
-    height: '80vh',
+    height: '55vh',
+    width: '100%',
+    flex: 1,
     overflow: 'hidden',
     minHeight: 0
   },
   listTitle: {
-    margin: 0,
     padding: '14px 16px 8px',
     fontSize: 26,
     textAlign: 'center',
@@ -248,6 +559,24 @@ export const useListStyles = createUseStyles({
     WebkitLineClamp: 2,
     WebkitBoxOrient: 'vertical'
   },
+  pokeListLinkWrap: {
+    position: 'relative',
+    display: 'inline-flex',
+    alignItems: 'center',
+    minWidth: 0
+  },
+  pokeListSparkle: {
+    position: 'absolute',
+    right: -10,
+    top: -4,
+    width: 6,
+    height: 6,
+    borderRadius: 999,
+    background: '#ffd24f',
+    boxShadow:
+      '10px 6px 0 #7dd3fc, -8px 8px 0 #a78bfa, 4px -10px 0 #f97316, -10px -6px 0 #34d399',
+    animation: '$sparklePop 0.5s ease-out'
+  },
   pokeListSprite: {
     width: 82,
     height: 82,
@@ -291,8 +620,9 @@ export const useListStyles = createUseStyles({
     border: '1px solid var(--theme-border)',
     position: 'relative',
     overflow: 'hidden',
+    width: '100%',
     flex: 1,
-    minHeight: 260
+    minHeight: 0
   },
   pokeFeaturedShimmer: {
     position: 'absolute',
@@ -306,23 +636,34 @@ export const useListStyles = createUseStyles({
   },
   pokeFeaturedTitle: {
     position: 'relative',
-    zIndex: 1
+    zIndex: 1,
+    margin: 0,
+    marginBottom: 'auto',
+    padding: '2px 0',
+    lineHeight: 1.2,
+    overflow: 'visible',
+    textAlign: 'center',
+    width: '100%'
   },
   pokeFeaturedContent: {
-    display: 'grid',
-    gridTemplateColumns: 'auto 1fr auto',
+    display: 'flex',
     alignItems: 'center',
-    gap: 16,
+    justifyContent: 'center',
+    flexDirection: 'column',
+    gap: 8,
     position: 'relative',
     zIndex: 1,
-    height: '90%'
+    height: '100%',
+    paddingBottom: "10px"
   },
   pokeFeaturedCenter: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     gap: 10,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    flex: 1,
+    minWidth: 0
   },
   pokeFeaturedSpriteButton: {
     border: 'none',
@@ -342,7 +683,7 @@ export const useListStyles = createUseStyles({
     objectFit: 'contain'
   },
   pokeFeaturedName: {
-    margin: 0,
+    margin: '2px 0 0',
     textTransform: 'capitalize',
     fontSize: 26,
     ...pokemonText,
@@ -350,7 +691,62 @@ export const useListStyles = createUseStyles({
     overflow: 'visible',
     textOverflow: 'clip',
     maxWidth: 'none',
-    lineHeight: 1.1
+    lineHeight: 1.2,
+    paddingBottom: 2
+  },
+  pokeFeaturedContentCarousel: {
+    alignItems: 'center',
+    gap: 10
+  },
+  pokeFeaturedCarouselRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    width: '100%',
+    paddingBottom: '10px'
+  },
+  pokeFeaturedCarouselTrack: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    flex: '0 1 auto',
+    justifyContent: 'center',
+    minWidth: 0
+  },
+  pokeFeaturedCarouselCard: {
+    ...glassPanel,
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    background: 'rgba(15, 23, 42, 0.35)',
+    borderRadius: 16,
+    padding: '10px 10px 8px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 6,
+    minWidth: 130,
+    maxWidth: 180,
+    cursor: 'pointer',
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontFamily: 'Pokemon',
+    transition: 'transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease'
+  },
+  pokeFeaturedCarouselActive: {
+    background: 'rgba(255, 255, 255, 0.22)',
+    borderColor: 'rgba(255, 255, 255, 0.65)',
+    transform: 'scale(1.08)',
+    boxShadow: '0 10px 24px rgba(15, 23, 42, 0.35)'
+  },
+  pokeFeaturedCarouselSprite: {
+    width: 128,
+    height: 128,
+    objectFit: 'contain'
+  },
+  pokeFeaturedCarouselName: {
+    fontSize: 14,
+    textTransform: 'capitalize',
+    textAlign: 'center',
+    ...pokemonText
   },
   pokeFeaturedLink: {
     color: '#2b6fdd',
@@ -365,22 +761,24 @@ export const useListStyles = createUseStyles({
   pokeFeaturedNav: {
     fontFamily: 'Pokemon',
     textTransform: 'uppercase',
-    border: 'none',
     padding: '8px 14px',
     borderRadius: 999,
-    background: 'var(--theme-accent)',
-    color: 'var(--theme-accent-ink, #1f2937)',
+    background: 'var(--play-bg, var(--theme-nav, var(--theme-accent)))',
+    color: 'var(--play-ink, var(--theme-nav-ink, var(--theme-accent-ink, #1f2937)))',
     cursor: 'pointer',
     textShadow: '0 1px 2px rgba(15, 23, 42, 0.35)',
     position: 'relative',
     zIndex: 2,
-    border: '1px solid rgba(15, 23, 42, 0.28)',
+    alignSelf: 'center',
+    border: '1px solid var(--play-border, rgba(15, 23, 42, 0.28))',
     boxShadow: '0 8px 16px rgba(15, 23, 42, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.35)',
     transition: 'transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease',
     '&:hover': {
       transform: 'translateY(-1px)',
       boxShadow: '0 12px 18px rgba(15, 23, 42, 0.24), inset 0 0 0 1px rgba(255, 255, 255, 0.45)',
-      filter: 'brightness(0.98) saturate(1.05)'
+      filter: 'brightness(0.98) saturate(1.05)',
+      background: 'var(--play-bg-hover, var(--play-bg, var(--theme-nav, var(--theme-accent))))',
+      borderColor: 'var(--play-border-hover, var(--play-border, rgba(15, 23, 42, 0.28)))'
     },
     '&:active': {
       transform: 'translateY(0px)',
@@ -402,10 +800,7 @@ export const useListStyles = createUseStyles({
   },
   filterLabel: {
     gridColumn: '1 / -1',
-    fontSize: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 2,
-    color: '#f5f7ff',
+    ...uiLabel,
     fontWeight: 600,
     textShadow: '0 1px 2px rgba(15, 23, 42, 0.35)',
     fontFamily: 'var(--ui-font)'
@@ -518,6 +913,10 @@ export const useListStyles = createUseStyles({
     '8%': { transform: 'scaleX(0.02)', opacity: 0.1 },
     '100%': { transform: 'scaleX(1)', opacity: 0.8 }
   },
+  '@keyframes sparklePop': {
+    '0%': { transform: 'scale(0.6)', opacity: 0.9 },
+    '100%': { transform: 'scale(1.2)', opacity: 0 }
+  },
   '@keyframes skeletonPulse': {
     '0%': { backgroundPosition: '0% 50%', opacity: 0.7 },
     '50%': { backgroundPosition: '100% 50%', opacity: 1 },
@@ -540,23 +939,98 @@ export const useListStyles = createUseStyles({
       pointerEvents: 'none'
     }
   },
-  '@media (max-width: 900px)': {
+  '@media (max-width: 1100px)': {
     mainPage: {
-      gridTemplateColumns: '1fr'
+      flexDirection: 'column',
+      padding: '16px 16px 40px'
     },
     rightColumn: {
-      gridTemplateRows: 'auto auto auto'
+      width: '100%',
+      flex: '1 1 auto'
     },
-    filterControls: {
-      gridTemplateColumns: '1fr'
+    mainColumn: {
+      order: 2
+    },
+    mainHeaderBrand: {
+      alignSelf: 'center'
+    },
+    toolbarSearch: {
+      width: 'min(360px, 70vw)'
+    },
+    filterDrawerList: {
+      gridTemplateColumns: 'repeat(2, minmax(120px, 1fr))'
+    },
+    pokeFeaturedContent: {
+      gridTemplateColumns: '1fr',
+      height: 'auto',
+      rowGap: 12
+    },
+    featuredRow: {
+      flexDirection: 'column',
+      height: 'auto'
+    },
+    greetingCard: {
+      height: 'auto'
+    },
+    pokeFeatured: {
+      height: 'auto'
+    },
+    pokeFeaturedNav: {
+      justifySelf: 'center'
+    },
+    listContainer: {
+      height: 'clamp(320px, 42vh, 520px)'
     },
     pokeListItems: {
-      gridTemplateColumns: 'repeat(2, minmax(220px, 1fr))'
+      gridTemplateColumns: 'repeat(2, minmax(180px, 1fr))'
+    }
+  },
+  '@media (orientation: portrait)': {
+    featuredRow: {
+      flexDirection: 'row',
+      height: 280
+    },
+    greetingCard: {
+      minHeight: 120,
+      padding: '14px 16px',
+      flex: '0 0 280px'
+    },
+    pokeFeatured: {
+      minHeight: 200
+    },
+    pokeFeaturedSprite: {
+      width: 140,
+      height: 140
+    },
+    pokeFeaturedContent: {
+      height: '100%',
+      gap: 12
+    },
+    listContainer: {
+      height: 'calc(70vh - 30px)'
     }
   },
   '@media (max-width: 640px)': {
+    filterDrawerList: {
+      gridTemplateColumns: '1fr'
+    },
     pokeListItems: {
       gridTemplateColumns: '1fr'
+    },
+    mainHeaderTitle: {
+      fontSize: 22
+    },
+    mainHeaderBall: {
+      width: 38,
+      height: 38
+    },
+    toolbarRight: {
+      width: '100%',
+      flexDirection: 'column',
+      alignItems: 'stretch'
+    },
+    toolbarSearch: {
+      width: '100%'
     }
   }
 });

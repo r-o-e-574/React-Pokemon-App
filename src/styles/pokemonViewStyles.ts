@@ -1,4 +1,5 @@
 import { createUseStyles } from 'react-jss';
+import { uiLabel } from './shared';
 
 export const usePokemonViewStyles = createUseStyles({
   pokeBackground: {
@@ -211,10 +212,8 @@ export const usePokemonViewStyles = createUseStyles({
   },
   pokeSpeechTitle: {
     margin: 0,
-    fontSize: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    color: 'rgba(31, 41, 55, 0.7)'
+    ...uiLabel,
+    letterSpacing: 1
   },
   pokeSpeechText: {
     margin: '4px 0 0',
@@ -257,7 +256,7 @@ export const usePokemonViewStyles = createUseStyles({
     flexWrap: 'wrap',
     gap: '8px 12px',
     fontSize: 14,
-    color: 'rgba(31, 41, 55, 0.8)'
+    color: 'var(--theme-ink-strong)'
   },
   pokeMeta: {
     background: 'rgba(255, 255, 255, 0.6)',
@@ -281,7 +280,7 @@ export const usePokemonViewStyles = createUseStyles({
     margin: '0 0 8px 0',
     fontSize: 18,
     fontWeight: 700,
-    color: 'var(--play-ink)',
+    color: 'var(--theme-ink-strong)',
     letterSpacing: 1,
     textTransform: 'uppercase',
     fontFamily: 'var(--ui-font)'
@@ -330,7 +329,7 @@ export const usePokemonViewStyles = createUseStyles({
     textTransform: 'capitalize',
     fontFamily: 'Pokemon',
     fontWeight: 500,
-    color: '#2b3f63',
+    color: 'var(--theme-ink-strong)',
     letterSpacing: 0.6,
     boxShadow: '0 2px 6px rgba(15, 23, 42, 0.12)',
     textShadow: '1px 1px 0 rgba(255, 255, 255, 0.7)'
@@ -350,10 +349,8 @@ export const usePokemonViewStyles = createUseStyles({
   },
   pokeMatchTitle: {
     margin: '0 0 6px 0',
-    fontSize: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    color: 'rgba(31, 41, 55, 0.7)'
+    ...uiLabel,
+    letterSpacing: 1
   },
   pokeWideCard: {
     gridColumn: '1 / -1'
@@ -394,7 +391,7 @@ export const usePokemonViewStyles = createUseStyles({
   pokeEvolutionArrow: {
     fontSize: 18,
     fontWeight: 700,
-    color: 'rgba(31, 41, 55, 0.6)',
+    color: 'var(--theme-ink-muted)',
     margin: '0 6px'
   },
   pokeEvolutionSprite: {
@@ -407,7 +404,7 @@ export const usePokemonViewStyles = createUseStyles({
     fontWeight: 700,
     textTransform: 'capitalize',
     fontFamily: 'Pokemon',
-    color: '#2b3f63',
+    color: 'var(--theme-ink-strong)',
     fontSize: 15
   },
   pokeEvolutionText: {

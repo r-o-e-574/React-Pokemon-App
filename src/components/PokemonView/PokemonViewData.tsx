@@ -41,6 +41,17 @@ function PokemonViewData() {
         immune: string[];
     }>({ weak: [], resist: [], immune: [] });
     const theme = getTypeTheme(pokemon.types[0]?.type?.name);
+    const isLightColor = (hex: string) => {
+        const normalized = hex.replace('#', '');
+        if (normalized.length !== 6) return false;
+        const r = parseInt(normalized.slice(0, 2), 16) / 255;
+        const g = parseInt(normalized.slice(2, 4), 16) / 255;
+        const b = parseInt(normalized.slice(4, 6), 16) / 255;
+        const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        return luminance > 0.6;
+    };
+    const inkStrong = isLightColor(theme.bg1) ? '#1f2937' : '#f8fafc';
+    const inkMuted = isLightColor(theme.bg1) ? 'rgba(31, 41, 55, 0.7)' : 'rgba(248, 250, 252, 0.7)';
     const fetchUrl = useFetchUrl();
 
     useEffect(() => {
@@ -266,7 +277,9 @@ function PokemonViewData() {
                     ['--theme-accent' as any]: theme.accent,
                     ['--theme-card-bg' as any]: ensureCardOpacity(theme.cardBg, 0.45),
                     ['--theme-border' as any]: theme.border,
-                    ['--grid-line' as any]: getGridLineColor(theme.bg1)
+                    ['--grid-line' as any]: getGridLineColor(theme.bg1),
+                    ['--theme-ink-strong' as any]: inkStrong,
+                    ['--theme-ink-muted' as any]: inkMuted
                 }}
             >
                 <PokemonCard
