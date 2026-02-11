@@ -206,6 +206,11 @@ function PokemonCard({
             .join(' ')}`;
     })();
     const typesText = naturalList(pokemon.types.map(({ type }) => type.name));
+    const typesNarration = (() => {
+        if (!typesText) return '';
+        if (pokemon.types.length === 1) return `${pokemon.name} is a ${typesText} type Pokemon.`;
+        return `${pokemon.name} has ${typesText} types.`;
+    })();
     const statsText = naturalList(
         statItems.map(({ stat, base_stat }) => `${normalizeSpeech(stat.name)} ${base_stat}`)
     );
@@ -258,7 +263,22 @@ function PokemonCard({
     ]
         .filter(Boolean)
         .join('. ');
-    const heroText = [pokemon.name, genus, speciesText, physicalText]
+    const abilityNames = pokemon.abilities.map(({ ability }) => ability.name);
+    const heroAbilityText = abilityNames.length
+        ? `Abilities include ${naturalList(abilityNames.map(normalizeSpeech))}`
+        : '';
+    const statLookup = new Map(statItems.map((item) => [item.stat.name, item.base_stat]));
+    const heroStatsParts = [
+        heightUs ? `Height ${heightUs}` : '',
+        weightLbs ? `Weight ${weightLbs} pounds` : '',
+        pokemon.base_experience ? `Base experience ${pokemon.base_experience}` : '',
+        statLookup.has('hp') ? `HP ${statLookup.get('hp')}` : '',
+        statLookup.has('attack') ? `Attack ${statLookup.get('attack')}` : '',
+        statLookup.has('defense') ? `Defense ${statLookup.get('defense')}` : '',
+        statLookup.has('speed') ? `Speed ${statLookup.get('speed')}` : ''
+    ].filter(Boolean);
+    const heroStatsText = heroStatsParts.length ? `Base stats: ${heroStatsParts.join(', ')}` : '';
+    const heroText = [typesNarration, genus, speciesText, physicalText, heroAbilityText, heroStatsText]
         .filter(Boolean)
         .map(normalizeSpeech)
         .join('. ');
@@ -345,9 +365,6 @@ function PokemonCard({
     return (
         <div className={classes.pokeBackground}>
             <div className={classes.pokeBackgroundTiles} />
-            <Link className={classes.pokeBackLink} to='/main' aria-label='Back to PokeList'>
-                <span className={classes.pokeBackArrow}>←</span> Back
-            </Link>
             <SpeechOverlay
                 visible={Boolean(activeSpeechLabel)}
                 label={activeSpeechLabel ?? ''}
@@ -357,6 +374,11 @@ function PokemonCard({
                 classes={classes}
             />
             <div className={`${classes.pokeDetails} ${classes.pokeBackgroundLayer}`}>
+                <div className={classes.pokeTopRow}>
+                    <Link className={classes.pokeBackLink} to='/main' aria-label='Back to PokeList'>
+                        <span className={classes.pokeBackArrow}>←</span>
+                    </Link>
+                </div>
                 <div className={classes.pokeHeroCard}>
                     {heroText ? (
                         <div className={classes.pokeHeroTopRight}>
@@ -393,12 +415,54 @@ function PokemonCard({
                             <p className={`${classes.pokeFact} ${classes.pokeFactStrong}`}>{genus}</p>
                         ) : null}
                         {speciesText ? <p className={classes.pokeFact}>{speciesText}</p> : null}
-                        <div className={classes.pokeMetaRow}>
-                            {heightUs ? <span className={classes.pokeMeta}>Height: {heightUs}</span> : null}
-                            {weightLbs ? <span className={classes.pokeMeta}>Weight: {weightLbs} lb</span> : null}
-                            {pokemon.base_experience ? (
-                                <span className={classes.pokeMeta}>Base XP: {pokemon.base_experience}</span>
-                            ) : null}
+                        <div className={classes.pokeHeroInfoGrid}>
+                            <div className={classes.pokeHeroInfoBlock}>
+                                <p className={classes.pokeHeroInfoLabel}>Abilities</p>
+                                <div className={classes.pokeHeroInfoList}>
+                                    {abilityNames.map((name) => (
+                                        <span key={name} className={classes.pokeHeroInfoChip}>
+                                            {name}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className={classes.pokeHeroInfoBlock}>
+                                <p className={classes.pokeHeroInfoLabel}>Base stats</p>
+                                <div className={classes.pokeHeroInfoList}>
+                                    {heightUs ? (
+                                        <span className={classes.pokeHeroInfoChip}>
+                                            <span className={classes.pokeHeroInfoChipLabel}>Height:</span> {heightUs}
+                                        </span>
+                                    ) : null}
+                                    {weightLbs ? (
+                                        <span className={classes.pokeHeroInfoChip}>
+                                            <span className={classes.pokeHeroInfoChipLabel}>Weight:</span> {weightLbs} lb
+                                        </span>
+                                    ) : null}
+                                    {pokemon.base_experience ? (
+                                        <span className={classes.pokeHeroInfoChip}>
+                                            <span className={classes.pokeHeroInfoChipLabel}>Base XP:</span>{' '}
+                                            {pokemon.base_experience}
+                                        </span>
+                                    ) : null}
+                                    {['hp', 'attack', 'defense', 'speed'].map((statName) => {
+                                        const value = statLookup.get(statName);
+                                        if (value === undefined) return null;
+                                        const label =
+                                            statName === 'hp'
+                                                ? 'HP'
+                                                : statName
+                                                      .split('-')
+                                                      .map((part) => part[0].toUpperCase() + part.slice(1))
+                                                      .join(' ');
+                                        return (
+                                            <span key={statName} className={classes.pokeHeroInfoChip}>
+                                                <span className={classes.pokeHeroInfoChipLabel}>{label}:</span> {value}
+                                            </span>
+                                        );
+                                    })}
+                                </div>
+                            </div>
                         </div>
                         {cryUrl || heroText ? (
                             <div className={classes.pokeHeroActions}>
@@ -415,275 +479,207 @@ function PokemonCard({
                         ) : null}
                     </div>
                 </div>
-                <div className={classes.pokeInfoGrid}>
-                    <section className={classes.pokeSectionCard}>
-                        <div className={classes.pokeSectionHeader}>
-                            <h3 className={classes.pokeSectionTitle}>Abilities</h3>
-                            <TtsButton
-                                className={classes.pokePlayButton}
-                                text={abilityText}
-                                voiceURI={preferredVoiceURI}
-                                announceLabel='Abilities'
-                                disabled={isSpeaking}
-                                onSpeakStart={handleSpeakStart}
-                                onSpeakStop={handleSpeakStop}
-                                style={playButtonStyle}
-                            />
-                        </div>
-                        <ul className={classes.pokeSectionList}>
-                            {pokemon.abilities.map(({ ability }) => (
-                                <li key={ability.name}>
-                                    <span className={classes.pokeAbilityName}>{ability.name}:</span>{' '}
-                                    {abilityEffects[ability.name] ?? ''}
-                                </li>
-                            ))}
-                        </ul>
-                    </section>
-                    <section className={classes.pokeSectionCard}>
-                        <div className={classes.pokeSectionHeader}>
-                            <h3 className={classes.pokeSectionTitle}>Types</h3>
-                            <TtsButton
-                                className={classes.pokePlayButton}
-                                text={typesText}
-                                voiceURI={preferredVoiceURI}
-                                announceLabel='Types'
-                                disabled={isSpeaking}
-                                onSpeakStart={handleSpeakStart}
-                                onSpeakStop={handleSpeakStop}
-                                style={playButtonStyle}
-                            />
-                        </div>
-                        <div className={classes.pokeChipGrid}>
-                            {pokemon.types.map(({ type }) => (
-                                <span
-                                    key={type.name}
-                                    className={`${classes.pokeChip} ${classes.pokeTypeChip}`}
-                                    style={typeChipStyle(type.name)}
-                                >
-                                    {type.name}
-                                </span>
-                            ))}
-                        </div>
-                    </section>
-                    <section className={classes.pokeSectionCard}>
-                        <div className={classes.pokeSectionHeader}>
-                            <h3 className={classes.pokeSectionTitle}>Base Stats</h3>
-                            <TtsButton
-                                className={classes.pokePlayButton}
-                                text={statsText}
-                                voiceURI={preferredVoiceURI}
-                                announceLabel='Base stats'
-                                disabled={isSpeaking}
-                                onSpeakStart={handleSpeakStart}
-                                onSpeakStop={handleSpeakStop}
-                                style={playButtonStyle}
-                            />
-                        </div>
-                        <ul className={classes.pokeSectionList}>
-                            {statItems.map(({ stat, base_stat }) => (
-                                <li key={stat.name} className={classes.pokeStatItem}>
-                                    <span className={classes.pokeStatName}>{stat.name}</span>
-                                    <span className={classes.pokeStatValue}>{base_stat}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </section>
-                    <section className={classes.pokeSectionCard}>
-                        <div className={classes.pokeSectionHeader}>
-                            <h3 className={classes.pokeSectionTitle}>Traits</h3>
-                            <TtsButton
-                                className={classes.pokePlayButton}
-                                text={traitsText}
-                                voiceURI={preferredVoiceURI}
-                                announceLabel='Traits'
-                                disabled={isSpeaking}
-                                onSpeakStart={handleSpeakStart}
-                                onSpeakStop={handleSpeakStop}
-                                style={playButtonStyle}
-                            />
-                        </div>
-                        <div className={classes.pokeChipGrid}>
-                            {traitChips.map((chip) => (
-                                <span key={`${chip.kind}-${chip.label}`} className={classes.pokeChip}>
-                                    <span className={classes.pokeChipLabel}>{chip.kind}:</span> {chip.label}
-                                </span>
-                            ))}
-                        </div>
-                    </section>
-                    <section className={classes.pokeSectionCard}>
-                        <div className={classes.pokeSectionHeader}>
-                            <h3 className={classes.pokeSectionTitle}>Care & Capture</h3>
-                            <TtsButton
-                                className={classes.pokePlayButton}
-                                text={careText}
-                                voiceURI={preferredVoiceURI}
-                                announceLabel='Care and capture'
-                                disabled={isSpeaking}
-                                onSpeakStart={handleSpeakStart}
-                                onSpeakStop={handleSpeakStop}
-                                style={playButtonStyle}
-                            />
-                        </div>
-                        <ul className={classes.pokeSectionList}>
-                            {speciesMeta?.captureRate !== undefined ? (
-                                <li>Capture rate: {speciesMeta.captureRate}</li>
-                            ) : null}
-                            {speciesMeta?.baseHappiness !== undefined ? (
-                                <li>Base happiness: {speciesMeta.baseHappiness}</li>
-                            ) : null}
-                            {speciesMeta?.hatchCounter !== undefined ? (
-                                <li>Hatch counter: {speciesMeta.hatchCounter}</li>
-                            ) : null}
-                        </ul>
-                    </section>
-                    <section className={classes.pokeSectionCard}>
-                        <div className={classes.pokeSectionHeader}>
-                            <h3 className={classes.pokeSectionTitle}>Type Matchups</h3>
-                            <TtsButton
-                                className={classes.pokePlayButton}
-                                text={matchupsText}
-                                voiceURI={preferredVoiceURI}
-                                announceLabel='Type matchups'
-                                disabled={isSpeaking}
-                                onSpeakStart={handleSpeakStart}
-                                onSpeakStop={handleSpeakStop}
-                                style={playButtonStyle}
-                            />
-                        </div>
-                        <div className={classes.pokeMatchups}>
-                            <div>
-                                <p className={classes.pokeMatchTitle}>Weak to</p>
-                                <div className={classes.pokeChipRow}>
-                                    {typeMatchups.weak.map((name) => (
-                                        <span
-                                            key={name}
-                                            className={`${classes.pokeChip} ${classes.pokeTypeChip}`}
-                                            style={typeChipStyle(name)}
-                                        >
-                                            {name}
-                                        </span>
-                                    ))}
-                                </div>
+                <div className={classes.pokeScrollArea}>
+                    <div className={classes.pokeInfoRows}>
+                        <div className={classes.pokeInfoRowSecondary}>
+                            <section className={`${classes.pokeSectionCard} ${classes.pokeCardStretch}`}>
+                            <div className={classes.pokeSectionHeader}>
+                                <h3 className={classes.pokeSectionTitle}>Type Matchups</h3>
+                                <TtsButton
+                                    className={classes.pokePlayButton}
+                                    text={matchupsText}
+                                    voiceURI={preferredVoiceURI}
+                                    announceLabel='Type matchups'
+                                    disabled={isSpeaking}
+                                    onSpeakStart={handleSpeakStart}
+                                    onSpeakStop={handleSpeakStop}
+                                    style={playButtonStyle}
+                                />
                             </div>
-                            <div>
-                                <p className={classes.pokeMatchTitle}>Resists</p>
-                                <div className={classes.pokeChipRow}>
-                                    {typeMatchups.resist.map((name) => (
-                                        <span
-                                            key={name}
-                                            className={`${classes.pokeChip} ${classes.pokeTypeChip}`}
-                                            style={typeChipStyle(name)}
-                                        >
-                                            {name}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                            <div>
-                                <p className={classes.pokeMatchTitle}>Immune</p>
-                                <div className={classes.pokeChipRow}>
-                                    {typeMatchups.immune.map((name) => (
-                                        <span
-                                            key={name}
-                                            className={`${classes.pokeChip} ${classes.pokeTypeChip}`}
-                                            style={typeChipStyle(name)}
-                                        >
-                                            {name}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-                {evolutionStages.length ? (
-                    <section className={`${classes.pokeSectionCard} ${classes.pokeWideCard}`}>
-                        <div className={classes.pokeSectionHeader}>
-                            <h3 className={classes.pokeSectionTitle}>Evolution Chain</h3>
-                            <TtsButton
-                                className={classes.pokePlayButton}
-                                text={evolutionText}
-                                voiceURI={preferredVoiceURI}
-                                announceLabel='Evolution chain'
-                                disabled={isSpeaking}
-                                onSpeakStart={handleSpeakStart}
-                                onSpeakStop={handleSpeakStop}
-                                style={playButtonStyle}
-                            />
-                        </div>
-                        <div className={classes.pokeEvolutionRow}>
-                            {evolutionStages.map((stage, stageIndex) => (
-                                <React.Fragment key={`stage-${stage.stage ?? stageIndex}`}>
-                                    <div className={classes.pokeEvolutionStageGroup}>
-                                        {stage.entries.map((entry) => (
-                                            <Link
-                                                key={entry.name}
-                                                className={classes.pokeEvolutionLink}
-                                                to={`/main/${entry.name}`}
+                            <div className={classes.pokeMatchups}>
+                                <div>
+                                    <p className={classes.pokeMatchTitle}>Weak to</p>
+                                    <div className={classes.pokeChipRow}>
+                                        {typeMatchups.weak.map((name) => (
+                                            <span
+                                                key={name}
+                                                className={`${classes.pokeChip} ${classes.pokeTypeChip}`}
+                                                style={typeChipStyle(name)}
                                             >
-                                                <div className={classes.pokeEvolutionCard}>
-                                                    {evolutionSprites[entry.name] ? (
-                                                        <img
-                                                            className={classes.pokeEvolutionSprite}
-                                                            src={evolutionSprites[entry.name]}
-                                                            alt={entry.name}
-                                                        />
-                                                    ) : null}
-                                                    <div>
-                                                        <div className={classes.pokeEvolutionText}>
-                                                            <p className={classes.pokeEvolutionName}>{entry.name}</p>
-                                                            {entry.details ? (
-                                                                <p className={classes.pokeEvolutionDetail}>
-                                                                    {formatEvolutionDetail(entry.details)}
-                                                                </p>
-                                                            ) : null}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </Link>
+                                                {name}
+                                            </span>
                                         ))}
                                     </div>
-                                    {stageIndex < evolutionStages.length - 1 ? (
-                                        <div className={classes.pokeEvolutionArrow} aria-hidden='true'>→</div>
-                                    ) : null}
-                                </React.Fragment>
-                            ))}
-                        </div>
-                    </section>
-                ) : null}
-                {varietyList.length ? (
-                    <section className={`${classes.pokeSectionCard} ${classes.pokeWideCard}`}>
-                        <div className={classes.pokeSectionHeader}>
-                            <h3 className={classes.pokeSectionTitle}>Varieties</h3>
-                            <TtsButton
-                                className={classes.pokePlayButton}
-                                text={varietiesText}
-                                voiceURI={preferredVoiceURI}
-                                announceLabel='Varieties'
-                                disabled={isSpeaking}
-                                onSpeakStart={handleSpeakStart}
-                                onSpeakStop={handleSpeakStop}
-                                style={playButtonStyle}
-                            />
-                        </div>
-                        <div className={classes.pokeVarietyGrid}>
-                            {varietyList.map((item) => (
-                                <Link key={item.name} className={classes.pokeVarietyLink} to={`/main/${item.name}`}>
-                                    <div className={classes.pokeVarietyCard}>
-                                    {varietySprites[item.name] ? (
-                                        <img
-                                            className={classes.pokeVarietySprite}
-                                            src={varietySprites[item.name]}
-                                            alt={item.name}
-                                        />
-                                    ) : null}
-                                    <span className={classes.pokeVarietyName}>{item.name}</span>
+                                </div>
+                                <div>
+                                    <p className={classes.pokeMatchTitle}>Resists</p>
+                                    <div className={classes.pokeChipRow}>
+                                        {typeMatchups.resist.map((name) => (
+                                            <span
+                                                key={name}
+                                                className={`${classes.pokeChip} ${classes.pokeTypeChip}`}
+                                                style={typeChipStyle(name)}
+                                            >
+                                                {name}
+                                            </span>
+                                        ))}
                                     </div>
-                                </Link>
-                            ))}
+                                </div>
+                                <div>
+                                    <p className={classes.pokeMatchTitle}>Immune</p>
+                                    <div className={classes.pokeChipRow}>
+                                        {typeMatchups.immune.map((name) => (
+                                            <span
+                                                key={name}
+                                                className={`${classes.pokeChip} ${classes.pokeTypeChip}`}
+                                                style={typeChipStyle(name)}
+                                            >
+                                                {name}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                            </section>
+                            <section className={`${classes.pokeSectionCard} ${classes.pokeCardStretch}`}>
+                            <div className={classes.pokeSectionHeader}>
+                                <h3 className={classes.pokeSectionTitle}>Traits</h3>
+                                <TtsButton
+                                    className={classes.pokePlayButton}
+                                    text={traitsText}
+                                    voiceURI={preferredVoiceURI}
+                                    announceLabel='Traits'
+                                    disabled={isSpeaking}
+                                    onSpeakStart={handleSpeakStart}
+                                    onSpeakStop={handleSpeakStop}
+                                    style={playButtonStyle}
+                                />
+                            </div>
+                            <div className={classes.pokeChipGrid}>
+                                {traitChips.map((chip) => (
+                                    <span key={`${chip.kind}-${chip.label}`} className={classes.pokeChip}>
+                                        <span className={classes.pokeChipLabel}>{chip.kind}:</span> {chip.label}
+                                    </span>
+                                ))}
+                            </div>
+                            </section>
+                            <section className={`${classes.pokeSectionCard} ${classes.pokeCardStretch}`}>
+                            <div className={classes.pokeSectionHeader}>
+                                <h3 className={classes.pokeSectionTitle}>Care & Capture</h3>
+                                <TtsButton
+                                    className={classes.pokePlayButton}
+                                    text={careText}
+                                    voiceURI={preferredVoiceURI}
+                                    announceLabel='Care and capture'
+                                    disabled={isSpeaking}
+                                    onSpeakStart={handleSpeakStart}
+                                    onSpeakStop={handleSpeakStop}
+                                    style={playButtonStyle}
+                                />
+                            </div>
+                            <ul className={classes.pokeSectionList}>
+                                {speciesMeta?.captureRate !== undefined ? (
+                                    <li>Capture rate: {speciesMeta.captureRate}</li>
+                                ) : null}
+                                {speciesMeta?.baseHappiness !== undefined ? (
+                                    <li>Base happiness: {speciesMeta.baseHappiness}</li>
+                                ) : null}
+                                {speciesMeta?.hatchCounter !== undefined ? (
+                                    <li>Hatch counter: {speciesMeta.hatchCounter}</li>
+                                ) : null}
+                            </ul>
+                            </section>
                         </div>
-                    </section>
-                ) : null}
+                    </div>
+                    {evolutionStages.length ? (
+                        <section className={`${classes.pokeSectionCard} ${classes.pokeWideCard}`}>
+                            <div className={classes.pokeSectionHeader}>
+                                <h3 className={classes.pokeSectionTitle}>Evolution Chain</h3>
+                                <TtsButton
+                                    className={classes.pokePlayButton}
+                                    text={evolutionText}
+                                    voiceURI={preferredVoiceURI}
+                                    announceLabel='Evolution chain'
+                                    disabled={isSpeaking}
+                                    onSpeakStart={handleSpeakStart}
+                                    onSpeakStop={handleSpeakStop}
+                                    style={playButtonStyle}
+                                />
+                            </div>
+                            <div className={classes.pokeEvolutionRow}>
+                                {evolutionStages.map((stage, stageIndex) => (
+                                    <React.Fragment key={`stage-${stage.stage ?? stageIndex}`}>
+                                        <div className={classes.pokeEvolutionStageGroup}>
+                                            {stage.entries.map((entry) => (
+                                                <Link
+                                                    key={entry.name}
+                                                    className={classes.pokeEvolutionLink}
+                                                    to={`/main/${entry.name}`}
+                                                >
+                                                    <div className={classes.pokeEvolutionCard}>
+                                                        {evolutionSprites[entry.name] ? (
+                                                            <img
+                                                                className={classes.pokeEvolutionSprite}
+                                                                src={evolutionSprites[entry.name]}
+                                                                alt={entry.name}
+                                                            />
+                                                        ) : null}
+                                                        <div>
+                                                            <div className={classes.pokeEvolutionText}>
+                                                                <p className={classes.pokeEvolutionName}>{entry.name}</p>
+                                                                {entry.details ? (
+                                                                    <p className={classes.pokeEvolutionDetail}>
+                                                                        {formatEvolutionDetail(entry.details)}
+                                                                    </p>
+                                                                ) : null}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Link>
+                                            ))}
+                                        </div>
+                                        {stageIndex < evolutionStages.length - 1 ? (
+                                            <div className={classes.pokeEvolutionArrow} aria-hidden='true'>→</div>
+                                        ) : null}
+                                    </React.Fragment>
+                                ))}
+                            </div>
+                        </section>
+                    ) : null}
+                    {varietyList.length ? (
+                        <section className={`${classes.pokeSectionCard} ${classes.pokeWideCard}`}>
+                            <div className={classes.pokeSectionHeader}>
+                                <h3 className={classes.pokeSectionTitle}>Varieties</h3>
+                                <TtsButton
+                                    className={classes.pokePlayButton}
+                                    text={varietiesText}
+                                    voiceURI={preferredVoiceURI}
+                                    announceLabel='Varieties'
+                                    disabled={isSpeaking}
+                                    onSpeakStart={handleSpeakStart}
+                                    onSpeakStop={handleSpeakStop}
+                                    style={playButtonStyle}
+                                />
+                            </div>
+                            <div className={classes.pokeVarietyGrid}>
+                                {varietyList.map((item) => (
+                                    <Link key={item.name} className={classes.pokeVarietyLink} to={`/main/${item.name}`}>
+                                        <div className={classes.pokeVarietyCard}>
+                                        {varietySprites[item.name] ? (
+                                            <img
+                                                className={classes.pokeVarietySprite}
+                                                src={varietySprites[item.name]}
+                                                alt={item.name}
+                                            />
+                                        ) : null}
+                                        <span className={classes.pokeVarietyName}>{item.name}</span>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        </section>
+                    ) : null}
+                </div>
             </div>
         </div>
 

@@ -7,7 +7,7 @@ export const useListStyles = createUseStyles({
     width: '100%',
     maxWidth: '100%',
     margin: '0 auto',
-    padding: '20px 24px 48px',
+    padding: '0 24px 48px',
     position: 'relative',
     zIndex: 1,
     display: 'flex',
@@ -66,7 +66,7 @@ export const useListStyles = createUseStyles({
     position: 'sticky',
     top: 0,
     zIndex: 5,
-    padding: '8px 4px 12px',
+    padding: '0 4px 12px',
     backdropFilter: 'blur(6px)',
     width: '100%',
     flex: '0 0 100%'
@@ -80,12 +80,12 @@ export const useListStyles = createUseStyles({
     display: 'flex',
     flexDirection: 'column',
     gap: 6,
-    background:
-      'linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.08)), var(--theme-card-bg)',
+    background: 'var(--theme-card-bg)',
     border: '1px solid var(--theme-border)',
     borderRadius: 16,
+    marginTop: 4,
     padding: '10px 12px 14px',
-    boxShadow: '0 10px 20px rgba(31, 41, 55, 0.16)',
+    boxShadow: '0 8px 18px rgba(31, 41, 55, 0.12)',
     backdropFilter: 'blur(10px)',
     width: 280,
     boxSizing: 'border-box'
@@ -321,7 +321,13 @@ export const useListStyles = createUseStyles({
     fontWeight: 600,
     textShadow: '0 1px 2px rgba(15, 23, 42, 0.35)'
   },
+  mainSearchInputRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8
+  },
   mainSearchInput: {
+    flex: 1,
     border: '1px solid rgba(31, 41, 55, 0.25)',
     borderRadius: 12,
     padding: '10px 12px',
@@ -334,6 +340,30 @@ export const useListStyles = createUseStyles({
     '&:focus': {
       boxShadow: '0 0 0 3px rgba(255, 210, 79, 0.35)',
       borderColor: 'rgba(255, 210, 79, 0.8)'
+    }
+  },
+  mainSearchClear: {
+    border: '1px solid var(--theme-border)',
+    background: 'rgba(255, 255, 255, 0.9)',
+    color: '#1f2a44',
+    borderRadius: 999,
+    padding: '6px 12px',
+    fontFamily: 'var(--ui-font)',
+    fontSize: 12,
+    fontWeight: 700,
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase',
+    cursor: 'pointer',
+    whiteSpace: 'nowrap',
+    boxShadow: '0 6px 14px rgba(15, 23, 42, 0.15)',
+    transition: 'transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease',
+    '&:hover': {
+      transform: 'translateY(-1px)',
+      boxShadow: '0 10px 18px rgba(15, 23, 42, 0.2)'
+    },
+    '&:active': {
+      transform: 'translateY(0)',
+      boxShadow: '0 6px 14px rgba(15, 23, 42, 0.15)'
     }
   },
   mainTopRow: {
@@ -797,6 +827,13 @@ export const useListStyles = createUseStyles({
     '&:active': {
       transform: 'translateY(0px)',
       boxShadow: '0 6px 12px rgba(15, 23, 42, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.25)'
+    },
+    '&:disabled': {
+      cursor: 'not-allowed',
+      opacity: 0.5,
+      filter: 'grayscale(0.2)',
+      transform: 'none',
+      boxShadow: '0 4px 10px rgba(15, 23, 42, 0.12)'
     }
   },
   filterControls: {
@@ -956,7 +993,7 @@ export const useListStyles = createUseStyles({
   '@media (max-width: 1100px)': {
     mainPage: {
       flexDirection: 'column',
-      padding: '16px 16px 40px'
+      padding: '0 16px 40px'
     },
     rightColumn: {
       width: '100%',

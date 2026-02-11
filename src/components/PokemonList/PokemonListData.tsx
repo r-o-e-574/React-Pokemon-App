@@ -140,6 +140,10 @@ function PokemonListData() {
     const pokemonMedia = useSelector((state: RootState) => state.pokemonMedia);
     const dispatch = useDispatch<AppDispatch>();
     const [featuredIndex, setFeaturedIndex] = useState(0);
+    const [featuredHistory, setFeaturedHistory] = useState<{ stack: number[]; index: number }>({
+        stack: [],
+        index: -1
+    });
     const [panelOpen, setPanelOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState(() => {
         const stored = localStorage.getItem('pokeFilters');
@@ -243,27 +247,68 @@ function PokemonListData() {
         return baseList.filter(({ name }) => name.toLowerCase().includes(normalizedSearch));
     }, [pokemons, typeFilteredIds, searchTerm]);
 
-    const featuredCount = Math.max(filteredPokemon.length, 1);
+    const featuredPool = pokemons;
+    const featuredCount = Math.max(featuredPool.length, 1);
     const safeFeaturedIndex = featuredIndex % featuredCount;
-    const featuredPokemon = filteredPokemon[safeFeaturedIndex];
+    const featuredPokemon = featuredPool[safeFeaturedIndex];
     const prevFeaturedPokemon =
-        filteredPokemon.length > 0
-            ? filteredPokemon[(safeFeaturedIndex - 1 + filteredPokemon.length) % filteredPokemon.length]
+        featuredPool.length > 0
+            ? featuredPool[(safeFeaturedIndex - 1 + featuredPool.length) % featuredPool.length]
             : undefined;
     const nextFeaturedPokemon =
-        filteredPokemon.length > 0
-            ? filteredPokemon[(safeFeaturedIndex + 1) % filteredPokemon.length]
+        featuredPool.length > 0
+            ? featuredPool[(safeFeaturedIndex + 1) % featuredPool.length]
             : undefined;
     const getRandomFeaturedIndex = useCallback(() => {
-        if (filteredPokemon.length <= 1) {
+        if (featuredPool.length <= 1) {
             return safeFeaturedIndex;
         }
         let nextIndex = safeFeaturedIndex;
         while (nextIndex === safeFeaturedIndex) {
-            nextIndex = Math.floor(Math.random() * filteredPokemon.length);
+            nextIndex = Math.floor(Math.random() * featuredPool.length);
         }
         return nextIndex;
-    }, [filteredPokemon.length, safeFeaturedIndex]);
+    }, [featuredPool.length, safeFeaturedIndex]);
+    const pushFeaturedIndex = useCallback((nextIndex: number) => {
+        setFeaturedIndex(nextIndex);
+        setFeaturedHistory((prev) => {
+            const truncated = prev.stack.slice(0, prev.index + 1);
+            const updated = [...truncated, nextIndex].slice(-50);
+            return { stack: updated, index: updated.length - 1 };
+        });
+    }, []);
+    const canGoPrev = featuredHistory.index > 0;
+    const canGoNext = featuredPool.length > 0;
+    const handleFeaturedPrev = useCallback(() => {
+        if (!canGoPrev) {
+            return;
+        }
+        setFeaturedHistory((prev) => {
+            if (prev.index <= 0) {
+                return prev;
+            }
+            const nextIndex = prev.index - 1;
+            setFeaturedIndex(prev.stack[nextIndex]);
+            return { ...prev, index: nextIndex };
+        });
+    }, [canGoPrev]);
+    const handleFeaturedNext = useCallback(() => {
+        if (!featuredPool.length) {
+            return;
+        }
+        setFeaturedHistory((prev) => {
+            if (prev.index >= 0 && prev.index < prev.stack.length - 1) {
+                const nextIndex = prev.index + 1;
+                setFeaturedIndex(prev.stack[nextIndex]);
+                return { ...prev, index: nextIndex };
+            }
+            const nextIndex = getRandomFeaturedIndex();
+            setFeaturedIndex(nextIndex);
+            const truncated = prev.stack.slice(0, prev.index + 1);
+            const updated = [...truncated, nextIndex].slice(-50);
+            return { stack: updated, index: updated.length - 1 };
+        });
+    }, [featuredPool.length, getRandomFeaturedIndex]);
 
     useEffect(() => {
         if (!typeList?.results) {
@@ -481,47 +526,30 @@ function PokemonListData() {
         if (hour < 18) return 'Good afternoon';
         return 'Good evening';
     }, [now]);
-    const previewTimeCycle = true;
-    const [timeCycleIndex, setTimeCycleIndex] = useState(0);
-    useEffect(() => {
-        if (!previewTimeCycle) return;
-        const timer = window.setInterval(() => {
-            setTimeCycleIndex((prev) => (prev + 1) % 4);
-        }, 3500);
-        return () => window.clearInterval(timer);
-    }, [previewTimeCycle]);
     const greetingTimeClass = useMemo(() => {
-        if (previewTimeCycle) {
-            return [
-                classes.greetingTimeMorning,
-                classes.greetingTimeDay,
-                classes.greetingTimeDusk,
-                classes.greetingTimeNight
-            ][timeCycleIndex];
-        }
         const hour = now.getHours();
         if (hour >= 5 && hour < 11) return classes.greetingTimeMorning;
         if (hour >= 11 && hour < 17) return classes.greetingTimeDay;
         if (hour >= 17 && hour < 20) return classes.greetingTimeDusk;
         return classes.greetingTimeNight;
-    }, [now, classes, previewTimeCycle, timeCycleIndex]);
+    }, [now, classes]);
     const greetingTips = useMemo(
         () => [
-            'Pikachu wasn’t the first mascot—Clefairy was!',
-            'Magikarp is famous for big jumps.',
-            'Eevee has the most evolutions.',
-            'Bulbasaur is #001 in the Pokédex.',
-            'Snorlax loves naps.',
-            'Jigglypuff’s song can make Pokémon sleepy.',
-            'Gyarados goes from tiny to mighty.',
-            'Psyduck’s headaches boost its powers.',
-            'Dragonite helps rescue lost travelers.',
-            'Metapod’s shell is super tough.',
+            'Eevee can grow into many forms.',
+            'Bulbasaur is #1 in the Pokédex.',
+            'Snorlax loves long naps.',
+            'Jigglypuff’s song makes others sleepy.',
+            'Gyarados grows from a tiny fish.',
+            'Metapod has a hard shell.',
             'Onix is lighter than it looks.',
             'Abra sleeps most of the day.',
-            'Ditto can copy lots of Pokémon.',
-            'Lapras is known for being gentle.',
-            'Poliwag’s swirl is fun to spot!'
+            'Ditto can copy other Pokémon.',
+            'Poliwag has a swirl on its belly.',
+            'Water puts out Fire in battles.',
+            'Electric moves do not work on Ground types.',
+            'Try using a move that raises your stats.',
+            'If a move misses, try one with better accuracy.',
+            'Some Pokémon evolve by trading.'
         ],
         []
     );
@@ -639,14 +667,26 @@ function PokemonListData() {
                             <label className={classes.mainSearchLabel} htmlFor='pokemon-search'>
                                 Search Pokemon
                             </label>
-                            <input
-                                id='pokemon-search'
-                                className={classes.mainSearchInput}
-                                placeholder='Type a name...'
-                                value={searchTerm}
-                                onChange={(event) => setSearchTerm(event.target.value)}
-                                aria-label='Search Pokemon'
-                            />
+                            <div className={classes.mainSearchInputRow}>
+                                <input
+                                    id='pokemon-search'
+                                    className={classes.mainSearchInput}
+                                    placeholder='Type a name...'
+                                    value={searchTerm}
+                                    onChange={(event) => setSearchTerm(event.target.value)}
+                                    aria-label='Search Pokemon'
+                                />
+                                {searchTerm ? (
+                                    <button
+                                        type='button'
+                                        className={classes.mainSearchClear}
+                                        onClick={() => setSearchTerm('')}
+                                        aria-label='Clear search'
+                                    >
+                                        Clear
+                                    </button>
+                                ) : null}
+                            </div>
                         </div>
                         <button
                             type='button'
@@ -684,9 +724,8 @@ function PokemonListData() {
                                         <button
                                             className={classes.pokeFeaturedNav}
                                             type='button'
-                                            onClick={() => {
-                                                setFeaturedIndex(getRandomFeaturedIndex());
-                                            }}
+                                            onClick={handleFeaturedPrev}
+                                            disabled={!canGoPrev}
                                         >
                                             Prev
                                         </button>
@@ -714,11 +753,11 @@ function PokemonListData() {
                                                                     handlePlayCry(pokemonMedia[pokemon.name]?.cry);
                                                                     return;
                                                                 }
-                                                                const targetIndex = filteredPokemon.findIndex(
+                                                                const targetIndex = featuredPool.findIndex(
                                                                     (entry) => entry.name === pokemon.name
                                                                 );
                                                                 if (targetIndex >= 0) {
-                                                                    setFeaturedIndex(targetIndex);
+                                                                    pushFeaturedIndex(targetIndex);
                                                                 }
                                                             }}
                                                             aria-label={`View ${pokemon.name}`}
@@ -741,9 +780,8 @@ function PokemonListData() {
                                         <button
                                             className={classes.pokeFeaturedNav}
                                             type='button'
-                                            onClick={() => {
-                                                setFeaturedIndex(getRandomFeaturedIndex());
-                                            }}
+                                            onClick={handleFeaturedNext}
+                                            disabled={!canGoNext}
                                         >
                                             Next
                                         </button>

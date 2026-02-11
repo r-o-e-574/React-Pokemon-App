@@ -59,6 +59,17 @@ function PokemonViewData() {
     }, [pokemonName]);
 
     useEffect(() => {
+        const previousOverflow = document.body.style.overflow;
+        const previousHeight = document.body.style.height;
+        document.body.style.overflow = 'hidden';
+        document.body.style.height = '100%';
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            document.body.style.height = previousHeight;
+        };
+    }, []);
+
+    useEffect(() => {
         const url = 'https://pokeapi.co/api/v2/pokemon/' + pokemonName
         fetchUrl<Pokemon>(url, (data) => {
             setPokemon(data);

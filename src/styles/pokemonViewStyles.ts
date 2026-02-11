@@ -9,7 +9,8 @@ export const usePokemonViewStyles = createUseStyles({
     padding: '32px 16px',
     background:
       'linear-gradient(rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.08)), radial-gradient(circle at top, var(--theme-bg-1) 0%, var(--theme-bg-2) 50%, var(--theme-bg-3) 100%)',
-    position: 'relative'
+    position: 'relative',
+    height: '100vh',
   },
   pokeBackgroundTiles: {
     position: 'absolute',
@@ -30,17 +31,35 @@ export const usePokemonViewStyles = createUseStyles({
     flexDirection: 'column',
     gap: 16,
     color: 'var(--play-ink)',
-    width: 'min(1100px, 100%)'
+    width: '100%',
+    height: 'calc(100vh - 42px)',
+    minHeight: 0,
+    overflow: 'hidden'
+  },
+  pokeTopRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    minHeight: 40
+  },
+  pokeScrollArea: {
+    flex: 1,
+    minHeight: 0,
+    overflowY: 'auto',
+    paddingBottom: 12,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 16
   },
   pokeHeroCard: {
     display: 'grid',
-    gridTemplateColumns: 'minmax(260px, 320px) 1fr',
-    gap: 20,
+    gridTemplateColumns: 'minmax(220px, 280px) 1fr',
+    gap: 16,
     alignItems: 'center',
     background: 'var(--theme-card-bg)',
     borderRadius: 18,
     border: '1px solid var(--theme-border)',
-    padding: 20,
+    padding: 16,
     boxShadow: '0 10px 24px rgba(15, 23, 42, 0.18)',
     position: 'relative'
   },
@@ -54,6 +73,7 @@ export const usePokemonViewStyles = createUseStyles({
     textTransform: 'capitalize',
     fontSize: 30,
     textAlign: 'center',
+    width: '100%',
     color: '#ffc94a',
     textShadow:
       '2.5px 2.5px 0 #2b6fdd, -2px -2px 0 #2b6fdd, 2.5px -2.5px 0 #2b6fdd, -2.5px 2.5px 0 #2b6fdd',
@@ -121,22 +141,70 @@ export const usePokemonViewStyles = createUseStyles({
     alignSelf: 'flex-start'
   },
   pokeBackLink: {
-    position: 'fixed',
-    top: 16,
-    left: 16,
+    position: 'relative',
+    width: 40,
+    height: 40,
+    borderRadius: 999,
     display: 'inline-flex',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'center',
     textDecoration: 'none',
     color: '#ffc94a',
     fontFamily: 'Pokemon',
-    fontSize: 20,
-    letterSpacing: 1,
-    textShadow: '2px 2px 0 #2b6fdd',
-    zIndex: 5
+    fontSize: 18,
+    letterSpacing: 0.5,
+    textShadow: '1.5px 1.5px 0 #2b6fdd',
+    background: 'var(--theme-card-bg)',
+    border: '1px solid var(--theme-border)',
+    boxShadow: '0 8px 16px rgba(15, 23, 42, 0.16)',
+    zIndex: 5,
+    transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+    '&:hover': {
+      transform: 'translateY(-1px)',
+      boxShadow: '0 12px 20px rgba(15, 23, 42, 0.2)'
+    }
+  },
+  '@media (max-width: 900px)': {
+    pokeBackLink: {
+      width: 36,
+      height: 36
+    },
+    pokeBackArrow: {
+      fontSize: 18
+    },
+    pokeBackground: {
+      padding: '20px 12px'
+    },
+    pokeDetails: {
+      height: 'calc(100vh - 40px)',
+      gap: 12
+    },
+    pokeHeroCard: {
+      gridTemplateColumns: '1fr',
+      textAlign: 'center'
+    },
+    pokeHeroTopRight: {
+      position: 'static',
+      marginLeft: 'auto'
+    },
+    pokeHeroActions: {
+      justifyContent: 'center'
+    },
+    pokeMetaRow: {
+      justifyContent: 'center'
+    }
+  },
+  '@media (max-height: 820px)': {
+    pokeHeroCard: {
+      padding: 16,
+      gap: 16
+    },
+    pokeName: {
+      fontSize: 26
+    }
   },
   pokeBackArrow: {
-    fontSize: 22,
+    fontSize: 20,
     lineHeight: 1
   },
   pokeSpeechOverlay: {
@@ -222,8 +290,8 @@ export const usePokemonViewStyles = createUseStyles({
     textTransform: 'capitalize'
   },
   pokeImage: {
-    width: 260,
-    height: 260,
+    width: 220,
+    height: 220,
     objectFit: 'contain',
     justifySelf: 'center'
   },
@@ -251,23 +319,70 @@ export const usePokemonViewStyles = createUseStyles({
     flexWrap: 'wrap',
     justifyContent: 'center'
   },
-  pokeMetaRow: {
+  pokeHeroInfoGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    gap: 12,
+    width: '100%',
+    paddingTop: 6
+  },
+  pokeHeroInfoBlock: {
     display: 'flex',
-    flexWrap: 'wrap',
-    gap: '8px 12px',
-    fontSize: 14,
+    flexDirection: 'column',
+    gap: 6
+  },
+  pokeHeroInfoLabel: {
+    margin: 0,
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
     color: 'var(--theme-ink-strong)'
   },
-  pokeMeta: {
-    background: 'rgba(255, 255, 255, 0.6)',
-    border: '1px solid var(--theme-border)',
-    borderRadius: 999,
-    padding: '4px 10px'
+  pokeHeroInfoList: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 6
   },
-  pokeInfoGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+  pokeHeroInfoChip: {
+    background:
+      'linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.6))',
+    border: '1px solid rgba(255, 255, 255, 0.8)',
+    borderRadius: 999,
+    padding: '4px 10px',
+    fontSize: 12,
+    textTransform: 'capitalize',
+    color: 'var(--theme-ink-strong)',
+    boxShadow: '0 6px 10px rgba(15, 23, 42, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.6)'
+  },
+  pokeHeroInfoChipLabel: {
+    fontWeight: 700
+  },
+  pokeInfoRows: {
+    display: 'flex',
+    flexDirection: 'column',
     gap: 16
+  },
+  pokeInfoRowPrimary: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 16,
+    alignItems: 'stretch'
+  },
+  pokeInfoRowSecondary: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 16,
+    alignItems: 'stretch',
+    marginBottom: 8
+  },
+  pokeCardCompact: {
+    padding: 14,
+    flex: '1 1 0'
+  },
+  pokeCardStretch: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: '1 1 0'
   },
   pokeSectionCard: {
     background: 'var(--theme-card-bg)',
@@ -353,7 +468,8 @@ export const usePokemonViewStyles = createUseStyles({
     letterSpacing: 1
   },
   pokeWideCard: {
-    gridColumn: '1 / -1'
+    gridColumn: '1 / -1',
+    marginTop: 4
   },
   pokeEvolutionRow: {
     display: 'flex',
@@ -457,6 +573,14 @@ export const usePokemonViewStyles = createUseStyles({
     letterSpacing: 0.6,
     textShadow: '1px 1px 0 rgba(255, 255, 255, 0.7)'
   },
+  '@media (max-width: 820px)': {
+    pokeInfoRowPrimary: {
+      flexDirection: 'column'
+    },
+    pokeInfoRowSecondary: {
+      flexDirection: 'column'
+    }
+  },
   '@media (max-width: 720px)': {
     pokeHeroCard: {
       gridTemplateColumns: '1fr',
@@ -464,9 +588,6 @@ export const usePokemonViewStyles = createUseStyles({
     },
     pokeFact: {
       textAlign: 'center'
-    },
-    pokeInfoGrid: {
-      gridTemplateColumns: '1fr'
     }
   }
 });
