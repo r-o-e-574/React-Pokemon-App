@@ -5,9 +5,9 @@ import { getTypeTheme } from '../styles/typeTheme';
 import { usePokemonViewStyles } from '../styles/pokemonViewStyles';
 import PlayButton from './PlayButton';
 import SpeechOverlay from './SpeechOverlay';
-import professorImage from '../../images/VSScientist_SV.png';
-import labImage from '../../images/lab.jpeg';
-import type { Pokemon } from '../../types/pokemon';
+import professorImage from '../images/VSScientist_SV.png';
+import labImage from '../images/lab.jpeg';
+import type { Pokemon } from '../types/pokemon';
 
 type PokemonCardProps = {
     pokemon: Pokemon;

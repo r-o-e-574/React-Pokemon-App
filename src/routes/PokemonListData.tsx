@@ -1,41 +1,40 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import PokemonList from '../components/PokemonList';
 import pokeball from '../images/pokeball.png';
-import bugIcon from '../../images/type-icons/bug.png';
-import darkIcon from '../../images/type-icons/dark.png';
-import dragonIcon from '../../images/type-icons/dragon.png';
-import electricIcon from '../../images/type-icons/electric.png';
-import fairyIcon from '../../images/type-icons/fairy.png';
-import fightingIcon from '../../images/type-icons/fighting.png';
-import fireIcon from '../../images/type-icons/fire.png';
-import flyingIcon from '../../images/type-icons/flying.png';
-import ghostIcon from '../../images/type-icons/ghost.png';
-import grassIcon from '../../images/type-icons/grass.png';
-import groundIcon from '../../images/type-icons/ground.png';
-import iceIcon from '../../images/type-icons/ice.png';
-import normalIcon from '../../images/type-icons/normal.png';
-import poisonIcon from '../../images/type-icons/poison.png';
-import psychicIcon from '../../images/type-icons/psychic.png';
-import rockIcon from '../../images/type-icons/rock.png';
-import steelIcon from '../../images/type-icons/steel.png';
-import waterIcon from '../../images/type-icons/water.png';
-import Page from '../Page';
-import type { NamedApiResource, TypeResponse } from '../../types/pokeapi';
+import bugIcon from '../images/type-icons/bug.png';
+import darkIcon from '../images/type-icons/dark.png';
+import dragonIcon from '../images/type-icons/dragon.png';
+import electricIcon from '../images/type-icons/electric.png';
+import fairyIcon from '../images/type-icons/fairy.png';
+import fightingIcon from '../images/type-icons/fighting.png';
+import fireIcon from '../images/type-icons/fire.png';
+import flyingIcon from '../images/type-icons/flying.png';
+import ghostIcon from '../images/type-icons/ghost.png';
+import grassIcon from '../images/type-icons/grass.png';
+import groundIcon from '../images/type-icons/ground.png';
+import iceIcon from '../images/type-icons/ice.png';
+import normalIcon from '../images/type-icons/normal.png';
+import poisonIcon from '../images/type-icons/poison.png';
+import psychicIcon from '../images/type-icons/psychic.png';
+import rockIcon from '../images/type-icons/rock.png';
+import steelIcon from '../images/type-icons/steel.png';
+import waterIcon from '../images/type-icons/water.png';
+import type { NamedApiResource, TypeResponse } from '../types/pokeapi';
 import { Link } from 'react-router-dom';
 import { useListStyles } from '../styles/listStyles';
 import { getTypeTheme } from '../styles/typeTheme';
 import { useDispatch, useSelector } from 'react-redux';
-import type { RootState, AppDispatch } from '../../redux';
-import { mergePokemonMedia, type PokemonMedia } from '../../redux/pokemonMediaSlice';
+import type { RootState, AppDispatch } from '../redux';
+import { mergePokemonMedia, type PokemonMedia } from '../redux/pokemonMediaSlice';
 import {
     useGetPokemonListQuery,
     useGetTypeListQuery,
     useLazyGetByUrlQuery
-} from '../../redux/pokeApi';
+} from '../redux/pokeApi';
 import { useVoices } from 'react-text-to-speech';
 import SpeechOverlay from '../components/SpeechOverlay';
-import professorImage from '../../images/VSScientist_SV.png';
-import labImage from '../../images/lab.jpeg';
+import professorImage from '../images/VSScientist_SV.png';
+import labImage from '../images/lab.jpeg';
 
 const SPECIES_URL_PREFIX = 'https://pokeapi.co/api/v2/pokemon-species/';
 const POKEMON_URL_PREFIX = 'https://pokeapi.co/api/v2/pokemon/';
@@ -705,39 +704,38 @@ function PokemonListData() {
     const tipText = greetingTips[tipIndex];
 
     return (
-        <Page>
-            <div
-                className={classes.mainPageFill}
-                style={{
-                    ['--theme-bg-1' as any]: theme.bg1,
-                    ['--theme-bg-2' as any]: theme.bg2,
-                    ['--theme-bg-3' as any]: theme.bg3,
-                    ['--theme-accent' as any]: theme.accent,
-                    ['--theme-accent-ink' as any]: accentInk,
-                    ['--theme-nav' as any]:
-                        selectedTypes.length === 0 ? '#7aa7ff' : theme.accent,
-                    ['--theme-nav-ink' as any]:
-                        selectedTypes.length === 0 ? '#1f2a44' : accentInk,
-                    ['--play-bg' as any]: isLightColor(theme.bg1)
-                        ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.7))'
-                        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.08))',
-                    ['--play-bg-hover' as any]: isLightColor(theme.bg1)
-                        ? 'linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.8))'
-                        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.14))',
-                    ['--play-border' as any]: isLightColor(theme.bg1)
-                        ? 'rgba(15, 23, 42, 0.18)'
-                        : 'rgba(255, 255, 255, 0.3)',
-                    ['--play-border-hover' as any]: isLightColor(theme.bg1)
-                        ? 'rgba(15, 23, 42, 0.28)'
-                        : 'rgba(255, 255, 255, 0.45)',
-                    ['--play-ink' as any]: inkStrong,
-                    ['--theme-card-bg' as any]: theme.cardBg,
-                    ['--theme-border' as any]: theme.border,
-                    ['--grid-line' as any]: gridLine,
-                    ['--theme-ink-strong' as any]: inkStrong,
-                    ['--theme-ink-muted' as any]: inkMuted
-                }}
-            >
+        <div
+            className={classes.mainPageFill}
+            style={{
+                ['--theme-bg-1' as any]: theme.bg1,
+                ['--theme-bg-2' as any]: theme.bg2,
+                ['--theme-bg-3' as any]: theme.bg3,
+                ['--theme-accent' as any]: theme.accent,
+                ['--theme-accent-ink' as any]: accentInk,
+                ['--theme-nav' as any]:
+                    selectedTypes.length === 0 ? '#7aa7ff' : theme.accent,
+                ['--theme-nav-ink' as any]:
+                    selectedTypes.length === 0 ? '#1f2a44' : accentInk,
+                ['--play-bg' as any]: isLightColor(theme.bg1)
+                    ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.7))'
+                    : 'linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.08))',
+                ['--play-bg-hover' as any]: isLightColor(theme.bg1)
+                    ? 'linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.8))'
+                    : 'linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.14))',
+                ['--play-border' as any]: isLightColor(theme.bg1)
+                    ? 'rgba(15, 23, 42, 0.18)'
+                    : 'rgba(255, 255, 255, 0.3)',
+                ['--play-border-hover' as any]: isLightColor(theme.bg1)
+                    ? 'rgba(15, 23, 42, 0.28)'
+                    : 'rgba(255, 255, 255, 0.45)',
+                ['--play-ink' as any]: inkStrong,
+                ['--theme-card-bg' as any]: theme.cardBg,
+                ['--theme-border' as any]: theme.border,
+                ['--grid-line' as any]: gridLine,
+                ['--theme-ink-strong' as any]: inkStrong,
+                ['--theme-ink-muted' as any]: inkMuted
+            }}
+        >
             <div className={classes.mainPageTiles} />
             {panelOpen ? (
                 <div
@@ -1033,8 +1031,7 @@ function PokemonListData() {
                     </div>
                 </section>
             </div>
-            </div>
-        </Page>
+        </div>
     );
 };
 

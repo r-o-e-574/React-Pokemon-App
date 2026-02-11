@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PokemonCard from '../components/PokemonCard';
-import { useFetchUrl } from '../../hooks';
-import Page from '../Page';
-import type { Pokemon } from '../../types/pokemon';
+import { useFetchUrl } from '../hooks';
+import type { Pokemon } from '../types/pokemon';
 import type {
     EvolutionChainResponse,
     EvolutionDetail,
@@ -11,7 +10,7 @@ import type {
     PokemonSpeciesResponse,
     TypeDamageRelations,
     TypeResponse
-} from '../../types/pokeapi';
+} from '../types/pokeapi';
 import { getTypeTheme } from '../styles/typeTheme';
 
 const emptyPokemon: Pokemon = { name: '', abilities: [], types: [], sprites: {}, cries: {} };
@@ -279,33 +278,31 @@ function PokemonViewData() {
     };
 
     return (
-        <Page>
-            <div
-                style={{
-                    ['--theme-bg-1' as any]: theme.bg1,
-                    ['--theme-bg-2' as any]: theme.bg2,
-                    ['--theme-bg-3' as any]: theme.bg3,
-                    ['--theme-accent' as any]: theme.accent,
-                    ['--theme-card-bg' as any]: ensureCardOpacity(theme.cardBg, 0.45),
-                    ['--theme-border' as any]: theme.border,
-                    ['--grid-line' as any]: getGridLineColor(theme.bg1),
-                    ['--theme-ink-strong' as any]: inkStrong,
-                    ['--theme-ink-muted' as any]: inkMuted
-                }}
-            >
-                <PokemonCard
-                    pokemon={pokemon}
-                    speciesText={speciesText}
-                    genus={genus}
-                    abilityEffects={abilityEffects}
-                    speciesMeta={speciesMeta}
-                    evolutionStages={evolutionStages}
-                    evolutionSprites={evolutionSprites}
-                    varietySprites={varietySprites}
-                    typeMatchups={typeMatchups}
-                />
-            </div>
-        </Page>
+        <div
+            style={{
+                ['--theme-bg-1' as any]: theme.bg1,
+                ['--theme-bg-2' as any]: theme.bg2,
+                ['--theme-bg-3' as any]: theme.bg3,
+                ['--theme-accent' as any]: theme.accent,
+                ['--theme-card-bg' as any]: ensureCardOpacity(theme.cardBg, 0.45),
+                ['--theme-border' as any]: theme.border,
+                ['--grid-line' as any]: getGridLineColor(theme.bg1),
+                ['--theme-ink-strong' as any]: inkStrong,
+                ['--theme-ink-muted' as any]: inkMuted
+            }}
+        >
+            <PokemonCard
+                pokemon={pokemon}
+                speciesText={speciesText}
+                genus={genus}
+                abilityEffects={abilityEffects}
+                speciesMeta={speciesMeta}
+                evolutionStages={evolutionStages}
+                evolutionSprites={evolutionSprites}
+                varietySprites={varietySprites}
+                typeMatchups={typeMatchups}
+            />
+        </div>
     );
 };
 
