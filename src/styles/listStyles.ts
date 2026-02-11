@@ -1,5 +1,6 @@
 import { createUseStyles } from 'react-jss';
 import { glassPanel, pokemonText, uiLabel } from './shared';
+import naturePokemon from '../images/nature_pokemon.jpg';
 
 export const useListStyles = createUseStyles({
   mainPage: {
@@ -384,17 +385,30 @@ export const useListStyles = createUseStyles({
     fontSize: 42,
     lineHeight: 1.05,
     fontFamily: 'Pokemon',
-    color: '#ffe6b0',
     letterSpacing: 0.6,
-    textShadow: '0 6px 18px rgba(10, 12, 28, 0.35)',
+    ...pokemonText,
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '10px 18px',
+    padding: '12px 22px',
     borderRadius: 999,
     border: '1px solid rgba(255, 230, 176, 0.45)',
-    background: 'rgba(15, 20, 40, 0.35)',
-    boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 10px 18px rgba(10, 12, 28, 0.32)'
+    background: `linear-gradient(135deg, rgba(255, 214, 138, 0.28), rgba(255, 214, 138, 0.14)), url(${naturePokemon})`,
+    backgroundSize: '155% 155%',
+    backgroundPosition: 'center',
+    boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 12px 20px rgba(10, 12, 28, 0.35)'
+  },
+  greetingTimeMorning: {
+    backgroundImage: `linear-gradient(135deg, rgba(255, 152, 72, 0.55), rgba(255, 86, 88, 0.35)), url(${naturePokemon})`
+  },
+  greetingTimeDay: {
+    backgroundImage: `linear-gradient(135deg, rgba(255, 214, 138, 0.35), rgba(255, 214, 138, 0.12)), url(${naturePokemon})`
+  },
+  greetingTimeDusk: {
+    backgroundImage: `linear-gradient(135deg, rgba(255, 118, 64, 0.65), rgba(124, 70, 190, 0.5)), url(${naturePokemon})`
+  },
+  greetingTimeNight: {
+    backgroundImage: `linear-gradient(135deg, rgba(52, 40, 130, 0.7), rgba(20, 14, 54, 0.55)), url(${naturePokemon})`
   },
   greetingMeta: {
     display: 'flex',

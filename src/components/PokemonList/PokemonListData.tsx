@@ -481,6 +481,30 @@ function PokemonListData() {
         if (hour < 18) return 'Good afternoon';
         return 'Good evening';
     }, [now]);
+    const previewTimeCycle = true;
+    const [timeCycleIndex, setTimeCycleIndex] = useState(0);
+    useEffect(() => {
+        if (!previewTimeCycle) return;
+        const timer = window.setInterval(() => {
+            setTimeCycleIndex((prev) => (prev + 1) % 4);
+        }, 3500);
+        return () => window.clearInterval(timer);
+    }, [previewTimeCycle]);
+    const greetingTimeClass = useMemo(() => {
+        if (previewTimeCycle) {
+            return [
+                classes.greetingTimeMorning,
+                classes.greetingTimeDay,
+                classes.greetingTimeDusk,
+                classes.greetingTimeNight
+            ][timeCycleIndex];
+        }
+        const hour = now.getHours();
+        if (hour >= 5 && hour < 11) return classes.greetingTimeMorning;
+        if (hour >= 11 && hour < 17) return classes.greetingTimeDay;
+        if (hour >= 17 && hour < 20) return classes.greetingTimeDusk;
+        return classes.greetingTimeNight;
+    }, [now, classes, previewTimeCycle, timeCycleIndex]);
     const greetingTips = useMemo(
         () => [
             'Pikachu wasn’t the first mascot—Clefairy was!',
@@ -640,7 +664,7 @@ function PokemonListData() {
                             <div className={classes.greetingTop}>
                                 <p className={classes.greetingHello}>{greeting}, Trainer.</p>
                                 <p className={classes.greetingKicker}>Local time</p>
-                                <p className={classes.greetingTime}>{timeText}</p>
+                                <p className={`${classes.greetingTime} ${greetingTimeClass}`}>{timeText}</p>
                             </div>
                             <div className={classes.greetingMeta}>
                                 <span className={classes.greetingDate}>{dateText}</span>

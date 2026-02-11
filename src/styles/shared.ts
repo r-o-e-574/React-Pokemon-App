@@ -1,7 +1,7 @@
 export const pokemonText = {
   color: '#ffc94a',
   textShadow:
-    '2.5px 2.5px 0 #2b6fdd, -2px -2px 0 #2b6fdd, 2.5px -2.5px 0 #2b6fdd, -2.5px 2.5px 0 #2b6fdd'
+    '1.5px 1.5px 0 #2b6fdd, -1.5px -1.5px 0 #2b6fdd, 1.5px -1.5px 0 #2b6fdd, -1.5px 1.5px 0 #2b6fdd'
 };
 
 export const glassPanel = {
