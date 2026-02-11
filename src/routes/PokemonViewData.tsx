@@ -5,8 +5,8 @@ import { useFetchUrl } from '../hooks';
 import type { Pokemon } from '../types/pokemon';
 import type {
     EvolutionChainResponse,
+    EvolutionChainNode,
     EvolutionDetail,
-    PokemonAbilityResponse,
     PokemonSpeciesResponse,
     TypeDamageRelations,
     TypeResponse
@@ -20,7 +20,6 @@ function PokemonViewData() {
     const [pokemon, setPokemon] = useState<Pokemon>(emptyPokemon);
     const [speciesText, setSpeciesText] = useState<string>('');
     const [genus, setGenus] = useState<string>('');
-    const [abilityEffects, setAbilityEffects] = useState<Record<string, string>>({});
     const [speciesMeta, setSpeciesMeta] = useState<{
         eggGroups: string[];
         habitat?: string;
@@ -52,6 +51,17 @@ function PokemonViewData() {
     const inkStrong = isLightColor(theme.bg1) ? '#1f2937' : '#f8fafc';
     const inkMuted = isLightColor(theme.bg1) ? 'rgba(31, 41, 55, 0.7)' : 'rgba(248, 250, 252, 0.7)';
     const fetchUrl = useFetchUrl();
+    const themeVars: React.CSSProperties & Record<string, string> = {
+        '--theme-bg-1': theme.bg1,
+        '--theme-bg-2': theme.bg2,
+        '--theme-bg-3': theme.bg3,
+        '--theme-accent': theme.accent,
+        '--theme-card-bg': theme.cardBg,
+        '--theme-border': theme.border,
+        '--grid-line': getGridLineColor(theme.bg1),
+        '--theme-ink-strong': inkStrong,
+        '--theme-ink-muted': inkMuted
+    };
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -145,27 +155,6 @@ function PokemonViewData() {
                 });
             }
 
-            const abilityUrls = data.abilities.map((item) => item.ability.url);
-            Promise.all(
-                abilityUrls.map(async (abilityUrl) => {
-                    const res = await fetch(abilityUrl);
-                    const abilityData = (await res.json()) as PokemonAbilityResponse;
-                    const englishEffect = abilityData.effect_entries.find(
-                        (entry) => entry.language.name === 'en'
-                    );
-                    return {
-                        name: abilityData.name,
-                        effect: englishEffect?.short_effect ?? englishEffect?.effect ?? ''
-                    };
-                })
-            ).then((effects) => {
-                const nextEffects = effects.reduce<Record<string, string>>((acc, item) => {
-                    acc[item.name] = item.effect;
-                    return acc;
-                }, {});
-                setAbilityEffects(nextEffects);
-            });
-
             if (data.types?.length) {
                 Promise.all(
                     data.types.map(async ({ type }) => {
@@ -186,7 +175,7 @@ function PokemonViewData() {
         Promise.all(
             names.map(async (name) => {
                 const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-                const data = await res.json();
+                const data = (await res.json()) as PokemonSpriteResponse;
                 return { name, sprite: resolveSprite(data) };
             })
         ).then((items) => {
@@ -222,7 +211,7 @@ function PokemonViewData() {
         Promise.all(
             names.map(async (name) => {
                 const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-                const data = await res.json();
+                const data = (await res.json()) as PokemonSpriteResponse;
                 return { name, sprite: resolveSprite(data) };
             })
         ).then((items) => {
@@ -234,15 +223,15 @@ function PokemonViewData() {
         });
     };
 
-    const buildEvolutionStages = (chain: any) => {
+    const buildEvolutionStages = (chain: EvolutionChainNode) => {
         const stages: Record<number, EvolutionEntry[]> = {};
-        const walk = (node: any, depth: number) => {
+        const walk = (node: EvolutionChainNode, depth: number) => {
             if (!stages[depth]) stages[depth] = [];
             stages[depth].push({
                 name: node.species.name,
                 details: node.evolution_details?.[0] ?? null
             });
-            node.evolves_to?.forEach((child: any) => walk(child, depth + 1));
+            node.evolves_to?.forEach((child) => walk(child, depth + 1));
         };
         walk(chain, 0);
         return Object.keys(stages)
@@ -278,24 +267,11 @@ function PokemonViewData() {
     };
 
     return (
-        <div
-            style={{
-                ['--theme-bg-1' as any]: theme.bg1,
-                ['--theme-bg-2' as any]: theme.bg2,
-                ['--theme-bg-3' as any]: theme.bg3,
-                ['--theme-accent' as any]: theme.accent,
-                ['--theme-card-bg' as any]: theme.cardBg,
-                ['--theme-border' as any]: theme.border,
-                ['--grid-line' as any]: getGridLineColor(theme.bg1),
-                ['--theme-ink-strong' as any]: inkStrong,
-                ['--theme-ink-muted' as any]: inkMuted
-            }}
-        >
+        <div style={themeVars}>
             <PokemonCard
                 pokemon={pokemon}
                 speciesText={speciesText}
                 genus={genus}
-                abilityEffects={abilityEffects}
                 speciesMeta={speciesMeta}
                 evolutionStages={evolutionStages}
                 evolutionSprites={evolutionSprites}
@@ -310,7 +286,19 @@ export default PokemonViewData;
 
 type EvolutionEntry = { name: string; details: EvolutionDetail | null };
 
-const resolveSprite = (data: any) => {
+type PokemonSpriteResponse = {
+    id?: number;
+    sprites?: {
+        front_default?: string | null;
+        front_shiny?: string | null;
+        other?: {
+            ['official-artwork']?: { front_default?: string | null; front_shiny?: string | null };
+            home?: { front_default?: string | null };
+        };
+    };
+};
+
+const resolveSprite = (data: PokemonSpriteResponse) => {
     return (
         data?.sprites?.front_default ??
         data?.sprites?.other?.['official-artwork']?.front_default ??

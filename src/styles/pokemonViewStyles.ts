@@ -289,6 +289,22 @@ export const usePokemonViewStyles = createUseStyles({
     objectFit: 'contain',
     justifySelf: 'center'
   },
+  pokeImageFallback: {
+    width: 220,
+    height: 220,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    padding: 16,
+    borderRadius: 24,
+    border: '1px dashed rgba(31, 41, 55, 0.3)',
+    background: 'rgba(255, 255, 255, 0.55)',
+    color: 'var(--theme-ink-strong)',
+    fontFamily: 'var(--ui-font)',
+    fontSize: 13,
+    lineHeight: 1.4
+  },
   pokeHeroText: {
     display: 'flex',
     flexDirection: 'column',
@@ -520,6 +536,21 @@ export const usePokemonViewStyles = createUseStyles({
     height: 52,
     objectFit: 'contain'
   },
+  pokeEvolutionFallback: {
+    width: 52,
+    height: 52,
+    borderRadius: 12,
+    border: '1px dashed rgba(31, 41, 55, 0.28)',
+    background: 'rgba(255, 255, 255, 0.65)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'var(--theme-ink-strong)',
+    fontFamily: 'var(--ui-font)',
+    fontSize: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 0.6
+  },
   pokeEvolutionName: {
     margin: 0,
     fontWeight: 700,
@@ -568,6 +599,21 @@ export const usePokemonViewStyles = createUseStyles({
     width: 40,
     height: 40,
     objectFit: 'contain'
+  },
+  pokeVarietyFallback: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    border: '1px dashed rgba(31, 41, 55, 0.28)',
+    background: 'rgba(255, 255, 255, 0.75)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'var(--theme-ink-strong)',
+    fontFamily: 'var(--ui-font)',
+    fontSize: 9,
+    textTransform: 'uppercase',
+    letterSpacing: 0.6
   },
   pokeVarietyName: {
     textTransform: 'capitalize',

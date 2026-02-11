@@ -50,9 +50,13 @@ export type EvolutionDetail = {
   trigger: NamedApiResource;
   min_level: number | null;
   item: NamedApiResource | null;
+  held_item?: NamedApiResource | null;
   min_happiness: number | null;
   time_of_day: string;
   known_move: NamedApiResource | null;
+  location?: NamedApiResource | null;
+  needs_overworld_rain?: boolean;
+  relative_physical_stats?: number | null;
   min_affection: number | null;
   min_beauty: number | null;
 };
