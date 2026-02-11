@@ -32,6 +32,10 @@ import {
     useGetTypeListQuery,
     useLazyGetByUrlQuery
 } from '../../redux/pokeApi';
+import { useVoices } from 'react-text-to-speech';
+import SpeechOverlay from '../ui/SpeechOverlay';
+import professorImage from '../../images/VSScientist_SV.png';
+import labImage from '../../images/lab.jpeg';
 
 const SPECIES_URL_PREFIX = 'https://pokeapi.co/api/v2/pokemon-species/';
 const POKEMON_URL_PREFIX = 'https://pokeapi.co/api/v2/pokemon/';
@@ -145,6 +149,17 @@ function PokemonListData() {
         index: -1
     });
     const [panelOpen, setPanelOpen] = useState(false);
+    const [quizOpen, setQuizOpen] = useState(false);
+    const [quizTarget, setQuizTarget] = useState<PokemonSummary | null>(null);
+    const [quizOptions, setQuizOptions] = useState<PokemonSummary[]>([]);
+    const [quizSelected, setQuizSelected] = useState<string | null>(null);
+    const [quizResult, setQuizResult] = useState<'correct' | 'wrong' | null>(null);
+    const [quizAttempts, setQuizAttempts] = useState(0);
+    const [quizWrongOptions, setQuizWrongOptions] = useState<Set<string>>(new Set());
+    const lastQuizLineRef = React.useRef<string | null>(null);
+    const quizCloseTimeoutRef = React.useRef<number | null>(null);
+    const [quizSpeechLabel, setQuizSpeechLabel] = useState<string | null>(null);
+    const { voices } = useVoices();
     const [searchTerm, setSearchTerm] = useState(() => {
         const stored = localStorage.getItem('pokeFilters');
         if (!stored) {
@@ -309,6 +324,139 @@ function PokemonListData() {
             return { stack: updated, index: updated.length - 1 };
         });
     }, [featuredPool.length, getRandomFeaturedIndex]);
+
+    const getPokemonSprite = useCallback((pokemon: PokemonSummary | null | undefined) => {
+        if (!pokemon) return '';
+        return (
+            pokemonMedia[pokemon.name]?.sprite ??
+            `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`
+        );
+    }, [pokemonMedia]);
+
+    const buildQuiz = useCallback(() => {
+        if (!pokemons.length) return;
+        const target = pokemons[Math.floor(Math.random() * pokemons.length)];
+        const options = new Set<PokemonSummary>();
+        options.add(target);
+        while (options.size < 3 && options.size < pokemons.length) {
+            options.add(pokemons[Math.floor(Math.random() * pokemons.length)]);
+        }
+        const optionList = Array.from(options).sort(() => Math.random() - 0.5);
+        setQuizTarget(target);
+        setQuizOptions(optionList);
+        setQuizSelected(null);
+        setQuizResult(null);
+        setQuizAttempts(0);
+        setQuizWrongOptions(new Set());
+    }, [pokemons]);
+
+    const normalizeSpeech = useCallback((value: string) => value.replace(/-/g, ' '), []);
+
+    const pickLine = useCallback((lines: string[]) => {
+        if (!lines.length) return '';
+        let next = lines[Math.floor(Math.random() * lines.length)];
+        if (lines.length > 1 && next === lastQuizLineRef.current) {
+            next = lines[(lines.indexOf(next) + 1) % lines.length];
+        }
+        lastQuizLineRef.current = next;
+        return next;
+    }, []);
+
+    const speakLine = useCallback((line: string) => {
+        if (!line) return;
+        if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+        try {
+            window.speechSynthesis.cancel();
+            setQuizSpeechLabel(line);
+            const utterance = new SpeechSynthesisUtterance(line);
+            utterance.rate = 0.9;
+            utterance.pitch = 0.95;
+            const daniel = voices?.find((voice) => voice.name.toLowerCase() === 'daniel');
+            if (daniel) {
+                utterance.voice = daniel;
+            }
+            window.speechSynthesis.speak(utterance);
+        } catch {
+            // ignore TTS failures
+        }
+    }, [voices]);
+
+    const closeQuiz = useCallback(() => {
+        if (quizCloseTimeoutRef.current) {
+            window.clearTimeout(quizCloseTimeoutRef.current);
+            quizCloseTimeoutRef.current = null;
+        }
+        setQuizOpen(false);
+        setQuizSelected(null);
+        setQuizResult(null);
+        setQuizAttempts(0);
+        setQuizWrongOptions(new Set());
+        setQuizSpeechLabel(null);
+        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+        }
+    }, []);
+
+    const scheduleQuizClose = (delayMs: number) => {
+        if (quizCloseTimeoutRef.current) {
+            window.clearTimeout(quizCloseTimeoutRef.current);
+        }
+        quizCloseTimeoutRef.current = window.setTimeout(() => {
+            closeQuiz();
+        }, delayMs);
+    };
+
+    const openQuiz = useCallback(() => {
+        if (quizCloseTimeoutRef.current) {
+            window.clearTimeout(quizCloseTimeoutRef.current);
+        }
+        buildQuiz();
+        setQuizOpen(true);
+        speakLine('Whos that Pokemon...');
+    }, [buildQuiz, pickLine, speakLine]);
+
+    const handleQuizPick = useCallback((option: PokemonSummary) => {
+        if (!quizTarget || quizResult) return;
+        if (quizWrongOptions.has(option.name)) return;
+        setQuizSelected(option.name);
+        if (option.name === quizTarget.name) {
+            setQuizResult('correct');
+            const winLine = pickLine([
+                `Great job! It's ${normalizeSpeech(quizTarget.name)}.`,
+                `You got it! That's ${normalizeSpeech(quizTarget.name)}.`,
+                `Nice work! It's ${normalizeSpeech(quizTarget.name)}.`
+            ]);
+            speakLine(winLine);
+            scheduleQuizClose(3200);
+        } else {
+            setQuizAttempts((prev) => {
+                const nextAttempts = prev + 1;
+                setQuizWrongOptions((current) => {
+                    const next = new Set(current);
+                    next.add(option.name);
+                    return next;
+                });
+                if (nextAttempts >= 2) {
+                    setQuizResult('wrong');
+                    const loseLine = pickLine([
+                        `Good try! It's ${normalizeSpeech(quizTarget.name)}.`,
+                        `Almost! That was ${normalizeSpeech(quizTarget.name)}.`,
+                        `Nice effort! It's ${normalizeSpeech(quizTarget.name)}.`
+                    ]);
+                    speakLine(loseLine);
+                    scheduleQuizClose(2600);
+                } else {
+                    const tryLine = pickLine([
+                        'Nice try! You get one more guess.',
+                        'Good guess! Try again.',
+                        'Almost! Give it one more shot.'
+                    ]);
+                    speakLine(tryLine);
+                }
+                return nextAttempts;
+            });
+        }
+    }, [normalizeSpeech, pickLine, quizResult, quizTarget, quizWrongOptions, speakLine]);
 
     useEffect(() => {
         if (!typeList?.results) {
@@ -662,6 +810,15 @@ function PokemonListData() {
                         <img className={classes.mainHeaderBall} src={pokeball} alt='pokeball' />
                         <h1 className={classes.mainHeaderTitle}>Poke Library</h1>
                     </div>
+                    <button
+                        type='button'
+                        className={classes.mysteryButton}
+                        onClick={openQuiz}
+                        aria-label='Open mystery Pokemon'
+                        disabled={!pokemons.length}
+                    >
+                        ?
+                    </button>
                     <div className={classes.toolbarRight}>
                         <div className={classes.toolbarSearch}>
                             <label className={classes.mainSearchLabel} htmlFor='pokemon-search'>
@@ -698,6 +855,77 @@ function PokemonListData() {
                         </button>
                     </div>
                 </div>
+                {quizOpen ? (
+                    <div className={classes.mysteryOverlay} role='dialog' aria-modal='true'>
+                        <SpeechOverlay
+                            visible={Boolean(quizSpeechLabel)}
+                            label={quizSpeechLabel ?? ''}
+                            title='Professor Espino'
+                            imageSrc={professorImage}
+                            backgroundSrc={labImage}
+                            classes={classes}
+                        />
+                        <div className={classes.mysteryModal}>
+                            <button
+                                type='button'
+                                className={classes.mysteryClose}
+                                onClick={closeQuiz}
+                                aria-label='Close mystery'
+                            >
+                                ×
+                            </button>
+                            <h2 className={classes.mysteryTitle}>Whos that Pokemon?</h2>
+                            <div className={classes.mysteryPokemon}>
+                                {quizTarget ? (
+                                    <img
+                                        className={`${classes.mysterySprite} ${
+                                            quizResult ? classes.mysteryReveal : ''
+                                        }`}
+                                        src={getPokemonSprite(quizTarget)}
+                                        alt='Mystery Pokemon'
+                                    />
+                                ) : null}
+                            </div>
+                            <div className={classes.mysteryOptions}>
+                                {quizOptions.map((option) => {
+                                    const isSelected = quizSelected === option.name;
+                                    const isCorrect = quizResult === 'correct' && option.name === quizTarget?.name;
+                                    const isWrong = quizWrongOptions.has(option.name);
+                                    const isLocked = quizResult !== null || quizAttempts >= 2;
+                                    return (
+                                        <button
+                                            key={option.name}
+                                            type='button'
+                                            className={`${classes.mysteryOption} ${
+                                                isSelected ? classes.mysteryOptionSelected : ''
+                                            } ${isCorrect ? classes.mysteryOptionCorrect : ''} ${
+                                                isWrong ? classes.mysteryOptionWrong : ''
+                                            }`}
+                                            onClick={() => handleQuizPick(option)}
+                                            disabled={isLocked}
+                                        >
+                                            {option.name}
+                                            {isWrong ? <span className={classes.mysteryOptionMark}>×</span> : null}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            {quizResult === 'correct' ? (
+                                <div className={classes.mysteryConfetti}>
+                                    {Array.from({ length: 12 }, (_, index) => (
+                                        <span
+                                            key={`confetti-${index}`}
+                                            className={classes.mysteryConfettiPiece}
+                                            style={{
+                                                ['--confetti-angle' as any]: `${index * 30}deg`
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            ) : null}
+                        </div>
+                    </div>
+                ) : null}
                 <section className={`${classes.mainColumn} ${classes.mainLayer}`}>
                     <div className={classes.featuredRow}>
                         <div className={`${classes.greetingCard} ${classes.metallicEdge}`}>

@@ -71,6 +71,35 @@ export const useListStyles = createUseStyles({
     width: '100%',
     flex: '0 0 100%'
   },
+  mysteryButton: {
+    border: '1px solid rgba(255, 255, 255, 0.7)',
+    background:
+      'radial-gradient(circle at top, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.55))',
+    color: '#2b6fdd',
+    fontFamily: 'Pokemon',
+    fontSize: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 999,
+    boxShadow:
+      '0 0 12px rgba(255, 210, 79, 0.45), 0 0 24px rgba(123, 92, 255, 0.35)',
+    cursor: 'pointer',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    letterSpacing: 1,
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    '&:hover': {
+      transform: 'translateY(-1px) scale(1.03)',
+      boxShadow:
+        '0 0 16px rgba(255, 210, 79, 0.6), 0 0 30px rgba(123, 92, 255, 0.45)'
+    },
+    '&:disabled': {
+      opacity: 0.5,
+      cursor: 'not-allowed',
+      boxShadow: '0 0 10px rgba(255, 255, 255, 0.2)'
+    }
+  },
   toolbarRight: {
     display: 'flex',
     alignItems: 'center',
@@ -114,6 +143,221 @@ export const useListStyles = createUseStyles({
       transform: 'translateY(0)',
       boxShadow: '0 6px 14px rgba(31, 41, 55, 0.18)'
     }
+  },
+  mysteryOverlay: {
+    position: 'fixed',
+    inset: 0,
+    background: 'rgba(8, 12, 24, 0.65)',
+    zIndex: 40,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24
+  },
+  mysteryModal: {
+    background: 'var(--theme-card-bg)',
+    border: '1px solid var(--theme-border)',
+    borderRadius: 20,
+    padding: '24px 24px 28px',
+    width: 'min(560px, 90vw)',
+    boxShadow: '0 24px 60px rgba(15, 23, 42, 0.45)',
+    position: 'relative',
+    textAlign: 'center'
+  },
+  mysteryClose: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 32,
+    height: 32,
+    borderRadius: 999,
+    border: '1px solid var(--theme-border)',
+    background: 'rgba(255, 255, 255, 0.85)',
+    color: '#1f2a44',
+    cursor: 'pointer',
+    fontSize: 18,
+    lineHeight: 1,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  mysteryTitle: {
+    margin: '0 0 16px',
+    ...pokemonText,
+    fontSize: 22
+  },
+  mysteryPokemon: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginBottom: 16
+  },
+  mysterySprite: {
+    width: 180,
+    height: 180,
+    objectFit: 'contain',
+    filter: 'brightness(0) contrast(1) saturate(0)',
+    transition: 'filter 0.3s ease'
+  },
+  mysteryReveal: {
+    filter: 'brightness(1) contrast(1) saturate(1)'
+  },
+  mysteryOptions: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+    gap: 10
+  },
+  mysteryOption: {
+    border: '1px solid var(--theme-border)',
+    background:
+      'linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.7))',
+    borderRadius: 14,
+    padding: '10px 12px',
+    fontFamily: 'Pokemon',
+    fontWeight: 700,
+    letterSpacing: 1,
+    textTransform: 'capitalize',
+    color: '#ffc94a',
+    textShadow:
+      '2px 2px 0 #2b6fdd, -1.5px -1.5px 0 #2b6fdd, 2px -2px 0 #2b6fdd, -2px 2px 0 #2b6fdd',
+    cursor: 'pointer',
+    position: 'relative',
+    transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+    boxShadow: '0 8px 16px rgba(15, 23, 42, 0.18)',
+    '&:disabled': {
+      cursor: 'not-allowed',
+      opacity: 0.7
+    }
+  },
+  mysteryOptionSelected: {
+    boxShadow: '0 6px 12px rgba(15, 23, 42, 0.2)',
+    transform: 'translateY(-1px)'
+  },
+  mysteryOptionWrong: {
+    borderColor: '#ef4444',
+    color: '#7f1d1d',
+    background: 'rgba(254, 226, 226, 0.9)',
+    textDecoration: 'line-through',
+    textDecorationThickness: '2px'
+  },
+  mysteryOptionCorrect: {
+    borderColor: '#22c55e',
+    background: 'rgba(236, 253, 245, 0.9)'
+  },
+  mysteryOptionMark: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    color: '#ef4444',
+    fontWeight: 800,
+    fontSize: 32,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 0.85,
+    pointerEvents: 'none'
+  },
+  mysteryConfetti: {
+    position: 'absolute',
+    inset: 0,
+    pointerEvents: 'none'
+  },
+  mysteryConfettiPiece: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    width: 8,
+    height: 8,
+    background: '#ffd24f',
+    borderRadius: 2,
+    transform: 'rotate(var(--confetti-angle)) translate(0, 0)',
+    animation: '$mysteryConfetti 0.7s ease-out 3 forwards'
+  },
+  '@keyframes mysteryConfetti': {
+    '0%': {
+      transform: 'rotate(var(--confetti-angle)) translate(0, 0)',
+      opacity: 1
+    },
+    '100%': {
+      transform: 'rotate(var(--confetti-angle)) translate(0, -120px)',
+      opacity: 0
+    }
+  },
+  pokeSpeechOverlay: {
+    position: 'fixed',
+    right: 20,
+    bottom: 20,
+    display: 'flex',
+    alignItems: 'flex-end',
+    gap: 16,
+    zIndex: 60,
+    maxWidth: 420,
+    pointerEvents: 'none'
+  },
+  pokeSpeechFrame: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 0,
+    padding: 12,
+    borderRadius: 22,
+    border: '2px solid rgba(43, 63, 99, 0.4)',
+    backgroundColor: 'rgba(245, 255, 238, 0.9)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    boxShadow: '0 16px 30px rgba(15, 23, 42, 0.22)',
+    position: 'relative',
+    pointerEvents: 'auto'
+  },
+  pokeSpeechAvatar: {
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    background: 'rgba(255, 255, 255, 0.9)',
+    border: '1px solid var(--theme-border)',
+    display: 'grid',
+    placeItems: 'center',
+    fontFamily: 'Pokemon',
+    color: '#2b3f63',
+    fontSize: 18
+  },
+  pokeSpeechImage: {
+    width: 150,
+    height: 160,
+    objectFit: 'cover',
+    borderRadius: 18,
+    border: 'none',
+    boxShadow: '0 10px 22px rgba(15, 23, 42, 0.2)',
+    background: 'transparent'
+  },
+  pokeSpeechBubble: {
+    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(233, 249, 226, 0.92))',
+    border: '2px solid rgba(43, 63, 99, 0.45)',
+    borderRadius: 18,
+    padding: '12px 14px',
+    boxShadow: '0 12px 26px rgba(15, 23, 42, 0.2)',
+    fontFamily: 'var(--ui-font)',
+    textAlign: 'left',
+    minWidth: 220,
+    marginTop: -6,
+    boxSizing: 'border-box'
+  },
+  pokeSpeechClose: {
+    display: 'none'
+  },
+  pokeSpeechTitle: {
+    margin: 0,
+    ...uiLabel,
+    letterSpacing: 1,
+    color: '#1f2a44',
+    fontSize: 12
+  },
+  pokeSpeechText: {
+    margin: '4px 0 0',
+    fontSize: 15,
+    color: '#1f2a44',
+    textTransform: 'capitalize'
   },
   filterDrawer: {
     position: 'fixed',

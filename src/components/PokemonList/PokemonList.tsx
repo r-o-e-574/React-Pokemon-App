@@ -68,7 +68,7 @@ function PokemonList({ pokemons = [] }: PokemonListProps) {
     return (
         <div className={classes.pokeListContainer}>
             <div className={`${classes.listContainer} ${classes.metallicEdge}`}>
-                <h2 className={classes.listTitle}>Who are these Pokemon?</h2>
+                <h2 className={classes.listTitle}>Pokemon Library</h2>
                 <div className={classes.listBody}>
                 <ul className={classes.pokeListItems}>
                     {pokemons.map(({ name: pokeName, apiName, sprite, cry }) => {
