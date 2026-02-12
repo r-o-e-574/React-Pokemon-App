@@ -937,13 +937,12 @@ function PokemonListData() {
                         >
                             <div className={classes.greetingTop}>
                                 <p className={classes.greetingHello}>{greeting}, Trainer.</p>
-                                <p className={classes.greetingKicker}>Local time</p>
+                                <div className={classes.greetingMeta}>
+                                    <span className={classes.greetingDate}>{dateText}</span>
+                                    <span className={classes.greetingDot} aria-hidden='true' />
+                                    <span className={classes.greetingZone}>{timeZone}</span>
+                                </div>
                                 <p className={`${classes.greetingTime} ${greetingTimeClass}`}>{timeText}</p>
-                            </div>
-                            <div className={classes.greetingMeta}>
-                                <span className={classes.greetingDate}>{dateText}</span>
-                                <span className={classes.greetingDot} aria-hidden='true' />
-                                <span className={classes.greetingZone}>{timeZone}</span>
                             </div>
                             <div className={classes.greetingTips}>
                                 <p className={classes.greetingTipLabel}>Tips &amp; Fun Facts</p>

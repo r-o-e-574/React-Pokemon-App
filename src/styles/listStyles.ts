@@ -13,7 +13,8 @@ export const useListStyles = createUseStyles({
     display: 'flex',
     flexWrap: 'wrap',
     alignItems: 'stretch',
-    gap: 12,
+    columnGap: 12,
+    rowGap: 0,
     minHeight: 0,
     boxSizing: 'border-box'
   },
@@ -623,44 +624,38 @@ export const useListStyles = createUseStyles({
   },
   greetingCard: {
     background: 'transparent',
-    padding: '18px 18px 16px',
+    padding: '16px 16px 14px',
     display: 'flex',
     flexDirection: 'column',
-    gap: 12,
+    gap: 10,
     minHeight: 0,
     flex: '0 0 320px'
   },
   greetingTop: {
     display: 'flex',
     flexDirection: 'column',
-    gap: 6,
-    paddingLeft: 10,
-    borderLeft: '3px solid rgba(255, 214, 138, 0.7)'
+    gap: 6
   },
   greetingHello: {
     margin: 0,
-    fontSize: 19,
-    fontFamily: 'var(--ui-font)',
-    color: 'var(--theme-ink-strong)',
-    letterSpacing: 0.2
-  },
-  greetingKicker: {
-    margin: 0,
-    ...uiLabel,
-    fontSize: 13,
-    letterSpacing: 2.4
+    fontSize: 26,
+    lineHeight: 1,
+    fontFamily: 'Pokemon',
+    ...pokemonText,
+    textTransform: 'capitalize',
+    letterSpacing: 0.4
   },
   greetingTime: {
     margin: 0,
-    fontSize: 42,
-    lineHeight: 1.05,
+    fontSize: 36,
+    lineHeight: 1,
     fontFamily: 'Pokemon',
     letterSpacing: 0.6,
     ...pokemonText,
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '12px 22px',
+    padding: '8px 16px',
     borderRadius: 999,
     border: '1px solid rgba(255, 230, 176, 0.45)',
     background: `linear-gradient(135deg, rgba(255, 214, 138, 0.28), rgba(255, 214, 138, 0.14)), url(${naturePokemon})`,
@@ -683,30 +678,35 @@ export const useListStyles = createUseStyles({
   greetingMeta: {
     display: 'flex',
     alignItems: 'center',
-    gap: 10,
-    marginTop: 6,
+    gap: 8,
+    marginTop: 0,
+    paddingTop: 2,
     flexWrap: 'wrap'
   },
   greetingTips: {
-    marginTop: 'auto',
+    marginTop: 4,
     display: 'flex',
     flexDirection: 'column',
-    gap: 6
+    gap: 4,
+    padding: '8px 10px',
+    borderRadius: 12,
+    border: '1px solid rgba(255, 255, 255, 0.28)',
+    background: 'linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08))'
   },
   greetingTipLabel: {
     margin: 0,
     ...uiLabel,
-    fontSize: 13
+    fontSize: 12
   },
   greetingTip: {
     margin: 0,
-    fontSize: 16,
+    fontSize: 14,
     color: 'var(--theme-ink-strong)',
     fontFamily: 'var(--ui-font)',
     lineHeight: 1.3
   },
   greetingDate: {
-    fontSize: 15,
+    fontSize: 13,
     color: 'var(--theme-ink-strong)',
     fontFamily: 'var(--ui-font)'
   },
@@ -717,8 +717,8 @@ export const useListStyles = createUseStyles({
     background: 'rgba(255, 213, 138, 0.85)'
   },
   greetingZone: {
-    fontSize: 13,
-    letterSpacing: 1.6,
+    fontSize: 12,
+    letterSpacing: 1.4,
     textTransform: 'uppercase',
     color: 'var(--theme-ink-muted)',
     fontFamily: 'var(--ui-font)'

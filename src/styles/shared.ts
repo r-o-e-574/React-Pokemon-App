@@ -27,20 +27,26 @@ export const uiLabelStrong = {
   color: 'var(--theme-ink-strong)'
 };
 
+const shimmerDuration = '12s';
+const shimmerSize = '300% 100%';
+const shimmerStart = '0 0, 0 0';
+const shimmerEnd = '-300% 0, 0 0';
+const shimmerGradient =
+  'linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 40%, rgba(255, 255, 255, 0.34) 50%, rgba(255, 255, 255, 0.05) 60%)';
+
 export const contentShimmerBase = {
   position: 'relative',
   overflow: 'hidden',
-  background:
-    'linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.18) 35%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0.18) 65%, rgba(255, 255, 255, 0) 100%), var(--theme-card-bg)',
-  backgroundRepeat: 'no-repeat',
-  backgroundSize: '300% 300%',
-  backgroundPosition: '-150% -150%',
-  animation: '$containerShimmer 12s linear infinite'
+  background: `${shimmerGradient}, var(--theme-card-bg)`,
+  backgroundRepeat: 'repeat-x, no-repeat',
+  backgroundSize: `${shimmerSize}, 100% 100%`,
+  backgroundPosition: shimmerStart,
+  willChange: 'background-position-x',
+  animation: `$containerShimmer ${shimmerDuration} linear infinite`
 };
 
 export const contentShimmerKeyframes = {
   '@keyframes containerShimmer': {
-    '0%': { backgroundPosition: '-150% -150%' },
-    '100%': { backgroundPosition: '150% 150%' }
+    '100%': { backgroundPosition: shimmerEnd }
   }
 };

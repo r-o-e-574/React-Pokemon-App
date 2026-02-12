@@ -32,7 +32,7 @@ const typeThemes: Record<string, TypeTheme> = {
   rock: { bg1: '#f2e9d6', bg2: '#dbc8a4', bg3: '#c4a675', accent: '#B6A136', cardBg: 'rgba(255,255,255,0.2)', border: 'rgba(255,255,255,0.7)' },
   ghost: { bg1: '#e8e2ff', bg2: '#c6b6ff', bg3: '#a08dff', accent: '#735797', cardBg: 'rgba(255,255,255,0.18)', border: 'rgba(255,255,255,0.7)' },
   dragon: { bg1: '#e0e9ff', bg2: '#b8cbff', bg3: '#8fb0ff', accent: '#6A7BAF', cardBg: 'rgba(255,255,255,0.18)', border: 'rgba(255,255,255,0.7)' },
-  dark: { bg1: '#ede9e6', bg2: '#cfc6c2', bg3: '#b2a6a1', accent: '#736C75', cardBg: 'rgba(255,255,255,0.18)', border: 'rgba(255,255,255,0.7)' },
+  dark: { bg1: '#14161b', bg2: '#1f232b', bg3: '#2b313b', accent: '#705848', cardBg: 'rgba(20, 24, 30, 0.46)', border: 'rgba(255,255,255,0.28)' },
   steel: { bg1: '#f1f4f8', bg2: '#d2d9e6', bg3: '#b6c1d6', accent: '#89A1B0', cardBg: 'rgba(255,255,255,0.2)', border: 'rgba(255,255,255,0.7)' },
   fairy: { bg1: '#ffe6f2', bg2: '#f9c7e0', bg3: '#f1a8cf', accent: '#D685AD', cardBg: 'rgba(255,255,255,0.2)', border: 'rgba(255,255,255,0.7)' }
 };
