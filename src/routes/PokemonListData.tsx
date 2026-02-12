@@ -264,19 +264,24 @@ function PokemonListData() {
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return;
     const mediaQuery = window.matchMedia('(orientation: portrait)');
+    const updateOrientation = () => setIsPortraitMode(mediaQuery.matches);
     const onChange = (event: MediaQueryListEvent) => setIsPortraitMode(event.matches);
-    setIsPortraitMode(mediaQuery.matches);
+    updateOrientation();
     if (mediaQuery.addEventListener) {
       mediaQuery.addEventListener('change', onChange);
     } else {
       mediaQuery.addListener(onChange);
     }
+    window.addEventListener('resize', updateOrientation);
+    window.addEventListener('orientationchange', updateOrientation);
     return () => {
       if (mediaQuery.removeEventListener) {
         mediaQuery.removeEventListener('change', onChange);
       } else {
         mediaQuery.removeListener(onChange);
       }
+      window.removeEventListener('resize', updateOrientation);
+      window.removeEventListener('orientationchange', updateOrientation);
     };
   }, []);
 

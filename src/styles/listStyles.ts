@@ -1142,25 +1142,21 @@ export const useListStyles = createUseStyles({
   },
   '@media (orientation: landscape)': {
     listContainer: {
-      height: 'clamp(340px, 40dvh, 720px)'
+      height: 'clamp(280px, 33dvh, 520px)'
     },
     listBody: {
-      height: 'calc((56px * 3) + (12px * 2) + 50px)'
+      height: 'calc((56px * 2) + 12px + 40px)'
     }
   },
   '@media (max-width: 1100px)': {
     mainPage: {
-      flexDirection: 'column',
-      padding: '0 16px 40px'
+      flexDirection: 'column'
     },
     mainColumn: {
       order: 2
     },
     mainHeaderBrand: {
       alignSelf: 'center'
-    },
-    toolbarSearch: {
-      width: 'min(360px, 70vw)'
     },
     filterDrawerList: {
       gridTemplateColumns: 'repeat(2, minmax(120px, 1fr))'
@@ -1210,9 +1206,6 @@ export const useListStyles = createUseStyles({
     }
   },
   '@media (min-width: 768px) and (max-width: 1366px) and (orientation: portrait)': {
-    mainPage: {
-      padding: '0 14px 32px'
-    },
     mainToolbar: {
       gap: 12,
       paddingBottom: 10
@@ -1236,7 +1229,7 @@ export const useListStyles = createUseStyles({
       flex: '1 1 auto'
     },
     listContainer: {
-      height: 'clamp(520px, 62dvh, 1020px)'
+      height: 'clamp(520px, 58dvh, 1020px)'
     }
   },
   '@media (max-width: 640px)': {

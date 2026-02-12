@@ -296,17 +296,17 @@ export const usePokemonViewStyles = createUseStyles({
     width: 30,
     height: 30,
     borderRadius: 999,
-    border: '1px solid var(--play-border, rgba(15, 23, 42, 0.18))',
+    border: '1px solid rgba(31, 41, 55, 0.2)',
     background:
-      'var(--play-bg, linear-gradient(120deg, rgba(255,255,255,0.98), rgba(255,255,255,0.7)))',
-    color: 'var(--play-ink, var(--theme-ink-strong))',
+      'radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.88) 58%, rgba(244, 248, 255, 0.9))',
+    color: '#d19a00',
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 0,
     padding: 0,
     cursor: 'pointer',
-    boxShadow: 'var(--play-shadow, 0 8px 14px rgba(15, 23, 42, 0.16))',
+    boxShadow: '0 8px 18px rgba(15, 23, 42, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.9)',
     transition:
       'transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease, background 0.2s ease, border-color 0.2s ease',
     zIndex: 2,
@@ -315,25 +315,36 @@ export const usePokemonViewStyles = createUseStyles({
     letterSpacing: 1,
     textTransform: 'uppercase',
     '&:hover': {
-      background: 'var(--play-bg-hover, var(--play-bg, #fff))',
-      borderColor: 'var(--play-border-hover, var(--play-border, rgba(15, 23, 42, 0.18)))',
+      background:
+        'radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.92) 58%, rgba(242, 246, 255, 0.92))',
+      borderColor: 'rgba(31, 41, 55, 0.35)',
       transform: 'translateY(-1px)',
-      boxShadow: 'var(--play-shadow-hover, 0 10px 18px rgba(15, 23, 42, 0.2))'
+      boxShadow: '0 10px 20px rgba(15, 23, 42, 0.28)'
     },
     '&:active': {
       transform: 'translateY(0) scale(0.98)'
     }
   },
   pokeShinyToggleActive: {
-    borderColor: 'rgba(255, 226, 130, 0.95)',
-    boxShadow: '0 12px 24px rgba(255, 214, 102, 0.4), inset 0 0 0 1px rgba(255, 236, 176, 0.72)',
-    filter: 'saturate(1.1)'
+    borderColor: 'rgba(182, 213, 255, 0.95)',
+    background:
+      'radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.88) 58%, rgba(244, 248, 255, 0.9))',
+    boxShadow: '0 10px 20px rgba(15, 23, 42, 0.28), inset 0 0 0 1px rgba(255, 255, 255, 0.9)',
+    filter: 'saturate(1.12)',
+    '& $pokeShinySparkle': {
+      color: '#2b6fdd'
+    },
+    '&:hover': {
+      background:
+        'radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.92) 58%, rgba(242, 246, 255, 0.92))',
+      borderColor: 'rgba(196, 222, 255, 0.98)'
+    }
   },
   pokeShinySparkle: {
     fontSize: 16,
     lineHeight: 1,
-    color: '#ffefad',
-    textShadow: '0 0 14px rgba(255, 235, 156, 1), 0 0 26px rgba(255, 213, 102, 0.86)'
+    color: '#ffc94a',
+    textShadow: 'none'
   },
   pokeImageShinyFlash: {
     animation: '$shinyFlash 0.7s ease-out'
