@@ -19,7 +19,8 @@ const useStyles = createUseStyles({
     alignItems: 'flex-end',
     gap: 16,
     zIndex: 60,
-    maxWidth: 420,
+    width: 340,
+    maxWidth: 'calc(100vw - 40px)',
     pointerEvents: 'none'
   }
 });

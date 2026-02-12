@@ -8,7 +8,8 @@ const useStyles = createUseStyles({
     alignItems: 'center',
     gap: 0,
     padding: 12,
-    width: 'min(320px, 100%)',
+    width: '100%',
+    maxWidth: 340,
     borderRadius: 22,
     border:
       '2px solid color-mix(in srgb, var(--theme-border, rgba(43, 63, 99, 0.4)) 75%, transparent)',
@@ -91,7 +92,8 @@ const useStyles = createUseStyles({
     lineHeight: 1.3,
     maxHeight: 56,
     overflowY: 'auto',
-    overflowX: 'hidden'
+    overflowX: 'hidden',
+    scrollbarGutter: 'stable both-edges'
   }
 });
 
