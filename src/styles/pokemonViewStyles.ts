@@ -188,7 +188,7 @@ export const usePokemonViewStyles = createUseStyles({
       gap: 12
     }
   },
-  '@media (max-width: 900px) and (orientation: portrait)': {
+  '@media (max-width: 1200px) and (orientation: portrait)': {
     pokeHeroCard: {
       gridTemplateColumns: '1fr',
       textAlign: 'center'
@@ -704,7 +704,7 @@ export const usePokemonViewStyles = createUseStyles({
     }
   },
   ...contentShimmerKeyframes,
-  '@media (max-width: 820px)': {
+  '@media (max-width: 980px)': {
     pokeInfoRowPrimary: {
       flexDirection: 'column'
     },
@@ -719,6 +719,30 @@ export const usePokemonViewStyles = createUseStyles({
     },
     pokeFact: {
       textAlign: 'center'
+    }
+  },
+  '@media (min-width: 768px) and (max-width: 1366px) and (orientation: portrait)': {
+    pokeBackground: {
+      padding: '14px 16px 28px'
+    },
+    pokeHeroInfoGrid: {
+      gridTemplateColumns: '1fr'
+    },
+    pokeEvolutionStageGroup: {
+      minWidth: 0,
+      width: '100%',
+      alignItems: 'stretch'
+    },
+    pokeEvolutionCard: {
+      minWidth: 0,
+      width: '100%'
+    },
+    pokeVarietyGrid: {
+      justifyContent: 'stretch'
+    },
+    pokeVarietyCard: {
+      minWidth: 0,
+      width: '100%'
     }
   }
 });

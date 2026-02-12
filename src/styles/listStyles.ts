@@ -639,7 +639,7 @@ export const useListStyles = createUseStyles({
   listContainer: {
     display: 'flex',
     flexDirection: 'column',
-    height: '55dvh',
+    height: 'clamp(360px, 56dvh, 760px)',
     width: '100%',
     flex: 1,
     overflow: 'hidden',
@@ -1062,12 +1062,12 @@ export const useListStyles = createUseStyles({
   },
   '@media (orientation: portrait)': {
     listContainer: {
-      height: '68dvh'
+      height: 'clamp(460px, 68dvh, 980px)'
     }
   },
   '@media (orientation: landscape)': {
     listContainer: {
-      height: '55dvh'
+      height: 'clamp(340px, 56dvh, 720px)'
     }
   },
   '@media (max-width: 1100px)': {
@@ -1129,6 +1129,36 @@ export const useListStyles = createUseStyles({
     pokeFeaturedContent: {
       height: '100%',
       gap: 12
+    }
+  },
+  '@media (min-width: 768px) and (max-width: 1366px) and (orientation: portrait)': {
+    mainPage: {
+      padding: '0 14px 32px'
+    },
+    mainToolbar: {
+      gap: 12,
+      paddingBottom: 10
+    },
+    mainHeaderTitle: {
+      fontSize: 24
+    },
+    featuredRow: {
+      flexDirection: 'row',
+      alignItems: 'stretch',
+      height: 'auto',
+      flexWrap: 'nowrap'
+    },
+    greetingCard: {
+      flex: '0 0 280px',
+      minHeight: 0,
+      height: 'auto'
+    },
+    pokeFeatured: {
+      minHeight: 0,
+      flex: '1 1 auto'
+    },
+    listContainer: {
+      height: 'clamp(520px, 62dvh, 1020px)'
     }
   },
   '@media (max-width: 640px)': {
