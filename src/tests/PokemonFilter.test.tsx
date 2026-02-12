@@ -9,7 +9,7 @@ test('renders filter controls', () => {
       regionOptions={[{ name: 'kanto' }, { name: 'galar' }]}
       selectedTypes={['fire']}
       selectedRegions={['kanto']}
-      searchTerm='pik'
+      searchTerm="pik"
       onTypeSelect={() => {}}
       onRegionSelect={() => {}}
       onRemoveType={() => {}}

@@ -54,7 +54,7 @@ export const usePokemonViewStyles = createUseStyles({
     flex: 1,
     minHeight: 0,
     overflowY: 'auto',
-    paddingBottom: 12,
+    paddingBottom: 12
   },
   pokeScrollContent: {
     display: 'flex',
@@ -119,7 +119,8 @@ export const usePokemonViewStyles = createUseStyles({
     textTransform: 'uppercase',
     letterSpacing: 1,
     boxShadow: 'var(--play-shadow, 0 6px 12px rgba(15, 23, 42, 0.14))',
-    transition: 'transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease, border-color 0.2s ease',
+    transition:
+      'transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease, border-color 0.2s ease',
     '&::before': {
       content: '">"',
       fontSize: 12,
@@ -212,88 +213,6 @@ export const usePokemonViewStyles = createUseStyles({
     fontSize: 20,
     lineHeight: 1
   },
-  pokeSpeechOverlay: {
-    position: 'fixed',
-    right: 20,
-    bottom: 20,
-    display: 'flex',
-    alignItems: 'flex-end',
-    gap: 16,
-    zIndex: 20,
-    maxWidth: 420
-  },
-  pokeSpeechFrame: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 0,
-    padding: 12,
-    borderRadius: 22,
-    border: '2px solid rgba(43, 63, 99, 0.4)',
-    backgroundColor: 'rgba(245, 255, 238, 0.9)',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    boxShadow: '0 16px 30px rgba(15, 23, 42, 0.22)',
-    position: 'relative'
-  },
-  pokeSpeechAvatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 16,
-    background: 'rgba(255, 255, 255, 0.9)',
-    border: '1px solid var(--theme-border)',
-    display: 'grid',
-    placeItems: 'center',
-    fontFamily: 'Pokemon',
-    color: '#2b3f63',
-    fontSize: 18
-  },
-  pokeSpeechImage: {
-    width: 150,
-    height: 160,
-    objectFit: 'cover',
-    borderRadius: 18,
-    border: 'none',
-    boxShadow: '0 10px 22px rgba(15, 23, 42, 0.2)',
-    background: 'transparent'
-  },
-  pokeSpeechBubble: {
-    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(233, 249, 226, 0.92))',
-    border: '2px solid rgba(43, 63, 99, 0.35)',
-    borderRadius: 18,
-    padding: '12px 14px',
-    boxShadow: '0 12px 26px rgba(15, 23, 42, 0.2)',
-    fontFamily: 'var(--ui-font)',
-    textAlign: 'left',
-    minWidth: 220,
-    marginTop: -6
-  },
-  pokeSpeechClose: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    border: '1px solid rgba(43, 63, 99, 0.35)',
-    background: 'rgba(255, 255, 255, 0.9)',
-    color: '#2b3f63',
-    borderRadius: 999,
-    padding: '4px 8px',
-    fontFamily: 'var(--ui-font)',
-    fontSize: 10,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    cursor: 'pointer'
-  },
-  pokeSpeechTitle: {
-    margin: 0,
-    ...uiLabel,
-    letterSpacing: 1
-  },
-  pokeSpeechText: {
-    margin: '4px 0 0',
-    fontSize: 15,
-    color: 'var(--play-ink)',
-    textTransform: 'capitalize'
-  },
   pokeImage: {
     width: 220,
     height: 220,
@@ -373,7 +292,8 @@ export const usePokemonViewStyles = createUseStyles({
     height: 30,
     borderRadius: 999,
     border: '1px solid var(--play-border, rgba(15, 23, 42, 0.18))',
-    background: 'var(--play-bg, linear-gradient(120deg, rgba(255,255,255,0.98), rgba(255,255,255,0.7)))',
+    background:
+      'var(--play-bg, linear-gradient(120deg, rgba(255,255,255,0.98), rgba(255,255,255,0.7)))',
     color: 'var(--play-ink, var(--theme-ink-strong))',
     display: 'inline-flex',
     alignItems: 'center',
@@ -382,7 +302,8 @@ export const usePokemonViewStyles = createUseStyles({
     padding: 0,
     cursor: 'pointer',
     boxShadow: 'var(--play-shadow, 0 8px 14px rgba(15, 23, 42, 0.16))',
-    transition: 'transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease, background 0.2s ease, border-color 0.2s ease',
+    transition:
+      'transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease, background 0.2s ease, border-color 0.2s ease',
     zIndex: 2,
     fontFamily: 'var(--ui-font)',
     fontSize: 11,
@@ -485,8 +406,7 @@ export const usePokemonViewStyles = createUseStyles({
     gap: 6
   },
   pokeHeroInfoChip: {
-    background:
-      'linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.6))',
+    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.6))',
     border: '1px solid rgba(255, 255, 255, 0.8)',
     borderRadius: 999,
     padding: '4px 10px',

@@ -23,7 +23,11 @@ export type PokemonAbilityResponse = {
 };
 
 export type PokemonSpeciesResponse = {
-  flavor_text_entries: { flavor_text: string; language: NamedApiResource; version: NamedApiResource }[];
+  flavor_text_entries: {
+    flavor_text: string;
+    language: NamedApiResource;
+    version: NamedApiResource;
+  }[];
   genera: { genus: string; language: NamedApiResource }[];
   egg_groups: NamedApiResource[];
   habitat: NamedApiResource | null;

@@ -1,5 +1,11 @@
 import { createUseStyles } from 'react-jss';
-import { contentShimmerBase, contentShimmerKeyframes, glassPanel, pokemonText, uiLabel } from './shared';
+import {
+  contentShimmerBase,
+  contentShimmerKeyframes,
+  glassPanel,
+  pokemonText,
+  uiLabel
+} from './shared';
 import naturePokemon from '../images/nature_pokemon.jpg';
 
 export const useListStyles = createUseStyles({
@@ -73,8 +79,7 @@ export const useListStyles = createUseStyles({
     width: 44,
     height: 44,
     borderRadius: 999,
-    boxShadow:
-      '0 0 12px rgba(255, 210, 79, 0.45), 0 0 24px rgba(123, 92, 255, 0.35)',
+    boxShadow: '0 0 12px rgba(255, 210, 79, 0.45), 0 0 24px rgba(123, 92, 255, 0.35)',
     cursor: 'pointer',
     display: 'inline-flex',
     alignItems: 'center',
@@ -83,8 +88,7 @@ export const useListStyles = createUseStyles({
     transition: 'transform 0.2s ease, box-shadow 0.2s ease',
     '&:hover': {
       transform: 'translateY(-1px) scale(1.03)',
-      boxShadow:
-        '0 0 16px rgba(255, 210, 79, 0.6), 0 0 30px rgba(123, 92, 255, 0.45)'
+      boxShadow: '0 0 16px rgba(255, 210, 79, 0.6), 0 0 30px rgba(123, 92, 255, 0.45)'
     },
     '&:disabled': {
       opacity: 0.6,
@@ -200,8 +204,7 @@ export const useListStyles = createUseStyles({
   },
   mysteryOption: {
     border: '1px solid var(--theme-border)',
-    background:
-      'linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.7))',
+    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.7))',
     borderRadius: 14,
     padding: '10px 12px',
     fontFamily: 'Pokemon',
@@ -275,81 +278,6 @@ export const useListStyles = createUseStyles({
       transform: 'rotate(var(--confetti-angle)) translate(0, -120px)',
       opacity: 0
     }
-  },
-  pokeSpeechOverlay: {
-    position: 'fixed',
-    right: 20,
-    bottom: 20,
-    display: 'flex',
-    alignItems: 'flex-end',
-    gap: 16,
-    zIndex: 60,
-    maxWidth: 420,
-    pointerEvents: 'none'
-  },
-  pokeSpeechFrame: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 0,
-    padding: 12,
-    borderRadius: 22,
-    border: '2px solid rgba(43, 63, 99, 0.4)',
-    backgroundColor: 'rgba(245, 255, 238, 0.9)',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    boxShadow: '0 16px 30px rgba(15, 23, 42, 0.22)',
-    position: 'relative',
-    pointerEvents: 'auto'
-  },
-  pokeSpeechAvatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 16,
-    background: 'rgba(255, 255, 255, 0.9)',
-    border: '1px solid var(--theme-border)',
-    display: 'grid',
-    placeItems: 'center',
-    fontFamily: 'Pokemon',
-    color: '#2b3f63',
-    fontSize: 18
-  },
-  pokeSpeechImage: {
-    width: 150,
-    height: 160,
-    objectFit: 'cover',
-    borderRadius: 18,
-    border: 'none',
-    boxShadow: '0 10px 22px rgba(15, 23, 42, 0.2)',
-    background: 'transparent'
-  },
-  pokeSpeechBubble: {
-    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(233, 249, 226, 0.92))',
-    border: '2px solid rgba(43, 63, 99, 0.45)',
-    borderRadius: 18,
-    padding: '12px 14px',
-    boxShadow: '0 12px 26px rgba(15, 23, 42, 0.2)',
-    fontFamily: 'var(--ui-font)',
-    textAlign: 'left',
-    minWidth: 220,
-    marginTop: -6,
-    boxSizing: 'border-box'
-  },
-  pokeSpeechClose: {
-    display: 'none'
-  },
-  pokeSpeechTitle: {
-    margin: 0,
-    ...uiLabel,
-    letterSpacing: 1,
-    color: '#1f2a44',
-    fontSize: 12
-  },
-  pokeSpeechText: {
-    margin: '4px 0 0',
-    fontSize: 15,
-    color: '#1f2a44',
-    textTransform: 'capitalize'
   },
   filterDrawer: {
     position: 'fixed',
@@ -826,8 +754,7 @@ export const useListStyles = createUseStyles({
     height: 6,
     borderRadius: 999,
     background: '#ffd24f',
-    boxShadow:
-      '10px 6px 0 #7dd3fc, -8px 8px 0 #a78bfa, 4px -10px 0 #f97316, -10px -6px 0 #34d399',
+    boxShadow: '10px 6px 0 #7dd3fc, -8px 8px 0 #a78bfa, 4px -10px 0 #f97316, -10px -6px 0 #34d399',
     animation: '$sparklePop 0.5s ease-out'
   },
   pokeListSprite: {
@@ -840,8 +767,7 @@ export const useListStyles = createUseStyles({
     height: 82,
     borderRadius: 12,
     border: '1px dashed var(--theme-border)',
-    background:
-      'linear-gradient(135deg, rgba(255,255,255,0.72), rgba(255,255,255,0.38))',
+    background: 'linear-gradient(135deg, rgba(255,255,255,0.72), rgba(255,255,255,0.38))',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -892,7 +818,7 @@ export const useListStyles = createUseStyles({
     position: 'relative',
     zIndex: 1,
     height: '100%',
-    paddingBottom: "10px"
+    paddingBottom: '10px'
   },
   pokeFeaturedContentCarousel: {
     alignItems: 'center',
@@ -1028,8 +954,7 @@ export const useListStyles = createUseStyles({
     borderRadius: 12,
     border: '1px solid var(--theme-border)',
     background: 'rgba(255,255,255,0.95)',
-    boxShadow:
-      '0 18px 40px rgba(15, 23, 42, 0.28), 0 6px 14px rgba(15, 23, 42, 0.18)',
+    boxShadow: '0 18px 40px rgba(15, 23, 42, 0.28), 0 6px 14px rgba(15, 23, 42, 0.18)',
     padding: 6
   },
   dropdownItem: {
@@ -1126,9 +1051,9 @@ export const useListStyles = createUseStyles({
       inset: 0,
       borderRadius: 18,
       padding: 1,
-      background: 'linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.2), rgba(255,255,255,0.9))',
-      WebkitMask:
-        'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+      background:
+        'linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.2), rgba(255,255,255,0.9))',
+      WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
       WebkitMaskComposite: 'xor',
       maskComposite: 'exclude',
       opacity: 0.5,
@@ -1204,7 +1129,7 @@ export const useListStyles = createUseStyles({
     pokeFeaturedContent: {
       height: '100%',
       gap: 12
-    },
+    }
   },
   '@media (max-width: 640px)': {
     filterDrawerList: {

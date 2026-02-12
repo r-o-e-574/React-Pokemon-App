@@ -47,15 +47,16 @@ function Landing() {
         {legendaryTiles.map(({ name, id }, index) => {
           const tileClass = (classes as Record<string, string>)[`tile${index + 1}`];
           return (
-          <div className={`${classes.landingLegendaryTile} ${tileClass ?? ''}`} key={name}>
-            <img
-              className={classes.landingLegendaryTileImg}
-              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
-              alt={name}
-            />
-            <span className={classes.landingLegendaryTileText}>{name}</span>
-          </div>
-        )})}
+            <div className={`${classes.landingLegendaryTile} ${tileClass ?? ''}`} key={name}>
+              <img
+                className={classes.landingLegendaryTileImg}
+                src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
+                alt={name}
+              />
+              <span className={classes.landingLegendaryTileText}>{name}</span>
+            </div>
+          );
+        })}
       </div>
       <header className={classes.landingHeader}>
         <span className={classes.landingHeaderTitle}>Poke Library</span>
@@ -89,7 +90,7 @@ function Landing() {
         </div>
         <Link
           className={`${classes.landingStart} ${isPopping ? classes.landingStartPop : ''}`}
-          to='/main'
+          to="/main"
           onClick={(event) => {
             event.preventDefault();
             if (isPopping) {

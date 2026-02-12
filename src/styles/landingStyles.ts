@@ -38,8 +38,7 @@ export const useLandingStyles = createUseStyles({
     width: 900,
     height: 900,
     borderRadius: '50%',
-    background:
-      'radial-gradient(circle, rgba(88, 118, 255, 0.35) 0%, rgba(88, 118, 255, 0) 60%)',
+    background: 'radial-gradient(circle, rgba(88, 118, 255, 0.35) 0%, rgba(88, 118, 255, 0) 60%)',
     bottom: -420,
     right: -260,
     opacity: 0.6,
@@ -223,7 +222,8 @@ export const useLandingStyles = createUseStyles({
   '@keyframes confettiPop': {
     '0%': { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
     '100%': {
-      transform: 'translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r)) scale(0.9)',
+      transform:
+        'translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r)) scale(0.9)',
       opacity: 0
     }
   },

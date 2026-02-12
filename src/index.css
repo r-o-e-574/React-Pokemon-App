@@ -14,7 +14,7 @@
 
 body {
   margin: 0;
-  font-family: "Pokemon", var(--ui-font);
+  font-family: 'Pokemon', var(--ui-font);
   background: var(--play-cream);
   color: var(--play-ink);
   -webkit-font-smoothing: antialiased;
@@ -22,6 +22,5 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
