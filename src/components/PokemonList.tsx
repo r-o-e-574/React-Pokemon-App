@@ -14,6 +14,7 @@ function PokemonList({ pokemons = [] }: PokemonListProps) {
     const history = useHistory();
     const panelClasses = usePanelStyles();
     const [sparkleId, setSparkleId] = useState<string | null>(null);
+    const [brokenSpriteIds, setBrokenSpriteIds] = useState<Record<string, true>>({});
     const sparkleTimeoutRef = useRef<number | null>(null);
     const navigateTimeoutRef = useRef<number | null>(null);
 
@@ -27,6 +28,9 @@ function PokemonList({ pokemons = [] }: PokemonListProps) {
             }
         };
     }, []);
+    useEffect(() => {
+        setBrokenSpriteIds({});
+    }, [pokemons]);
 
     const handlePlayCry = (cry?: string) => {
         if (!cry) return;
@@ -81,19 +85,31 @@ function PokemonList({ pokemons = [] }: PokemonListProps) {
                 <ul className={classes.pokeListItems}>
                     {pokemons.map(({ name: pokeName, apiName, sprite, cry }) => {
                         const routeName = apiName ?? pokeName;
+                        const hasBrokenSprite = Boolean(brokenSpriteIds[routeName]);
+                        const showSprite = Boolean(sprite) && !hasBrokenSprite;
                         return (
                         <li key={routeName} className={classes.pokeListItem}>
-                            {sprite ? (
+                            {showSprite ? (
                                 <button
                                     className={classes.pokeSpriteButton}
                                     type='button'
                                     onClick={() => handlePlayCry(cry)}
                                     aria-label={`Play ${routeName} cry`}
                                 >
-                                    <img className={classes.pokeListSprite} src={sprite} alt={`${pokeName} sprite`} />
+                                    <img
+                                        className={classes.pokeListSprite}
+                                        src={sprite}
+                                        alt={`${pokeName} sprite`}
+                                        onError={() =>
+                                            setBrokenSpriteIds((prev) => ({ ...prev, [routeName]: true }))
+                                        }
+                                    />
                                 </button>
                             ) : (
-                                <div className={classes.pokeListSpritePlaceholder} aria-hidden='true' />
+                                <div className={classes.pokeListSpriteFallback} role='img' aria-label='Sprite unavailable'>
+                                    <span className={classes.pokeListSpriteFallbackIcon} aria-hidden='true'>?</span>
+                                    <span className={classes.pokeListSpriteFallbackText}>No sprite</span>
+                                </div>
                             )}
                             <span className={classes.pokeListLinkWrap}>
                                 <Link

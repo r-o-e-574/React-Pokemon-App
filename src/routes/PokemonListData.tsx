@@ -1000,10 +1000,10 @@ function PokemonListData() {
                                                             }}
                                                             aria-label={`View ${pokemon.name}`}
                                                         >
-                                                            {pokemonMedia[pokemon.name]?.sprite ? (
+                                                            {getPokemonSprite(pokemon) ? (
                                                                 <img
                                                                     className={classes.pokeFeaturedCarouselSprite}
-                                                                    src={pokemonMedia[pokemon.name]?.sprite}
+                                                                    src={getPokemonSprite(pokemon)}
                                                                     alt={`${pokemon.name} sprite`}
                                                                 />
                                                             ) : null}
@@ -1035,7 +1035,7 @@ function PokemonListData() {
                                 return {
                                     ...pokemon,
                                     apiName,
-                                    sprite: pokemonMedia[pokemon.name]?.sprite,
+                                    sprite: getPokemonSprite(pokemon),
                                     cry: pokemonMedia[pokemon.name]?.cry
                                 };
                             })}

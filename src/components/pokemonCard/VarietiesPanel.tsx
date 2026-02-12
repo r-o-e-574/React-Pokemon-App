@@ -30,7 +30,6 @@ function VarietiesPanel({
 }: VarietiesPanelProps) {
     const classes = usePokemonViewStyles();
     const panelClasses = usePanelStyles();
-
     if (!varietyList.length) return null;
 
     return (
@@ -41,16 +40,18 @@ function VarietiesPanel({
             bodyClassName={panelClasses.body}
             title='Varieties'
             action={
-                <TtsButton
-                    className={classes.pokePlayButton}
-                    text={varietiesText}
-                    voiceURI={preferredVoiceURI}
-                    announceLabel='Varieties'
-                    disabled={isSpeaking}
-                    onSpeakStart={onSpeakStart}
-                    onSpeakStop={onSpeakStop}
-                    style={playButtonStyle}
-                />
+                varietiesText ? (
+                    <TtsButton
+                        className={classes.pokePlayButton}
+                        text={varietiesText}
+                        voiceURI={preferredVoiceURI}
+                        announceLabel='Varieties'
+                        disabled={isSpeaking}
+                        onSpeakStart={onSpeakStart}
+                        onSpeakStop={onSpeakStop}
+                        style={playButtonStyle}
+                    />
+                ) : null
             }
         >
             <div className={classes.pokeVarietyGrid}>

@@ -27,23 +27,14 @@ export const useListStyles = createUseStyles({
     minHeight: 0,
     alignItems: 'stretch'
   },
-  rightColumn: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 12,
-    minHeight: 0,
-    width: 420,
-    flex: '0 0 420px',
-    alignItems: 'stretch',
-    overflow: 'visible'
-  },
   mainPageFill: {
-    minHeight: '100vh',
+    minHeight: '100dvh',
     background:
       'linear-gradient(rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.08)), linear-gradient(135deg, var(--theme-bg-1) 0%, var(--theme-bg-2) 45%, var(--theme-bg-3) 100%)',
     position: 'relative',
-    height: '100vh',
-    overflow: 'hidden'
+    height: '100dvh',
+    overflow: 'hidden',
+    transition: 'background 240ms ease'
   },
   mainPageTiles: {
     position: 'absolute',
@@ -548,19 +539,6 @@ export const useListStyles = createUseStyles({
     width: 46,
     height: 46
   },
-  mainSearch: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 6,
-    background: 'var(--theme-card-bg)',
-    border: '1px solid var(--theme-border)',
-    borderRadius: 16,
-    padding: '10px 12px',
-    boxShadow: '0 8px 18px rgba(31, 41, 55, 0.12)',
-    backdropFilter: 'blur(10px)',
-    width: '100%',
-    boxSizing: 'border-box'
-  },
   mainSearchLabel: {
     ...uiLabel,
     fontWeight: 600,
@@ -611,11 +589,6 @@ export const useListStyles = createUseStyles({
       boxShadow: '0 6px 14px rgba(15, 23, 42, 0.15)'
     }
   },
-  mainTopRow: {
-    display: 'grid',
-    gridTemplateRows: 'auto 1fr',
-    gap: 14
-  },
   featuredRow: {
     display: 'flex',
     gap: 12,
@@ -624,29 +597,30 @@ export const useListStyles = createUseStyles({
   },
   greetingCard: {
     background: 'transparent',
-    padding: '16px 16px 14px',
+    padding: '14px 16px 12px',
     display: 'flex',
     flexDirection: 'column',
-    gap: 10,
+    justifyContent: 'space-between',
+    gap: 8,
     minHeight: 0,
     flex: '0 0 320px'
   },
   greetingTop: {
     display: 'flex',
     flexDirection: 'column',
-    gap: 6
+    gap: 8
   },
   greetingHello: {
     margin: 0,
     fontSize: 26,
-    lineHeight: 1,
+    lineHeight: 1.05,
     fontFamily: 'Pokemon',
     ...pokemonText,
     textTransform: 'capitalize',
     letterSpacing: 0.4
   },
   greetingTime: {
-    margin: 0,
+    margin: '2px 0 0',
     fontSize: 36,
     lineHeight: 1,
     fontFamily: 'Pokemon',
@@ -655,13 +629,14 @@ export const useListStyles = createUseStyles({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '8px 16px',
+    padding: '7px 14px',
     borderRadius: 999,
     border: '1px solid rgba(255, 230, 176, 0.45)',
     background: `linear-gradient(135deg, rgba(255, 214, 138, 0.28), rgba(255, 214, 138, 0.14)), url(${naturePokemon})`,
     backgroundSize: '155% 155%',
     backgroundPosition: 'center',
-    boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 12px 20px rgba(10, 12, 28, 0.35)'
+    boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 10px 16px rgba(10, 12, 28, 0.3)',
+    alignSelf: 'flex-start'
   },
   greetingTimeMorning: {
     backgroundImage: `linear-gradient(135deg, rgba(255, 152, 72, 0.55), rgba(255, 86, 88, 0.35)), url(${naturePokemon})`
@@ -678,20 +653,21 @@ export const useListStyles = createUseStyles({
   greetingMeta: {
     display: 'flex',
     alignItems: 'center',
-    gap: 8,
+    gap: 6,
     marginTop: 0,
-    paddingTop: 2,
+    paddingTop: 0,
     flexWrap: 'wrap'
   },
   greetingTips: {
-    marginTop: 4,
+    marginTop: 0,
     display: 'flex',
     flexDirection: 'column',
     gap: 4,
     padding: '8px 10px',
     borderRadius: 12,
     border: '1px solid rgba(255, 255, 255, 0.28)',
-    background: 'linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08))'
+    background: 'linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08))',
+    flexShrink: 0
   },
   greetingTipLabel: {
     margin: 0,
@@ -735,11 +711,12 @@ export const useListStyles = createUseStyles({
   listContainer: {
     display: 'flex',
     flexDirection: 'column',
-    height: '55vh',
+    height: '55dvh',
     width: '100%',
     flex: 1,
     overflow: 'hidden',
-    minHeight: 0
+    minHeight: 0,
+    boxShadow: 'none !important'
   },
   listTitle: {
     padding: '14px 16px 8px',
@@ -858,34 +835,32 @@ export const useListStyles = createUseStyles({
     height: 82,
     objectFit: 'contain'
   },
-  pokeListSpritePlaceholder: {
+  pokeListSpriteFallback: {
     width: 82,
     height: 82,
     borderRadius: 12,
+    border: '1px dashed var(--theme-border)',
     background:
-      'linear-gradient(135deg, rgba(255,255,255,0.75), rgba(255,255,255,0.25), rgba(255,255,255,0.75))',
-    backgroundSize: '200% 200%',
-    border: '1px solid var(--theme-border)',
-    animation: '$skeletonPulse 1.4s ease-in-out infinite'
-  },
-  pokeFilterButtons: {
+      'linear-gradient(135deg, rgba(255,255,255,0.72), rgba(255,255,255,0.38))',
     display: 'flex',
-    flexWrap: 'wrap',
-    gap: 8,
-    justifyContent: 'center'
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 2,
+    color: 'var(--theme-ink-muted)'
   },
-  pokeButton: {
-    fontFamily: 'Pokemon',
-    textTransform: 'capitalize',
-    border: 'none',
-    padding: '8px 12px',
-    borderRadius: 999,
-    background: 'var(--theme-accent)',
-    color: '#ffd58a',
-    cursor: 'pointer'
+  pokeListSpriteFallbackIcon: {
+    fontFamily: 'var(--ui-font)',
+    fontSize: 18,
+    lineHeight: 1,
+    fontWeight: 700
   },
-  pokeButtonAll: {
-    background: 'var(--play-ink)'
+  pokeListSpriteFallbackText: {
+    fontFamily: 'var(--ui-font)',
+    fontSize: 10,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    lineHeight: 1
   },
   pokeFeatured: {
     background: 'transparent',
@@ -896,16 +871,6 @@ export const useListStyles = createUseStyles({
     width: '100%',
     flex: 1,
     minHeight: 0
-  },
-  pokeFeaturedShimmer: {
-    position: 'absolute',
-    inset: 0,
-    background: 'rgba(15, 23, 42, 0.45)',
-    transformOrigin: 'left',
-    transform: 'scaleX(0)',
-    animation: '$featuredProgress 9s linear infinite',
-    pointerEvents: 'none',
-    zIndex: 0
   },
   pokeFeaturedTitle: {
     position: 'relative',
@@ -928,44 +893,6 @@ export const useListStyles = createUseStyles({
     zIndex: 1,
     height: '100%',
     paddingBottom: "10px"
-  },
-  pokeFeaturedCenter: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 10,
-    justifyContent: 'center',
-    flex: 1,
-    minWidth: 0
-  },
-  pokeFeaturedSpriteButton: {
-    border: 'none',
-    background: 'transparent',
-    padding: 0,
-    margin: 0,
-    cursor: 'pointer',
-    borderRadius: 16
-  },
-  pokeFeaturedText: {
-    minWidth: 0,
-    textAlign: 'center'
-  },
-  pokeFeaturedSprite: {
-    width: 170,
-    height: 170,
-    objectFit: 'contain'
-  },
-  pokeFeaturedName: {
-    margin: '2px 0 0',
-    textTransform: 'capitalize',
-    fontSize: 26,
-    ...pokemonText,
-    whiteSpace: 'normal',
-    overflow: 'visible',
-    textOverflow: 'clip',
-    maxWidth: 'none',
-    lineHeight: 1.2,
-    paddingBottom: 2
   },
   pokeFeaturedContentCarousel: {
     alignItems: 'center',
@@ -1020,16 +947,6 @@ export const useListStyles = createUseStyles({
     textTransform: 'capitalize',
     textAlign: 'center',
     ...pokemonText
-  },
-  pokeFeaturedLink: {
-    color: '#2b6fdd',
-    textDecoration: 'none',
-    fontFamily: 'Pokemon',
-    display: 'block',
-    whiteSpace: 'normal',
-    overflow: 'visible',
-    textOverflow: 'clip',
-    maxWidth: 'none'
   },
   pokeFeaturedNav: {
     fontFamily: 'Pokemon',
@@ -1188,11 +1105,6 @@ export const useListStyles = createUseStyles({
     lineHeight: 1,
     opacity: 0.7
   },
-  '@keyframes featuredProgress': {
-    '0%': { transform: 'scaleX(0)', opacity: 0.0 },
-    '8%': { transform: 'scaleX(0.02)', opacity: 0.1 },
-    '100%': { transform: 'scaleX(1)', opacity: 0.8 }
-  },
   '@keyframes sparklePop': {
     '0%': { transform: 'scale(0.6)', opacity: 0.9 },
     '100%': { transform: 'scale(1.2)', opacity: 0 }
@@ -1223,14 +1135,20 @@ export const useListStyles = createUseStyles({
       pointerEvents: 'none'
     }
   },
+  '@media (orientation: portrait)': {
+    listContainer: {
+      height: '68dvh'
+    }
+  },
+  '@media (orientation: landscape)': {
+    listContainer: {
+      height: '55dvh'
+    }
+  },
   '@media (max-width: 1100px)': {
     mainPage: {
       flexDirection: 'column',
       padding: '0 16px 40px'
-    },
-    rightColumn: {
-      width: '100%',
-      flex: '1 1 auto'
     },
     mainColumn: {
       order: 2
@@ -1250,26 +1168,27 @@ export const useListStyles = createUseStyles({
       rowGap: 12
     },
     featuredRow: {
-      flexDirection: 'column',
+      flexDirection: 'row',
+      alignItems: 'stretch',
       height: 'auto'
     },
     greetingCard: {
-      height: 'auto'
+      height: 'auto',
+      flex: '0 0 280px'
     },
     pokeFeatured: {
-      height: 'auto'
+      height: 'auto',
+      minWidth: 0,
+      flex: '1 1 auto'
     },
     pokeFeaturedNav: {
       justifySelf: 'center'
-    },
-    listContainer: {
-      height: 'clamp(320px, 42vh, 520px)'
     },
     pokeListItems: {
       gridTemplateColumns: 'repeat(2, minmax(180px, 1fr))'
     }
   },
-  '@media (orientation: portrait)': {
+  '@media (orientation: portrait) and (min-width: 1101px)': {
     featuredRow: {
       flexDirection: 'row',
       height: 280
@@ -1282,17 +1201,10 @@ export const useListStyles = createUseStyles({
     pokeFeatured: {
       minHeight: 200
     },
-    pokeFeaturedSprite: {
-      width: 140,
-      height: 140
-    },
     pokeFeaturedContent: {
       height: '100%',
       gap: 12
     },
-    listContainer: {
-      height: 'calc(70vh - 30px)'
-    }
   },
   '@media (max-width: 640px)': {
     filterDrawerList: {

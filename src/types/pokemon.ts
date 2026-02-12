@@ -7,7 +7,7 @@ export type Pokemon = {
     front_shiny?: string | null;
     other?: {
       ['official-artwork']?: { front_default?: string | null; front_shiny?: string | null };
-      home?: { front_default?: string | null };
+      home?: { front_default?: string | null; front_shiny?: string | null };
     };
   };
   species?: { name: string; url: string };

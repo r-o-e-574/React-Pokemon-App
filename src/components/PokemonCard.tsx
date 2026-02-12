@@ -18,6 +18,7 @@ type EvolutionEntry = { name: string; details: EvolutionDetail | null };
 type EvolutionStage = { stage: number; entries: EvolutionEntry[] };
 type TraitChip = { label: string; kind: string };
 type TypeMatchups = { weak: string[]; resist: string[]; immune: string[] };
+type ShinyFxMode = 'on' | 'off' | null;
 
 type PokemonCardProps = {
     pokemon: Pokemon;
@@ -52,8 +53,22 @@ function PokemonCard({
     const classes = usePokemonViewStyles();
     const { voices } = useVoices();
     const [activeSpeechLabel, setActiveSpeechLabel] = React.useState<string | null>(null);
+    const [isShiny, setIsShiny] = React.useState(false);
+    const [shinyFxMode, setShinyFxMode] = React.useState<ShinyFxMode>(null);
     const cryAudioRef = React.useRef<HTMLAudioElement | null>(null);
-    const imageSrc = pokemon.sprites.front_default ?? '';
+    const shinyBurstTimeoutRef = React.useRef<number | null>(null);
+    const defaultImageSrc =
+        pokemon.sprites.other?.['official-artwork']?.front_default ??
+        pokemon.sprites.other?.home?.front_default ??
+        pokemon.sprites.front_default ??
+        '';
+    const shinyImageSrc =
+        pokemon.sprites.other?.['official-artwork']?.front_shiny ??
+        pokemon.sprites.other?.home?.front_shiny ??
+        pokemon.sprites.front_shiny ??
+        '';
+    const canToggleShiny = Boolean(shinyImageSrc);
+    const imageSrc = isShiny && canToggleShiny ? shinyImageSrc : defaultImageSrc;
     const cryUrl = pokemon.cries?.latest ?? pokemon.cries?.legacy ?? '';
     const statItems = pokemon.stats ?? [];
     const heightInches = pokemon.height ? pokemon.height * 3.93701 : 0;
@@ -79,6 +94,21 @@ function PokemonCard({
         cryAudioRef.current = audio;
         audio.play().catch(() => {
             // no-op
+        });
+    };
+    const handleToggleShiny = () => {
+        if (!canToggleShiny) return;
+        setIsShiny((prev) => {
+            const next = !prev;
+            setShinyFxMode(next ? 'on' : 'off');
+            if (shinyBurstTimeoutRef.current) {
+                window.clearTimeout(shinyBurstTimeoutRef.current);
+            }
+            shinyBurstTimeoutRef.current = window.setTimeout(() => {
+                setShinyFxMode(null);
+                shinyBurstTimeoutRef.current = null;
+            }, next ? 720 : 560);
+            return next;
         });
     };
 
@@ -291,6 +321,21 @@ function PokemonCard({
         }
         setActiveSpeechLabel(null);
     };
+    React.useEffect(() => {
+        setIsShiny(false);
+        setShinyFxMode(null);
+        if (shinyBurstTimeoutRef.current) {
+            window.clearTimeout(shinyBurstTimeoutRef.current);
+            shinyBurstTimeoutRef.current = null;
+        }
+    }, [pokemon.name]);
+    React.useEffect(() => {
+        return () => {
+            if (shinyBurstTimeoutRef.current) {
+                window.clearTimeout(shinyBurstTimeoutRef.current);
+            }
+        };
+    }, []);
 
     return (
         <div className={classes.pokeBackground}>
@@ -312,6 +357,9 @@ function PokemonCard({
                 <HeroPanel
                     pokemon={pokemon}
                     imageSrc={imageSrc}
+                    isShiny={isShiny}
+                    canToggleShiny={canToggleShiny}
+                    shinyFxMode={shinyFxMode}
                     cryUrl={cryUrl}
                     genus={genus}
                     speciesText={speciesText}
@@ -328,61 +376,66 @@ function PokemonCard({
                     onSpeakStart={handleSpeakStart}
                     onSpeakStop={handleSpeakStop}
                     onPlayCry={handlePlayCry}
+                    onToggleShiny={handleToggleShiny}
                 />
                 <div className={classes.pokeScrollArea}>
-                    <div className={classes.pokeInfoRows}>
-                        <div className={classes.pokeInfoRowSecondary}>
-                            <MatchupsPanel
-                                typeMatchups={typeMatchups}
-                                matchupsText={matchupsText}
-                                typeChipStyle={typeChipStyle}
-                                playButtonStyle={playButtonStyle}
-                                preferredVoiceURI={preferredVoiceURI}
-                                isSpeaking={isSpeaking}
-                                onSpeakStart={handleSpeakStart}
-                                onSpeakStop={handleSpeakStop}
-                            />
-                            <TraitsPanel
-                                traitChips={traitChips}
-                                traitsText={traitsText}
-                                playButtonStyle={playButtonStyle}
-                                preferredVoiceURI={preferredVoiceURI}
-                                isSpeaking={isSpeaking}
-                                onSpeakStart={handleSpeakStart}
-                                onSpeakStop={handleSpeakStop}
-                            />
-                            <CarePanel
-                                speciesMeta={speciesMeta}
-                                careText={careText}
-                                playButtonStyle={playButtonStyle}
-                                preferredVoiceURI={preferredVoiceURI}
-                                isSpeaking={isSpeaking}
-                                onSpeakStart={handleSpeakStart}
-                                onSpeakStop={handleSpeakStop}
-                            />
+                    <div className={classes.pokeScrollContent}>
+                        <div className={classes.pokeInfoRows}>
+                            <div className={classes.pokeInfoRowSecondary}>
+                                <MatchupsPanel
+                                    typeMatchups={typeMatchups}
+                                    matchupsText={matchupsText}
+                                    typeChipStyle={typeChipStyle}
+                                    playButtonStyle={playButtonStyle}
+                                    preferredVoiceURI={preferredVoiceURI}
+                                    isSpeaking={isSpeaking}
+                                    onSpeakStart={handleSpeakStart}
+                                    onSpeakStop={handleSpeakStop}
+                                />
+                                <TraitsPanel
+                                    traitChips={traitChips}
+                                    traitsText={traitsText}
+                                    playButtonStyle={playButtonStyle}
+                                    preferredVoiceURI={preferredVoiceURI}
+                                    isSpeaking={isSpeaking}
+                                    onSpeakStart={handleSpeakStart}
+                                    onSpeakStop={handleSpeakStop}
+                                />
+                                <CarePanel
+                                    speciesMeta={speciesMeta}
+                                    careText={careText}
+                                    playButtonStyle={playButtonStyle}
+                                    preferredVoiceURI={preferredVoiceURI}
+                                    isSpeaking={isSpeaking}
+                                    onSpeakStart={handleSpeakStart}
+                                    onSpeakStop={handleSpeakStop}
+                                />
+                            </div>
                         </div>
+                        <EvolutionPanel
+                            evolutionStages={evolutionStages}
+                            evolutionSprites={evolutionSprites}
+                            evolutionText={evolutionText}
+                            formatEvolutionDetail={formatEvolutionDetail}
+                            playButtonStyle={playButtonStyle}
+                            preferredVoiceURI={preferredVoiceURI}
+                            isSpeaking={isSpeaking}
+                            onSpeakStart={handleSpeakStart}
+                            onSpeakStop={handleSpeakStop}
+                        />
+                        {varietyList.length ? (
+                            <VarietiesPanel
+                                varietyList={varietyList}
+                                varietySprites={varietySprites}
+                                varietiesText={varietiesText}
+                                playButtonStyle={playButtonStyle}
+                                preferredVoiceURI={preferredVoiceURI}
+                                isSpeaking={isSpeaking}
+                                onSpeakStart={handleSpeakStart}
+                                onSpeakStop={handleSpeakStop}
+                            />
+                        ) : null}
                     </div>
-                    <EvolutionPanel
-                        evolutionStages={evolutionStages}
-                        evolutionSprites={evolutionSprites}
-                        evolutionText={evolutionText}
-                        formatEvolutionDetail={formatEvolutionDetail}
-                        playButtonStyle={playButtonStyle}
-                        preferredVoiceURI={preferredVoiceURI}
-                        isSpeaking={isSpeaking}
-                        onSpeakStart={handleSpeakStart}
-                        onSpeakStop={handleSpeakStop}
-                    />
-                    <VarietiesPanel
-                        varietyList={varietyList}
-                        varietySprites={varietySprites}
-                        varietiesText={varietiesText}
-                        playButtonStyle={playButtonStyle}
-                        preferredVoiceURI={preferredVoiceURI}
-                        isSpeaking={isSpeaking}
-                        onSpeakStart={handleSpeakStart}
-                        onSpeakStop={handleSpeakStop}
-                    />
                 </div>
             </div>
         </div>

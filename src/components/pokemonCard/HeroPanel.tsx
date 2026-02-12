@@ -8,6 +8,9 @@ import TtsButton from './TtsButton';
 type HeroPanelProps = {
     pokemon: Pokemon;
     imageSrc: string;
+    isShiny: boolean;
+    canToggleShiny: boolean;
+    shinyFxMode: 'on' | 'off' | null;
     cryUrl: string;
     genus: string;
     speciesText: string;
@@ -24,11 +27,15 @@ type HeroPanelProps = {
     onSpeakStart: (label: string) => void;
     onSpeakStop: () => void;
     onPlayCry: () => void;
+    onToggleShiny: () => void;
 };
 
 function HeroPanel({
     pokemon,
     imageSrc,
+    isShiny,
+    canToggleShiny,
+    shinyFxMode,
     cryUrl,
     genus,
     speciesText,
@@ -44,7 +51,8 @@ function HeroPanel({
     isSpeaking,
     onSpeakStart,
     onSpeakStop,
-    onPlayCry
+    onPlayCry,
+    onToggleShiny
 }: HeroPanelProps) {
     const classes = usePokemonViewStyles();
     const panelClasses = usePanelStyles();
@@ -73,13 +81,43 @@ function HeroPanel({
             }
         >
             <div className={classes.pokeHeroImageWrap}>
+                {canToggleShiny ? (
+                    <button
+                        className={`${classes.pokeShinyToggle} ${isShiny ? classes.pokeShinyToggleActive : ''}`}
+                        type='button'
+                        onClick={onToggleShiny}
+                        aria-label={isShiny ? `Show normal ${pokemon.name}` : `Show shiny ${pokemon.name}`}
+                    >
+                        <span className={classes.pokeShinySparkle} aria-hidden='true'>✦</span>
+                    </button>
+                ) : null}
                 {imageSrc ? (
-                    <img className={classes.pokeImage} src={imageSrc} alt={pokemon.name} />
+                    <img
+                        className={`${classes.pokeImage} ${isShiny ? classes.pokeImageShinyActive : ''} ${shinyFxMode === 'on' ? classes.pokeImageShinyFlash : ''} ${shinyFxMode === 'off' ? classes.pokeImageShinyFadeDown : ''}`}
+                        src={imageSrc}
+                        alt={pokemon.name}
+                    />
                 ) : (
                     <div className={classes.pokeImageFallback}>
                         Uh oh! The sprite wandered off for a snack.
                     </div>
                 )}
+                {shinyFxMode ? (
+                    <>
+                        <span className={`${classes.pokeShinyTwinkle} ${shinyFxMode === 'on' ? classes.pokeShinyTwinkleOn : classes.pokeShinyTwinkleOff} ${classes.pokeShinyTwinkleA}`} aria-hidden='true'>
+                            ✦
+                        </span>
+                        <span className={`${classes.pokeShinyTwinkle} ${shinyFxMode === 'on' ? classes.pokeShinyTwinkleOn : classes.pokeShinyTwinkleOff} ${classes.pokeShinyTwinkleB}`} aria-hidden='true'>
+                            ✧
+                        </span>
+                        <span className={`${classes.pokeShinyTwinkle} ${shinyFxMode === 'on' ? classes.pokeShinyTwinkleOn : classes.pokeShinyTwinkleOff} ${classes.pokeShinyTwinkleC}`} aria-hidden='true'>
+                            ✦
+                        </span>
+                        <span className={`${classes.pokeShinyTwinkle} ${shinyFxMode === 'on' ? classes.pokeShinyTwinkleOn : classes.pokeShinyTwinkleOff} ${classes.pokeShinyTwinkleD}`} aria-hidden='true'>
+                            ✧
+                        </span>
+                    </>
+                ) : null}
                 <div className={classes.pokeHeroBadges}>
                     {pokemon.types.map(({ type }) => (
                         <span

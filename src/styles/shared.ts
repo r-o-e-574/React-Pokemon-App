@@ -42,6 +42,7 @@ export const contentShimmerBase = {
   backgroundSize: `${shimmerSize}, 100% 100%`,
   backgroundPosition: shimmerStart,
   willChange: 'background-position-x',
+  transition: 'background 240ms ease, border-color 240ms ease, color 240ms ease, box-shadow 240ms ease',
   animation: `$containerShimmer ${shimmerDuration} linear infinite`
 };
 
