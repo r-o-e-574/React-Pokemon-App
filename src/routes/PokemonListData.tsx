@@ -188,6 +188,16 @@ function PokemonListData() {
   const quizCloseTimeoutRef = useRef<number | null>(null);
   const [quizSpeechLabel, setQuizSpeechLabel] = useState<string | null>(null);
   const [isPortraitMode, setIsPortraitMode] = useState(false);
+  const duckBgm = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      window.__pokeBgmDuck?.();
+    }
+  }, []);
+  const unduckBgm = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      window.__pokeBgmUnduckAll?.();
+    }
+  }, []);
   const { voices } = useVoices();
   const [searchTerm, setSearchTerm] = useState(() => {
     const stored = localStorage.getItem('pokeFilters');
@@ -435,10 +445,15 @@ function PokemonListData() {
       if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
       try {
         window.speechSynthesis.cancel();
+        unduckBgm();
         setQuizSpeechLabel(line);
         const utterance = new SpeechSynthesisUtterance(line);
         utterance.rate = 0.9;
         utterance.pitch = 0.95;
+        utterance.volume = 0.68;
+        utterance.onstart = () => duckBgm();
+        utterance.onend = () => unduckBgm();
+        utterance.onerror = () => unduckBgm();
         const daniel = voices?.find((voice) => voice.name.toLowerCase() === 'daniel');
         if (daniel) {
           utterance.voice = daniel;
@@ -448,7 +463,7 @@ function PokemonListData() {
         // ignore TTS failures
       }
     },
-    [voices]
+    [voices, duckBgm, unduckBgm]
   );
 
   const closeQuiz = useCallback(() => {
@@ -465,7 +480,8 @@ function PokemonListData() {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
-  }, []);
+    unduckBgm();
+  }, [unduckBgm]);
 
   const scheduleQuizClose = (delayMs: number) => {
     if (quizCloseTimeoutRef.current) {

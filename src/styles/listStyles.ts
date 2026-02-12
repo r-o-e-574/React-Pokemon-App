@@ -920,6 +920,8 @@ export const useListStyles = createUseStyles({
     gap: 6,
     minWidth: 130,
     maxWidth: 180,
+    minHeight: 184,
+    height: 184,
     cursor: 'pointer',
     color: 'rgba(255, 255, 255, 0.9)',
     fontFamily: 'var(--pokemon-font)',
@@ -936,12 +938,18 @@ export const useListStyles = createUseStyles({
     boxShadow: '0 10px 24px rgba(15, 23, 42, 0.35)'
   },
   pokeFeaturedCarouselSprite: {
+    display: 'block',
+    flex: '0 0 128px',
     width: 128,
     height: 128,
     objectFit: 'contain'
   },
   pokeFeaturedCarouselName: {
     fontSize: 14,
+    lineHeight: 1.1,
+    minHeight: 30,
+    maxHeight: 30,
+    overflow: 'hidden',
     textTransform: 'capitalize',
     textAlign: 'center',
     ...pokemonText

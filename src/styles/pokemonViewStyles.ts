@@ -70,9 +70,9 @@ export const usePokemonViewStyles = createUseStyles({
   },
   pokeHeroCard: {
     display: 'grid',
-    gridTemplateColumns: 'minmax(220px, 280px) 1fr',
-    gap: 16,
-    alignItems: 'center',
+    gridTemplateColumns: 'minmax(200px, 240px) minmax(0, 1fr)',
+    gap: 12,
+    alignItems: 'start',
     flexShrink: 0
   },
   pokeHeroTopRight: {
@@ -192,22 +192,6 @@ export const usePokemonViewStyles = createUseStyles({
       gap: 12
     }
   },
-  '@media (max-width: 700px) and (orientation: portrait)': {
-    pokeHeroCard: {
-      gridTemplateColumns: '1fr',
-      textAlign: 'center'
-    },
-    pokeHeroTopRight: {
-      position: 'static',
-      marginLeft: 'auto'
-    },
-    pokeHeroActions: {
-      justifyContent: 'center'
-    },
-    pokeMetaRow: {
-      justifyContent: 'center'
-    }
-  },
   '@media (max-height: 820px)': {
     pokeName: {
       fontSize: 26
@@ -218,8 +202,8 @@ export const usePokemonViewStyles = createUseStyles({
     lineHeight: 1
   },
   pokeImage: {
-    width: 220,
-    height: 220,
+    width: 200,
+    height: 200,
     objectFit: 'contain',
     justifySelf: 'center'
   },
@@ -246,7 +230,7 @@ export const usePokemonViewStyles = createUseStyles({
   pokeHeroText: {
     display: 'flex',
     flexDirection: 'column',
-    gap: 8,
+    gap: 6,
     fontFamily: 'var(--ui-font)'
   },
   pokeHeroActions: {

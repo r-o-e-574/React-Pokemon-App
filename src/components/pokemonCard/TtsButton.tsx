@@ -33,7 +33,7 @@ function TtsButton({
     text: spokenText,
     rate: 0.9,
     pitch: 0.95,
-    volume: 1,
+    volume: 0.68,
     lang: 'en-US',
     voiceURI,
     autoPlay: false,

@@ -203,7 +203,7 @@ function PokemonCard({
   const matchupsText = [
     typeMatchups.weak.length ? `Weak to ${naturalList(typeMatchups.weak)}` : '',
     typeMatchups.resist.length ? `Resists ${naturalList(typeMatchups.resist)}` : '',
-    typeMatchups.immune.length ? `Immune to ${naturalList(typeMatchups.immune)}` : ''
+    typeMatchups.immune.length ? `Immune to ${naturalList(typeMatchups.immune)}` : 'Immune to nothing'
   ]
     .filter(Boolean)
     .join('. ');
@@ -337,10 +337,12 @@ function PokemonCard({
 
   const handleSpeakStart = (label: string) => {
     stopCryAudio();
+    duckBgm();
     setActiveSpeechLabel(label);
   };
 
   const handleSpeakStop = () => {
+    unduckBgm();
     setActiveSpeechLabel(null);
   };
 
@@ -348,6 +350,7 @@ function PokemonCard({
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
+    unduckBgm();
     setActiveSpeechLabel(null);
   };
   useEffect(() => {
@@ -361,6 +364,7 @@ function PokemonCard({
   }, [pokemon.name]);
   useEffect(() => {
     return () => {
+      unduckBgm();
       if (shinyBurstTimeoutRef.current) {
         window.clearTimeout(shinyBurstTimeoutRef.current);
       }
@@ -473,3 +477,14 @@ function PokemonCard({
 }
 
 export default PokemonCard;
+  const duckBgm = () => {
+    if (typeof window !== 'undefined') {
+      window.__pokeBgmDuck?.();
+    }
+  };
+
+const unduckBgm = () => {
+  if (typeof window !== 'undefined') {
+    window.__pokeBgmUnduckAll?.();
+  }
+};
