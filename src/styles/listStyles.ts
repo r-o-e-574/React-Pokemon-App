@@ -38,8 +38,8 @@ export const useListStyles = createUseStyles({
     background:
       'linear-gradient(rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.08)), linear-gradient(135deg, var(--theme-bg-1) 0%, var(--theme-bg-2) 45%, var(--theme-bg-3) 100%)',
     position: 'relative',
-    height: 'auto',
-    overflowX: 'hidden',
+    height: '100dvh',
+    overflow: 'hidden',
     transition: 'background 240ms ease'
   },
   mainPageTiles: {
@@ -64,7 +64,7 @@ export const useListStyles = createUseStyles({
     position: 'sticky',
     top: 0,
     zIndex: 5,
-    padding: '0 4px 12px',
+    padding: 'calc(env(safe-area-inset-top, 0px) + 8px) 4px 12px',
     backdropFilter: 'blur(6px)',
     width: '100%',
     flex: '0 0 100%'
@@ -151,7 +151,8 @@ export const useListStyles = createUseStyles({
     padding: 24
   },
   mysteryModal: {
-    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(245, 249, 255, 0.95))',
+    background:
+      'linear-gradient(145deg, color-mix(in srgb, var(--theme-card-bg) 74%, rgba(15, 23, 42, 0.08) 26%), color-mix(in srgb, var(--theme-card-bg) 62%, rgba(15, 23, 42, 0.16) 38%))',
     border: '1px solid var(--theme-border)',
     borderRadius: 20,
     padding: '24px 24px 28px',
@@ -159,7 +160,7 @@ export const useListStyles = createUseStyles({
     boxShadow: '0 24px 60px rgba(15, 23, 42, 0.45)',
     position: 'relative',
     textAlign: 'center',
-    backdropFilter: 'blur(6px)'
+    backdropFilter: 'blur(8px)'
   },
   mysteryClose: {
     position: 'absolute',

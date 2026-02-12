@@ -12,6 +12,7 @@ import type {
   TypeResponse
 } from '../types/pokeapi';
 import { getTypeTheme } from '../styles/typeTheme';
+import { formatPokemonDisplayName } from '../utils/pokemonName';
 
 const emptyPokemon: Pokemon = { name: '', abilities: [], types: [], sprites: {}, cries: {} };
 
@@ -28,7 +29,7 @@ function PokemonViewData() {
     captureRate?: number;
     baseHappiness?: number;
     hatchCounter?: number;
-    varieties: { name: string; is_default: boolean }[];
+    varieties: { name: string; displayName: string; is_default: boolean }[];
   }>({ eggGroups: [], varieties: [] });
   const [evolutionStages, setEvolutionStages] = useState<
     Array<{ stage: number; entries: EvolutionEntry[] }>
@@ -83,7 +84,7 @@ function PokemonViewData() {
   useEffect(() => {
     const url = 'https://pokeapi.co/api/v2/pokemon/' + pokemonName;
     fetchUrl<Pokemon>(url, (data) => {
-      setPokemon(data);
+      setPokemon({ ...data, displayName: formatPokemonDisplayName(data.name) });
       const megaPromise = fetchMegaFormNames(data.forms ?? []);
 
       if (data.species?.url) {
@@ -97,6 +98,7 @@ function PokemonViewData() {
           const rawVarieties =
             species.varieties?.map((item) => ({
               name: item.pokemon.name,
+              displayName: formatPokemonDisplayName(item.pokemon.name),
               is_default: item.is_default
             })) ?? [];
           const seen = new Set<string>();
@@ -139,7 +141,11 @@ function PokemonViewData() {
             setSpeciesMeta((prev) => {
               const nextVarieties = [
                 ...(prev.varieties ?? []),
-                ...uniqueMegaNames.map((name) => ({ name, is_default: false }))
+                ...uniqueMegaNames.map((name) => ({
+                  name,
+                  displayName: formatPokemonDisplayName(name),
+                  is_default: false
+                }))
               ];
               const nextSeen = new Set<string>();
               return {
@@ -232,6 +238,7 @@ function PokemonViewData() {
       if (!stages[depth]) stages[depth] = [];
       stages[depth].push({
         name: node.species.name,
+        displayName: formatPokemonDisplayName(node.species.name),
         details: node.evolution_details?.[0] ?? null
       });
       node.evolves_to?.forEach((child) => walk(child, depth + 1));
@@ -289,6 +296,7 @@ export default PokemonViewData;
 
 interface EvolutionEntry {
   name: string;
+  displayName: string;
   details: EvolutionDetail | null;
 }
 

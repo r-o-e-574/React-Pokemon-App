@@ -8,6 +8,7 @@ import type { EvolutionDetail } from '../../types/pokeapi';
 
 interface EvolutionEntry {
   name: string;
+  displayName: string;
   details: EvolutionDetail | null;
 }
 
@@ -79,14 +80,14 @@ function EvolutionPanel({
                       <img
                         className={classes.pokeEvolutionSprite}
                         src={evolutionSprites[entry.name]}
-                        alt={entry.name}
+                        alt={entry.displayName}
                       />
                     ) : (
                       <div className={classes.pokeEvolutionFallback}>Uh oh</div>
                     )}
                     <div>
                       <div className={classes.pokeEvolutionText}>
-                        <p className={classes.pokeEvolutionName}>{entry.name}</p>
+                        <p className={classes.pokeEvolutionName}>{entry.displayName}</p>
                         {entry.details ? (
                           <p className={classes.pokeEvolutionDetail}>
                             {formatEvolutionDetail(entry.details)}

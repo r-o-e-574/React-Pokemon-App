@@ -58,6 +58,7 @@ function HeroPanel({
 }: HeroPanelProps) {
   const classes = usePokemonViewStyles();
   const panelClasses = usePanelStyles();
+  const pokemonDisplayName = pokemon.displayName ?? pokemon.name;
 
   return (
     <PokePanel
@@ -65,7 +66,7 @@ function HeroPanel({
       headerClassName={panelClasses.header}
       titleClassName={panelClasses.title}
       bodyClassName={`${panelClasses.body} ${classes.pokeHeroCard}`}
-      title={pokemon.name}
+      title={pokemonDisplayName}
       action={
         heroText ? (
           <TtsButton
@@ -88,7 +89,7 @@ function HeroPanel({
             className={`${classes.pokeShinyToggle} ${isShiny ? classes.pokeShinyToggleActive : ''}`}
             type="button"
             onClick={onToggleShiny}
-            aria-label={isShiny ? `Show normal ${pokemon.name}` : `Show shiny ${pokemon.name}`}
+            aria-label={isShiny ? `Show normal ${pokemonDisplayName}` : `Show shiny ${pokemonDisplayName}`}
           >
             <span className={classes.pokeShinySparkle} aria-hidden="true">
               ✦
@@ -100,7 +101,7 @@ function HeroPanel({
             key={`${pokemon.name}-${isShiny ? 'shiny' : 'base'}-${shinyFxMode ?? 'none'}-${shinyFxTick}`}
             className={`${classes.pokeImage} ${isShiny ? classes.pokeImageShinyActive : ''} ${shinyFxMode === 'on' ? classes.pokeImageShinyFlash : ''} ${shinyFxMode === 'off' ? classes.pokeImageShinyFadeDown : ''}`}
             src={imageSrc}
-            alt={pokemon.name}
+            alt={pokemonDisplayName}
           />
         ) : (
           <div className={classes.pokeImageFallback}>
@@ -133,6 +134,18 @@ function HeroPanel({
             >
               ✧
             </span>
+            <span
+              className={`${classes.pokeShinyTwinkle} ${shinyFxMode === 'on' ? classes.pokeShinyTwinkleOn : classes.pokeShinyTwinkleOff} ${classes.pokeShinyTwinkleE}`}
+              aria-hidden="true"
+            >
+              ✦
+            </span>
+            <span
+              className={`${classes.pokeShinyTwinkle} ${shinyFxMode === 'on' ? classes.pokeShinyTwinkleOn : classes.pokeShinyTwinkleOff} ${classes.pokeShinyTwinkleF}`}
+              aria-hidden="true"
+            >
+              ✧
+            </span>
           </>
         ) : null}
         <div className={classes.pokeHeroBadges}>
@@ -151,7 +164,7 @@ function HeroPanel({
             className={classes.pokeCryButton}
             type="button"
             onClick={onPlayCry}
-            aria-label={`Play ${pokemon.name} cry`}
+            aria-label={`Play ${pokemonDisplayName} cry`}
           >
             <svg
               className={classes.pokeCryIcon}

@@ -1,5 +1,6 @@
 export type Pokemon = {
   name: string;
+  displayName?: string;
   abilities: { ability: { name: string } }[];
   types: { type: { name: string } }[];
   sprites: {

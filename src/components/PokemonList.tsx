@@ -6,6 +6,7 @@ import PokePanel from './PokePanel';
 
 interface PokemonListItem {
   name: string;
+  displayName?: string;
   apiName?: string;
   sprite?: string;
   cry?: string;
@@ -89,8 +90,9 @@ function PokemonList({ pokemons = [] }: PokemonListProps) {
       >
         <div className={classes.listBody}>
           <ul className={classes.pokeListItems}>
-            {pokemons.map(({ name: pokeName, apiName, sprite, cry }) => {
+            {pokemons.map(({ name: pokeName, displayName, apiName, sprite, cry }) => {
               const routeName = apiName ?? pokeName;
+              const label = displayName ?? pokeName;
               const hasBrokenSprite = Boolean(brokenSpriteIds[routeName]);
               const showSprite = Boolean(sprite) && !hasBrokenSprite;
               return (
@@ -100,12 +102,12 @@ function PokemonList({ pokemons = [] }: PokemonListProps) {
                       className={classes.pokeSpriteButton}
                       type="button"
                       onClick={() => handlePlayCry(cry)}
-                      aria-label={`Play ${routeName} cry`}
+                      aria-label={`Play ${label} cry`}
                     >
                       <img
                         className={classes.pokeListSprite}
                         src={sprite}
-                        alt={`${pokeName} sprite`}
+                        alt={`${label} sprite`}
                         onError={() =>
                           setBrokenSpriteIds((prev) => ({ ...prev, [routeName]: true }))
                         }
@@ -129,7 +131,7 @@ function PokemonList({ pokemons = [] }: PokemonListProps) {
                       to={`/main/${routeName}`}
                       onClick={(event) => handleNavigate(event, routeName)}
                     >
-                      {pokeName}
+                      {label}
                     </Link>
                     {sparkleId === routeName ? (
                       <span className={classes.pokeListSparkle} aria-hidden="true" />

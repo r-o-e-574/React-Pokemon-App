@@ -7,6 +7,7 @@ import TtsButton from './TtsButton';
 
 interface VarietyItem {
   name: string;
+  displayName: string;
   is_default: boolean;
 }
 
@@ -65,12 +66,12 @@ function VarietiesPanel({
                 <img
                   className={classes.pokeVarietySprite}
                   src={varietySprites[item.name]}
-                  alt={item.name}
+                  alt={item.displayName}
                 />
               ) : (
                 <div className={classes.pokeVarietyFallback}>Uh oh</div>
               )}
-              <span className={classes.pokeVarietyName}>{item.name}</span>
+              <span className={classes.pokeVarietyName}>{item.displayName}</span>
             </div>
           </Link>
         ))}

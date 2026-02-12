@@ -7,7 +7,7 @@ export const usePokemonViewStyles = createUseStyles({
     justifyContent: 'center',
     minHeight: '100dvh',
     height: '100dvh',
-    padding: '10px 16px 32px',
+    padding: 'calc(env(safe-area-inset-top, 0px) + 8px) 16px 32px',
     background:
       'linear-gradient(rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.08)), radial-gradient(circle at top, var(--theme-bg-1) 0%, var(--theme-bg-2) 50%, var(--theme-bg-3) 100%)',
     position: 'relative',
@@ -186,7 +186,7 @@ export const usePokemonViewStyles = createUseStyles({
       fontSize: 18
     },
     pokeBackground: {
-      padding: '20px 12px'
+      padding: 'calc(env(safe-area-inset-top, 0px) + 10px) 12px 20px'
     },
     pokeDetails: {
       gap: 12
@@ -224,7 +224,8 @@ export const usePokemonViewStyles = createUseStyles({
     justifySelf: 'center'
   },
   pokeImageShinyActive: {
-    filter: 'brightness(1.08) saturate(1.12) drop-shadow(0 0 10px rgba(246, 211, 106, 0.35))'
+    filter:
+      'brightness(1.18) saturate(1.28) contrast(1.05) drop-shadow(0 0 18px rgba(255, 223, 124, 0.62))'
   },
   pokeImageFallback: {
     width: 220,
@@ -324,15 +325,15 @@ export const usePokemonViewStyles = createUseStyles({
     }
   },
   pokeShinyToggleActive: {
-    borderColor: 'rgba(255, 220, 120, 0.9)',
-    boxShadow: '0 10px 20px rgba(255, 214, 102, 0.28), inset 0 0 0 1px rgba(255, 236, 176, 0.55)',
+    borderColor: 'rgba(255, 226, 130, 0.95)',
+    boxShadow: '0 12px 24px rgba(255, 214, 102, 0.4), inset 0 0 0 1px rgba(255, 236, 176, 0.72)',
     filter: 'saturate(1.1)'
   },
   pokeShinySparkle: {
-    fontSize: 14,
+    fontSize: 16,
     lineHeight: 1,
-    color: '#ffe58a',
-    textShadow: '0 0 12px rgba(255, 223, 124, 0.9), 0 0 20px rgba(255, 223, 124, 0.55)'
+    color: '#ffefad',
+    textShadow: '0 0 14px rgba(255, 235, 156, 1), 0 0 26px rgba(255, 213, 102, 0.86)'
   },
   pokeImageShinyFlash: {
     animation: '$shinyFlash 0.7s ease-out'
@@ -344,7 +345,7 @@ export const usePokemonViewStyles = createUseStyles({
     position: 'absolute',
     pointerEvents: 'none',
     color: '#ffe58a',
-    textShadow: '0 0 12px rgba(255, 223, 124, 0.95), 0 0 20px rgba(255, 223, 124, 0.6)',
+    textShadow: '0 0 16px rgba(255, 223, 124, 1), 0 0 28px rgba(255, 223, 124, 0.78)',
     opacity: 0.05,
     zIndex: 2
   },
@@ -352,8 +353,8 @@ export const usePokemonViewStyles = createUseStyles({
     animation: '$shinyTwinkle 0.7s ease-out both'
   },
   pokeShinyTwinkleOff: {
-    color: '#ffe8a8',
-    textShadow: '0 0 10px rgba(255, 228, 146, 0.82), 0 0 16px rgba(255, 228, 146, 0.44)',
+    color: '#8ad6ff',
+    textShadow: '0 0 14px rgba(138, 214, 255, 0.95), 0 0 26px rgba(90, 158, 255, 0.74)',
     animation: '$shinyTwinkleDown 0.55s ease-out both'
   },
   pokeShinyTwinkleA: {
@@ -378,6 +379,18 @@ export const usePokemonViewStyles = createUseStyles({
     left: 28,
     fontSize: 18,
     animationDelay: '140ms'
+  },
+  pokeShinyTwinkleE: {
+    top: 34,
+    right: 52,
+    fontSize: 15,
+    animationDelay: '65ms'
+  },
+  pokeShinyTwinkleF: {
+    bottom: 56,
+    left: 64,
+    fontSize: 17,
+    animationDelay: '180ms'
   },
   pokeHeroBadges: {
     display: 'flex',
@@ -661,8 +674,9 @@ export const usePokemonViewStyles = createUseStyles({
       transform: 'scale(1)'
     },
     '40%': {
-      filter: 'brightness(1.35) saturate(1.2) drop-shadow(0 0 14px rgba(246, 211, 106, 0.45))',
-      transform: 'scale(1.02)'
+      filter:
+        'brightness(1.48) saturate(1.34) contrast(1.08) drop-shadow(0 0 22px rgba(255, 222, 124, 0.8))',
+      transform: 'scale(1.03)'
     },
     '100%': {
       filter: 'brightness(1) saturate(1)',
@@ -671,8 +685,14 @@ export const usePokemonViewStyles = createUseStyles({
   },
   '@keyframes shinyFadeDown': {
     '0%': {
-      filter: 'brightness(1.1) saturate(1.14) drop-shadow(0 0 10px rgba(246, 211, 106, 0.32))',
-      transform: 'scale(1.01)'
+      filter:
+        'brightness(1.14) saturate(1.24) drop-shadow(0 0 16px rgba(255, 223, 124, 0.42)) drop-shadow(0 0 0 rgba(89, 164, 255, 0.0))',
+      transform: 'scale(1.015)'
+    },
+    '45%': {
+      filter:
+        'brightness(0.98) saturate(1.04) drop-shadow(0 0 18px rgba(89, 164, 255, 0.6)) drop-shadow(0 0 28px rgba(138, 214, 255, 0.46))',
+      transform: 'scale(1)'
     },
     '100%': {
       filter: 'brightness(1) saturate(1)',
@@ -681,30 +701,30 @@ export const usePokemonViewStyles = createUseStyles({
   },
   '@keyframes shinyTwinkle': {
     '0%': {
-      opacity: 0.1,
+      opacity: 0.2,
       transform: 'scale(0.6) translateY(6px)'
     },
     '35%': {
       opacity: 1,
-      transform: 'scale(1.2) translateY(0)'
+      transform: 'scale(1.28) translateY(0)'
     },
     '100%': {
       opacity: 0,
-      transform: 'scale(1.35) translateY(-10px)'
+      transform: 'scale(1.44) translateY(-10px)'
     }
   },
   '@keyframes shinyTwinkleDown': {
     '0%': {
-      opacity: 0.45,
+      opacity: 0.62,
       transform: 'scale(0.95) translateY(-2px)'
     },
     '40%': {
-      opacity: 0.72,
-      transform: 'scale(1.05) translateY(3px)'
+      opacity: 0.92,
+      transform: 'scale(1.18) translateY(3px)'
     },
     '100%': {
       opacity: 0,
-      transform: 'scale(0.85) translateY(11px)'
+      transform: 'scale(0.92) translateY(13px)'
     }
   },
   ...contentShimmerKeyframes,

@@ -17,6 +17,7 @@ import type { EvolutionDetail } from '../types/pokeapi';
 
 interface EvolutionEntry {
   name: string;
+  displayName: string;
   details: EvolutionDetail | null;
 }
 
@@ -49,7 +50,7 @@ interface PokemonCardProps {
     captureRate?: number;
     baseHappiness?: number;
     hatchCounter?: number;
-    varieties: { name: string; is_default: boolean }[];
+    varieties: { name: string; displayName: string; is_default: boolean }[];
   };
   evolutionStages?: EvolutionStage[];
   evolutionSprites?: Record<string, string>;
@@ -187,10 +188,11 @@ function PokemonCard({
   };
 
   const typesText = naturalList(pokemon.types.map(({ type }) => type.name));
+  const pokemonDisplayName = pokemon.displayName ?? normalizeSpeech(pokemon.name);
   const typesNarration = (() => {
     if (!typesText) return '';
-    if (pokemon.types.length === 1) return `${pokemon.name} is a ${typesText} type Pokemon.`;
-    return `${pokemon.name} has ${typesText} types.`;
+    if (pokemon.types.length === 1) return `${pokemonDisplayName} is a ${typesText} type Pokemon.`;
+    return `${pokemonDisplayName} has ${typesText} types.`;
   })();
   const traitsText = naturalList(traitChips.map((chip) => `${chip.kind} ${chip.label}`));
   const careText = naturalList([
@@ -235,7 +237,7 @@ function PokemonCard({
         return parts.join(' ');
       })()
     : '';
-  const varietiesText = naturalList(varietyList.map((item) => item.name));
+  const varietiesText = naturalList(varietyList.map((item) => item.displayName));
   const physicalText = [
     heightUs ? `Height ${heightUs}` : '',
     weightLbs ? `Weight ${weightLbs} pounds` : '',

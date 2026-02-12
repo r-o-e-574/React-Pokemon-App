@@ -8,6 +8,7 @@ interface SpeechOverlayProps {
   title?: string;
   backgroundSrc?: string;
   onClose?: () => void;
+  tone?: 'default' | 'overlay';
 }
 
 const useStyles = createUseStyles({
@@ -31,7 +32,8 @@ function SpeechOverlay({
   imageSrc,
   title = 'Professor Espino',
   backgroundSrc,
-  onClose
+  onClose,
+  tone = 'default'
 }: SpeechOverlayProps) {
   const classes = useStyles();
   if (!visible) return null;
@@ -44,6 +46,7 @@ function SpeechOverlay({
         title={title}
         backgroundSrc={backgroundSrc}
         onClose={onClose}
+        tone={tone}
       />
     </div>
   );

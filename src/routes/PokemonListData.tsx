@@ -37,6 +37,7 @@ import { useVoices } from 'react-text-to-speech';
 import SpeechOverlay from '../components/SpeechOverlay';
 import professorImage from '../images/VSScientist_SV.png';
 import labImage from '../images/lab.jpeg';
+import { formatPokemonDisplayName } from '../utils/pokemonName';
 
 const SPECIES_URL_PREFIX = 'https://pokeapi.co/api/v2/pokemon-species/';
 const POKEMON_URL_PREFIX = 'https://pokeapi.co/api/v2/pokemon/';
@@ -63,6 +64,7 @@ const TYPE_ICON_MAP: Record<string, string> = {
 
 interface PokemonSummary {
   name: string;
+  displayName: string;
   url: string;
   id: number;
 }
@@ -453,9 +455,9 @@ function PokemonListData() {
       if (option.name === quizTarget.name) {
         setQuizResult('correct');
         const winLine = pickLine([
-          `Great job! It's ${normalizeSpeech(quizTarget.name)}.`,
-          `You got it! That's ${normalizeSpeech(quizTarget.name)}.`,
-          `Nice work! It's ${normalizeSpeech(quizTarget.name)}.`
+          `Great job! It's ${normalizeSpeech(quizTarget.displayName)}.`,
+          `You got it! That's ${normalizeSpeech(quizTarget.displayName)}.`,
+          `Nice work! It's ${normalizeSpeech(quizTarget.displayName)}.`
         ]);
         speakLine(winLine);
         scheduleQuizClose(3200);
@@ -470,9 +472,9 @@ function PokemonListData() {
           if (nextAttempts >= 2) {
             setQuizResult('wrong');
             const loseLine = pickLine([
-              `Good try! It's ${normalizeSpeech(quizTarget.name)}.`,
-              `Almost! That was ${normalizeSpeech(quizTarget.name)}.`,
-              `Nice effort! It's ${normalizeSpeech(quizTarget.name)}.`
+              `Good try! It's ${normalizeSpeech(quizTarget.displayName)}.`,
+              `Almost! That was ${normalizeSpeech(quizTarget.displayName)}.`,
+              `Nice effort! It's ${normalizeSpeech(quizTarget.displayName)}.`
             ]);
             speakLine(loseLine);
             scheduleQuizClose(2600);
@@ -508,7 +510,7 @@ function PokemonListData() {
     const pokemonObjects = pokemonList.results
       .map(({ name, url }) => {
         const id = getIdFromUrl(url, POKEMON_URL_PREFIX);
-        return { name, url, id };
+        return { name, displayName: formatPokemonDisplayName(name), url, id };
       })
       .filter(({ name }) => !name.endsWith('-female') && !name.endsWith('-male'));
     setPokemons(pokemonObjects);
@@ -775,6 +777,7 @@ function PokemonListData() {
         title="Professor Espino"
         imageSrc={professorImage}
         backgroundSrc={labImage}
+        tone="overlay"
       />
       {panelOpen ? (
         <div
@@ -929,7 +932,7 @@ function PokemonListData() {
                       onClick={() => handleQuizPick(option)}
                       disabled={isLocked}
                     >
-                      {option.name}
+                      {option.displayName}
                       {isWrong ? <span className={classes.mysteryOptionMark}>×</span> : null}
                     </button>
                   );
@@ -1001,7 +1004,7 @@ function PokemonListData() {
                           type="button"
                           className={`${classes.pokeFeaturedCarouselCard} ${classes.pokeFeaturedCarouselActive} ${classes.pokeFeaturedSingleCard}`}
                           onClick={() => handlePlayCry(pokemonMedia[featuredPokemon.name]?.cry)}
-                          aria-label={`Play ${featuredPokemon.name} cry`}
+                          aria-label={`Play ${featuredPokemon.displayName} cry`}
                         >
                           {getPokemonSprite(featuredPokemon) ? (
                             <img
@@ -1010,7 +1013,9 @@ function PokemonListData() {
                               alt={`${featuredPokemon.name} sprite`}
                             />
                           ) : null}
-                          <span className={classes.pokeFeaturedCarouselName}>{featuredPokemon.name}</span>
+                          <span className={classes.pokeFeaturedCarouselName}>
+                            {featuredPokemon.displayName}
+                          </span>
                         </button>
                       </div>
                     ) : (
@@ -1045,7 +1050,7 @@ function PokemonListData() {
                                     pushFeaturedIndex(targetIndex);
                                   }
                                 }}
-                                aria-label={`View ${pokemon.name}`}
+                                aria-label={`View ${pokemon.displayName}`}
                               >
                                 {getPokemonSprite(pokemon) ? (
                                   <img
@@ -1054,7 +1059,9 @@ function PokemonListData() {
                                     alt={`${pokemon.name} sprite`}
                                   />
                                 ) : null}
-                                <span className={classes.pokeFeaturedCarouselName}>{pokemon.name}</span>
+                                <span className={classes.pokeFeaturedCarouselName}>
+                                  {pokemon.displayName}
+                                </span>
                               </button>
                             );
                           }
@@ -1081,6 +1088,7 @@ function PokemonListData() {
                 return {
                   ...pokemon,
                   apiName,
+                  displayName: pokemon.displayName,
                   sprite: getPokemonSprite(pokemon),
                   cry: pokemonMedia[pokemon.name]?.cry
                 };
