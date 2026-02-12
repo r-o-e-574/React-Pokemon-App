@@ -11,6 +11,7 @@ interface HeroPanelProps {
   isShiny: boolean;
   canToggleShiny: boolean;
   shinyFxMode: 'on' | 'off' | null;
+  shinyFxTick: number;
   cryUrl: string;
   genus: string;
   speciesText: string;
@@ -36,6 +37,7 @@ function HeroPanel({
   isShiny,
   canToggleShiny,
   shinyFxMode,
+  shinyFxTick,
   cryUrl,
   genus,
   speciesText,
@@ -95,6 +97,7 @@ function HeroPanel({
         ) : null}
         {imageSrc ? (
           <img
+            key={`${pokemon.name}-${isShiny ? 'shiny' : 'base'}-${shinyFxMode ?? 'none'}-${shinyFxTick}`}
             className={`${classes.pokeImage} ${isShiny ? classes.pokeImageShinyActive : ''} ${shinyFxMode === 'on' ? classes.pokeImageShinyFlash : ''} ${shinyFxMode === 'off' ? classes.pokeImageShinyFadeDown : ''}`}
             src={imageSrc}
             alt={pokemon.name}

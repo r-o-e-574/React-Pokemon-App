@@ -6,14 +6,14 @@ export const usePokemonViewStyles = createUseStyles({
     display: 'flex',
     justifyContent: 'center',
     minHeight: '100dvh',
-    height: 'auto',
+    height: '100dvh',
     padding: '10px 16px 32px',
     background:
       'linear-gradient(rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.08)), radial-gradient(circle at top, var(--theme-bg-1) 0%, var(--theme-bg-2) 50%, var(--theme-bg-3) 100%)',
     position: 'relative',
     transition: 'background 240ms ease',
     boxSizing: 'border-box',
-    overflowX: 'hidden'
+    overflow: 'hidden'
   },
   pokeBackgroundTiles: {
     position: 'absolute',
@@ -48,13 +48,16 @@ export const usePokemonViewStyles = createUseStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    minHeight: 40
+    minHeight: 40,
+    flexShrink: 0
   },
   pokeScrollArea: {
     flex: 1,
     minHeight: 0,
     overflowY: 'auto',
-    paddingBottom: 12
+    paddingBottom: 12,
+    overscrollBehavior: 'contain',
+    WebkitOverflowScrolling: 'touch'
   },
   pokeScrollContent: {
     display: 'flex',
@@ -69,7 +72,8 @@ export const usePokemonViewStyles = createUseStyles({
     display: 'grid',
     gridTemplateColumns: 'minmax(220px, 280px) 1fr',
     gap: 16,
-    alignItems: 'center'
+    alignItems: 'center',
+    flexShrink: 0
   },
   pokeHeroTopRight: {
     position: 'absolute',
@@ -188,7 +192,7 @@ export const usePokemonViewStyles = createUseStyles({
       gap: 12
     }
   },
-  '@media (max-width: 1200px) and (orientation: portrait)': {
+  '@media (max-width: 700px) and (orientation: portrait)': {
     pokeHeroCard: {
       gridTemplateColumns: '1fr',
       textAlign: 'center'
@@ -704,45 +708,19 @@ export const usePokemonViewStyles = createUseStyles({
     }
   },
   ...contentShimmerKeyframes,
-  '@media (max-width: 980px)': {
+  '@media (max-width: 700px)': {
     pokeInfoRowPrimary: {
       flexDirection: 'column'
     },
     pokeInfoRowSecondary: {
       flexDirection: 'column'
-    }
-  },
-  '@media (max-width: 720px)': {
+    },
     pokeHeroCard: {
       gridTemplateColumns: '1fr',
       textAlign: 'center'
     },
     pokeFact: {
       textAlign: 'center'
-    }
-  },
-  '@media (min-width: 768px) and (max-width: 1366px) and (orientation: portrait)': {
-    pokeBackground: {
-      padding: '14px 16px 28px'
-    },
-    pokeHeroInfoGrid: {
-      gridTemplateColumns: '1fr'
-    },
-    pokeEvolutionStageGroup: {
-      minWidth: 0,
-      width: '100%',
-      alignItems: 'stretch'
-    },
-    pokeEvolutionCard: {
-      minWidth: 0,
-      width: '100%'
-    },
-    pokeVarietyGrid: {
-      justifyContent: 'stretch'
-    },
-    pokeVarietyCard: {
-      minWidth: 0,
-      width: '100%'
     }
   }
 });

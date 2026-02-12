@@ -163,6 +163,7 @@ function PokemonListData() {
   const lastQuizLineRef = useRef<string | null>(null);
   const quizCloseTimeoutRef = useRef<number | null>(null);
   const [quizSpeechLabel, setQuizSpeechLabel] = useState<string | null>(null);
+  const [isPortraitMode, setIsPortraitMode] = useState(false);
   const { voices } = useVoices();
   const [searchTerm, setSearchTerm] = useState(() => {
     const stored = localStorage.getItem('pokeFilters');
@@ -236,6 +237,25 @@ function PokemonListData() {
       border: mixHex(baseTheme.border, borderMix, 0.6)
     };
   }, [baseTheme, selectedTypes]);
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mediaQuery = window.matchMedia('(orientation: portrait)');
+    const onChange = (event: MediaQueryListEvent) => setIsPortraitMode(event.matches);
+    setIsPortraitMode(mediaQuery.matches);
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', onChange);
+    } else {
+      mediaQuery.addListener(onChange);
+    }
+    return () => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener('change', onChange);
+      } else {
+        mediaQuery.removeListener(onChange);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     localStorage.setItem(
       'pokeFilters',
@@ -879,7 +899,7 @@ function PokemonListData() {
               >
                 ×
               </button>
-              <h2 className={classes.mysteryTitle}>Whos that Pokemon?</h2>
+              <h2 className={classes.mysteryTitle}>Who's that Pokemon?</h2>
               <div className={classes.mysteryPokemon}>
                 {quizTarget ? (
                   <img
@@ -975,54 +995,72 @@ function PokemonListData() {
                     >
                       Prev
                     </button>
-                    <div className={classes.pokeFeaturedCarouselTrack}>
-                      {[prevFeaturedPokemon, featuredPokemon, nextFeaturedPokemon].map(
-                        (pokemon, index) => {
-                          if (!pokemon) {
+                    {isPortraitMode ? (
+                      <div className={classes.pokeFeaturedSingleRow}>
+                        <button
+                          type="button"
+                          className={`${classes.pokeFeaturedCarouselCard} ${classes.pokeFeaturedCarouselActive} ${classes.pokeFeaturedSingleCard}`}
+                          onClick={() => handlePlayCry(pokemonMedia[featuredPokemon.name]?.cry)}
+                          aria-label={`Play ${featuredPokemon.name} cry`}
+                        >
+                          {getPokemonSprite(featuredPokemon) ? (
+                            <img
+                              className={classes.pokeFeaturedCarouselSprite}
+                              src={getPokemonSprite(featuredPokemon)}
+                              alt={`${featuredPokemon.name} sprite`}
+                            />
+                          ) : null}
+                          <span className={classes.pokeFeaturedCarouselName}>{featuredPokemon.name}</span>
+                        </button>
+                      </div>
+                    ) : (
+                      <div className={classes.pokeFeaturedCarouselTrack}>
+                        {[prevFeaturedPokemon, featuredPokemon, nextFeaturedPokemon].map(
+                          (pokemon, index) => {
+                            if (!pokemon) {
+                              return (
+                                <div
+                                  key={`featured-placeholder-${index}`}
+                                  className={classes.pokeFeaturedCarouselCard}
+                                />
+                              );
+                            }
+                            const isActive = index === 1;
                             return (
-                              <div
-                                key={`featured-placeholder-${index}`}
-                                className={classes.pokeFeaturedCarouselCard}
-                              />
+                              <button
+                                key={pokemon.name}
+                                type="button"
+                                className={`${classes.pokeFeaturedCarouselCard} ${
+                                  isActive ? classes.pokeFeaturedCarouselActive : ''
+                                }`}
+                                onClick={() => {
+                                  if (pokemon.name === featuredPokemon.name) {
+                                    handlePlayCry(pokemonMedia[pokemon.name]?.cry);
+                                    return;
+                                  }
+                                  const targetIndex = featuredPool.findIndex(
+                                    (entry) => entry.name === pokemon.name
+                                  );
+                                  if (targetIndex >= 0) {
+                                    pushFeaturedIndex(targetIndex);
+                                  }
+                                }}
+                                aria-label={`View ${pokemon.name}`}
+                              >
+                                {getPokemonSprite(pokemon) ? (
+                                  <img
+                                    className={classes.pokeFeaturedCarouselSprite}
+                                    src={getPokemonSprite(pokemon)}
+                                    alt={`${pokemon.name} sprite`}
+                                  />
+                                ) : null}
+                                <span className={classes.pokeFeaturedCarouselName}>{pokemon.name}</span>
+                              </button>
                             );
                           }
-                          const isActive = index === 1;
-                          return (
-                            <button
-                              key={pokemon.name}
-                              type="button"
-                              className={`${classes.pokeFeaturedCarouselCard} ${
-                                isActive ? classes.pokeFeaturedCarouselActive : ''
-                              }`}
-                              onClick={() => {
-                                if (pokemon.name === featuredPokemon.name) {
-                                  handlePlayCry(pokemonMedia[pokemon.name]?.cry);
-                                  return;
-                                }
-                                const targetIndex = featuredPool.findIndex(
-                                  (entry) => entry.name === pokemon.name
-                                );
-                                if (targetIndex >= 0) {
-                                  pushFeaturedIndex(targetIndex);
-                                }
-                              }}
-                              aria-label={`View ${pokemon.name}`}
-                            >
-                              {getPokemonSprite(pokemon) ? (
-                                <img
-                                  className={classes.pokeFeaturedCarouselSprite}
-                                  src={getPokemonSprite(pokemon)}
-                                  alt={`${pokemon.name} sprite`}
-                                />
-                              ) : null}
-                              <span className={classes.pokeFeaturedCarouselName}>
-                                {pokemon.name}
-                              </span>
-                            </button>
-                          );
-                        }
-                      )}
-                    </div>
+                        )}
+                      </div>
+                    )}
                     <button
                       className={classes.pokeFeaturedNav}
                       type="button"

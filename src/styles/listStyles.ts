@@ -143,7 +143,7 @@ export const useListStyles = createUseStyles({
   mysteryOverlay: {
     position: 'fixed',
     inset: 0,
-    background: 'rgba(8, 12, 24, 0.65)',
+    background: 'rgba(8, 12, 24, 0.8)',
     zIndex: 40,
     display: 'flex',
     alignItems: 'center',
@@ -151,14 +151,15 @@ export const useListStyles = createUseStyles({
     padding: 24
   },
   mysteryModal: {
-    background: 'var(--theme-card-bg)',
+    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(245, 249, 255, 0.95))',
     border: '1px solid var(--theme-border)',
     borderRadius: 20,
     padding: '24px 24px 28px',
     width: 'min(560px, 90vw)',
     boxShadow: '0 24px 60px rgba(15, 23, 42, 0.45)',
     position: 'relative',
-    textAlign: 'center'
+    textAlign: 'center',
+    backdropFilter: 'blur(6px)'
   },
   mysteryClose: {
     position: 'absolute',
@@ -179,6 +180,8 @@ export const useListStyles = createUseStyles({
   },
   mysteryTitle: {
     margin: '0 0 16px',
+    fontFamily: 'var(--pokemon-font)',
+    letterSpacing: 0.8,
     ...pokemonText,
     fontSize: 22
   },
@@ -832,6 +835,13 @@ export const useListStyles = createUseStyles({
     width: '100%',
     paddingBottom: '10px'
   },
+  pokeFeaturedSingleRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: '1 1 auto',
+    minWidth: 0
+  },
   pokeFeaturedCarouselTrack: {
     display: 'flex',
     alignItems: 'center',
@@ -856,6 +866,10 @@ export const useListStyles = createUseStyles({
     color: 'rgba(255, 255, 255, 0.9)',
     fontFamily: 'var(--pokemon-font)',
     transition: 'transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease'
+  },
+  pokeFeaturedSingleCard: {
+    minWidth: 130,
+    maxWidth: 180
   },
   pokeFeaturedCarouselActive: {
     background: 'rgba(255, 255, 255, 0.22)',

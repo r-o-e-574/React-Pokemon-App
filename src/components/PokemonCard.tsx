@@ -72,6 +72,7 @@ function PokemonCard({
   const [activeSpeechLabel, setActiveSpeechLabel] = useState<string | null>(null);
   const [isShiny, setIsShiny] = useState(false);
   const [shinyFxMode, setShinyFxMode] = useState<ShinyFxMode>(null);
+  const [shinyFxTick, setShinyFxTick] = useState(0);
   const cryAudioRef = useRef<HTMLAudioElement | null>(null);
   const shinyBurstTimeoutRef = useRef<number | null>(null);
   const defaultImageSrc =
@@ -118,6 +119,7 @@ function PokemonCard({
     setIsShiny((prev) => {
       const next = !prev;
       setShinyFxMode(next ? 'on' : 'off');
+      setShinyFxTick((tick) => tick + 1);
       if (shinyBurstTimeoutRef.current) {
         window.clearTimeout(shinyBurstTimeoutRef.current);
       }
@@ -349,6 +351,7 @@ function PokemonCard({
   useEffect(() => {
     setIsShiny(false);
     setShinyFxMode(null);
+    setShinyFxTick(0);
     if (shinyBurstTimeoutRef.current) {
       window.clearTimeout(shinyBurstTimeoutRef.current);
       shinyBurstTimeoutRef.current = null;
@@ -384,6 +387,7 @@ function PokemonCard({
           isShiny={isShiny}
           canToggleShiny={canToggleShiny}
           shinyFxMode={shinyFxMode}
+          shinyFxTick={shinyFxTick}
           cryUrl={cryUrl}
           genus={genus}
           speciesText={speciesText}
