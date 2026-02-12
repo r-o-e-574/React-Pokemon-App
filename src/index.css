@@ -1,5 +1,5 @@
-@import url(//db.onlinewebfonts.com/c/f4d1593471d222ddebd973210265762a?family=Pokemon);
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+@import url('https://db.onlinewebfonts.com/c/f4d1593471d222ddebd973210265762a?family=Pokemon');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800&display=swap');
 
 :root {
   --play-red: #e34c4c;
@@ -10,11 +10,12 @@
   --play-white: #ffffff;
   --play-shadow: rgba(31, 41, 55, 0.15);
   --ui-font: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --pokemon-font: 'Pokemon', 'Press Start 2P', var(--ui-font);
 }
 
 body {
   margin: 0;
-  font-family: 'Pokemon', var(--ui-font);
+  font-family: var(--ui-font);
   background: var(--play-cream);
   color: var(--play-ink);
   -webkit-font-smoothing: antialiased;

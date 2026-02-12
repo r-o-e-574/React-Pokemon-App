@@ -63,7 +63,7 @@ export const useLandingStyles = createUseStyles({
     backdropFilter: 'blur(6px)'
   },
   landingHeaderTitle: {
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     fontSize: 44,
     letterSpacing: 2,
     ...pokemonText,
@@ -108,7 +108,7 @@ export const useLandingStyles = createUseStyles({
     textDecoration: 'none',
     background: 'linear-gradient(180deg, #2f79f2, #2b6fdd)',
     color: '#ffd24f',
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     textTransform: 'uppercase',
     letterSpacing: 2,
     border: '2px solid rgba(255, 255, 255, 0.7)',

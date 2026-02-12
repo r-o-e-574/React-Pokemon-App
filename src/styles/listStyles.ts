@@ -38,8 +38,8 @@ export const useListStyles = createUseStyles({
     background:
       'linear-gradient(rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.08)), linear-gradient(135deg, var(--theme-bg-1) 0%, var(--theme-bg-2) 45%, var(--theme-bg-3) 100%)',
     position: 'relative',
-    height: '100dvh',
-    overflow: 'hidden',
+    height: 'auto',
+    overflowX: 'hidden',
     transition: 'background 240ms ease'
   },
   mainPageTiles: {
@@ -74,7 +74,7 @@ export const useListStyles = createUseStyles({
     background:
       'radial-gradient(circle at top, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.55))',
     color: '#2b6fdd',
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     fontSize: 20,
     width: 44,
     height: 44,
@@ -207,7 +207,7 @@ export const useListStyles = createUseStyles({
     background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.7))',
     borderRadius: 14,
     padding: '10px 12px',
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     fontWeight: 700,
     letterSpacing: 1,
     textTransform: 'capitalize',
@@ -317,7 +317,7 @@ export const useListStyles = createUseStyles({
   filterDrawerTitle: {
     margin: 0,
     fontSize: 18,
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     color: 'var(--theme-ink-strong)',
     letterSpacing: 0.6
   },
@@ -459,7 +459,7 @@ export const useListStyles = createUseStyles({
   mainHeaderTitle: {
     margin: 0,
     fontSize: 28,
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     ...pokemonText,
     textTransform: 'uppercase'
   },
@@ -542,7 +542,7 @@ export const useListStyles = createUseStyles({
     margin: 0,
     fontSize: 26,
     lineHeight: 1.05,
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     ...pokemonText,
     textTransform: 'capitalize',
     letterSpacing: 0.4
@@ -551,7 +551,7 @@ export const useListStyles = createUseStyles({
     margin: '2px 0 0',
     fontSize: 36,
     lineHeight: 1,
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     letterSpacing: 0.6,
     ...pokemonText,
     display: 'inline-flex',
@@ -650,7 +650,7 @@ export const useListStyles = createUseStyles({
     padding: '14px 16px 8px',
     fontSize: 26,
     textAlign: 'center',
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     ...pokemonText,
     lineHeight: 1.1
   },
@@ -694,7 +694,7 @@ export const useListStyles = createUseStyles({
     margin: '0 0 8px 0',
     fontSize: 22,
     textAlign: 'center',
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     ...pokemonText,
     lineHeight: 1.1
   },
@@ -727,7 +727,7 @@ export const useListStyles = createUseStyles({
     display: '-webkit-box',
     textTransform: 'capitalize',
     textDecoration: 'none',
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     fontSize: 24,
     ...pokemonText,
     flex: 1,
@@ -854,7 +854,7 @@ export const useListStyles = createUseStyles({
     maxWidth: 180,
     cursor: 'pointer',
     color: 'rgba(255, 255, 255, 0.9)',
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     transition: 'transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease'
   },
   pokeFeaturedCarouselActive: {
@@ -875,7 +875,7 @@ export const useListStyles = createUseStyles({
     ...pokemonText
   },
   pokeFeaturedNav: {
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     textTransform: 'uppercase',
     padding: '8px 14px',
     borderRadius: 999,

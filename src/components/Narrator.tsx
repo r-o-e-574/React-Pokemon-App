@@ -29,7 +29,7 @@ const useStyles = createUseStyles({
     border: '1px solid var(--theme-border)',
     display: 'grid',
     placeItems: 'center',
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     color: 'var(--theme-ink-strong, #1f2a44)',
     fontSize: 18
   },

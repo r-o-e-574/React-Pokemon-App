@@ -20,7 +20,7 @@ export const usePanelStyles = createUseStyles({
     gap: 12
   },
   title: {
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     fontSize: 20,
     letterSpacing: 0.6,
     textTransform: 'uppercase',

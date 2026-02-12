@@ -6,14 +6,14 @@ export const usePokemonViewStyles = createUseStyles({
     display: 'flex',
     justifyContent: 'center',
     minHeight: '100dvh',
-    height: '100dvh',
+    height: 'auto',
     padding: '10px 16px 32px',
     background:
       'linear-gradient(rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.08)), radial-gradient(circle at top, var(--theme-bg-1) 0%, var(--theme-bg-2) 50%, var(--theme-bg-3) 100%)',
     position: 'relative',
     transition: 'background 240ms ease',
     boxSizing: 'border-box',
-    overflow: 'hidden'
+    overflowX: 'hidden'
   },
   pokeBackgroundTiles: {
     position: 'absolute',
@@ -85,7 +85,7 @@ export const usePokemonViewStyles = createUseStyles({
     color: '#ffc94a',
     textShadow:
       '2.5px 2.5px 0 #2b6fdd, -2px -2px 0 #2b6fdd, 2.5px -2.5px 0 #2b6fdd, -2.5px 2.5px 0 #2b6fdd',
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     letterSpacing: 1
   },
   pokeFact: {
@@ -159,7 +159,7 @@ export const usePokemonViewStyles = createUseStyles({
     justifyContent: 'center',
     textDecoration: 'none',
     color: '#ffc94a',
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     fontSize: 18,
     letterSpacing: 0.5,
     textShadow: '1.5px 1.5px 0 #2b6fdd',
@@ -487,7 +487,7 @@ export const usePokemonViewStyles = createUseStyles({
     padding: '4px 10px',
     fontSize: 13,
     textTransform: 'capitalize',
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     fontWeight: 500,
     color: 'var(--theme-ink-strong)',
     letterSpacing: 0.6,
@@ -579,7 +579,7 @@ export const usePokemonViewStyles = createUseStyles({
     margin: 0,
     fontWeight: 700,
     textTransform: 'capitalize',
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     color: 'var(--theme-ink-strong)',
     fontSize: 15
   },
@@ -644,7 +644,7 @@ export const usePokemonViewStyles = createUseStyles({
     fontSize: 14,
     fontWeight: 600,
     color: 'var(--theme-ink-strong)',
-    fontFamily: 'Pokemon',
+    fontFamily: 'var(--pokemon-font)',
     letterSpacing: 0.6,
     textShadow: '1px 1px 0 rgba(255, 255, 255, 0.7)'
   },
