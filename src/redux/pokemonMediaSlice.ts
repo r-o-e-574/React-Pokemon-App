@@ -2,6 +2,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 export interface PokemonMedia {
   sprite?: string;
+  shiny?: string;
   cry?: string;
 }
 

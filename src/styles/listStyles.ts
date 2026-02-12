@@ -84,8 +84,35 @@ export const useListStyles = createUseStyles({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'relative',
+    overflow: 'visible',
     letterSpacing: 1,
     transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    animation: '$mysteryPulse 2.4s ease-in-out infinite',
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      inset: -6,
+      borderRadius: 999,
+      border: '2px solid rgba(255, 220, 120, 0.75)',
+      opacity: 0.85,
+      pointerEvents: 'none',
+      animation: '$mysteryRing 1.9s ease-out infinite'
+    },
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      inset: -8,
+      borderRadius: 999,
+      background:
+        'conic-gradient(from 0deg, rgba(255, 240, 170, 0) 0deg, rgba(255, 240, 170, 0.85) 90deg, rgba(123, 92, 255, 0.75) 175deg, rgba(255, 240, 170, 0) 310deg)',
+      WebkitMask:
+        'radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px))',
+      mask: 'radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px))',
+      opacity: 0.9,
+      pointerEvents: 'none',
+      animation: '$mysterySwirl 2.2s linear infinite'
+    },
     '&:hover': {
       transform: 'translateY(-1px) scale(1.03)',
       boxShadow: '0 0 16px rgba(255, 210, 79, 0.6), 0 0 30px rgba(123, 92, 255, 0.45)'
@@ -283,6 +310,23 @@ export const useListStyles = createUseStyles({
       opacity: 0
     }
   },
+  '@keyframes mysteryPulse': {
+    '0%, 100%': {
+      boxShadow: '0 0 12px rgba(255, 210, 79, 0.45), 0 0 24px rgba(123, 92, 255, 0.35)'
+    },
+    '50%': {
+      boxShadow: '0 0 18px rgba(255, 220, 130, 0.65), 0 0 32px rgba(123, 92, 255, 0.48)'
+    }
+  },
+  '@keyframes mysteryRing': {
+    '0%': { transform: 'scale(0.86)', opacity: 0.9 },
+    '60%': { transform: 'scale(1.18)', opacity: 0.3 },
+    '100%': { transform: 'scale(1.24)', opacity: 0 }
+  },
+  '@keyframes mysterySwirl': {
+    '0%': { transform: 'rotate(0deg)' },
+    '100%': { transform: 'rotate(360deg)' }
+  },
   filterDrawer: {
     position: 'fixed',
     left: 12,
@@ -292,10 +336,10 @@ export const useListStyles = createUseStyles({
     maxHeight: 'calc(100vh - 24px)',
     ...glassPanel,
     background:
-      'linear-gradient(135deg, rgba(15, 23, 42, 0.55), rgba(15, 23, 42, 0.35)), var(--theme-card-bg)',
+      'linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 40%, rgba(255, 255, 255, 0.34) 50%, rgba(255, 255, 255, 0.05) 60%), var(--theme-card-bg)',
     borderRadius: 18,
     border: '1px solid var(--theme-border)',
-    boxShadow: '0 24px 40px rgba(10, 15, 30, 0.45)',
+    boxShadow: '0 10px 24px rgba(15, 23, 42, 0.16)',
     padding: 14,
     transform: 'translateY(-110%)',
     transition: 'transform 0.22s ease',
@@ -322,8 +366,8 @@ export const useListStyles = createUseStyles({
     margin: 0,
     fontSize: 18,
     fontFamily: 'var(--pokemon-font)',
-    color: 'var(--theme-ink-strong)',
-    letterSpacing: 0.6
+    letterSpacing: 0.6,
+    ...pokemonText
   },
   filterDrawerActions: {
     display: 'flex',
@@ -441,7 +485,8 @@ export const useListStyles = createUseStyles({
     borderRadius: 999
   },
   filterOptionText: {
-    color: 'var(--theme-ink-strong)',
+    color: 'rgba(255, 255, 255, 0.94)',
+    textShadow: '0 1px 2px rgba(0, 0, 0, 0.35)',
     fontSize: 13,
     textTransform: 'capitalize',
     fontFamily: 'var(--ui-font)',
@@ -651,7 +696,7 @@ export const useListStyles = createUseStyles({
     boxShadow: 'none !important'
   },
   listTitle: {
-    padding: '14px 16px 8px',
+    padding: 0,
     fontSize: 26,
     textAlign: 'center',
     fontFamily: 'var(--pokemon-font)',
@@ -659,9 +704,16 @@ export const useListStyles = createUseStyles({
     lineHeight: 1.1
   },
   listBody: {
-    padding: '0 12px 12px',
-    flex: 1,
+    padding: '8px 10px',
+    flex: '0 0 auto',
+    height: 'calc((56px * 3) + (12px * 2) + 18px)',
     overflowY: 'auto',
+    background: 'rgba(15, 23, 42, 0.35)',
+    color: 'rgba(255, 255, 255, 0.9)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    borderRadius: 16,
+    boxShadow: '0 10px 28px rgba(31, 41, 55, 0.12)',
+    backdropFilter: 'blur(12px)',
     scrollbarColor: 'rgba(255, 255, 255, 0.45) rgba(15, 23, 42, 0.15)',
     scrollbarWidth: 'thin',
     '&::-webkit-scrollbar': {
@@ -711,14 +763,19 @@ export const useListStyles = createUseStyles({
     gap: 12
   },
   pokeListItem: {
+    ...contentShimmerBase,
     display: 'flex',
     alignItems: 'center',
     gap: 10,
-    padding: '12px 14px',
+    padding: '8px 12px',
     borderRadius: 14,
-    background: 'var(--theme-card-bg)',
+    background:
+      'linear-gradient(-45deg, rgba(255, 255, 255, 0.12) 40%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0.12) 60%), color-mix(in srgb, var(--theme-card-bg) 74%, rgba(255, 255, 255, 0.26) 26%)',
     border: '1px solid var(--theme-border)',
-    minHeight: 64
+    boxShadow: '0 10px 24px rgba(15, 23, 42, 0.16)',
+    minHeight: 56,
+    maxHeight: 56,
+    overflow: 'hidden'
   },
   pokeSpriteButton: {
     border: 'none',
@@ -736,7 +793,7 @@ export const useListStyles = createUseStyles({
     ...pokemonText,
     flex: 1,
     minWidth: 0,
-    padding: '10px',
+    padding: '6px 8px',
     whiteSpace: 'normal',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -1078,11 +1135,17 @@ export const useListStyles = createUseStyles({
   '@media (orientation: portrait)': {
     listContainer: {
       height: 'clamp(460px, 68dvh, 980px)'
+    },
+    listBody: {
+      height: 'calc((56px * 4) + (12px * 3) + 330px)'
     }
   },
   '@media (orientation: landscape)': {
     listContainer: {
-      height: 'clamp(340px, 56dvh, 720px)'
+      height: 'clamp(340px, 40dvh, 720px)'
+    },
+    listBody: {
+      height: 'calc((56px * 3) + (12px * 2) + 50px)'
     }
   },
   '@media (max-width: 1100px)': {

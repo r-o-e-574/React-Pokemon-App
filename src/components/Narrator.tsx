@@ -59,10 +59,6 @@ const useStyles = createUseStyles({
     marginTop: -6,
     boxSizing: 'border-box'
   },
-  narratorBubbleOverlay: {
-    background: 'linear-gradient(135deg, rgba(241, 247, 255, 0.96), rgba(226, 238, 252, 0.93))',
-    border: '2px solid rgba(37, 99, 235, 0.35)'
-  },
   narratorClose: {
     position: 'absolute',
     top: 8,
@@ -82,36 +78,27 @@ const useStyles = createUseStyles({
   narratorTitle: {
     margin: 0,
     fontSize: 12,
-    fontWeight: 700,
+    fontWeight: 800,
     textTransform: 'uppercase',
     letterSpacing: 1,
-    color: 'var(--theme-ink-strong, #1f2a44)',
-    fontFamily: 'var(--ui-font)'
-  },
-  narratorTitleOverlay: {
     color: '#020617',
-    fontWeight: 800,
-    textShadow: 'none',
+    fontFamily: 'var(--ui-font)',
     background: 'rgba(255, 255, 255, 0.72)',
     border: '1px solid rgba(15, 23, 42, 0.16)',
     borderRadius: 999,
     padding: '2px 8px',
-    display: 'inline-flex',
-    alignSelf: 'flex-start'
+    display: 'inline-flex'
   },
   narratorText: {
     margin: '4px 0 0',
     fontSize: 15,
-    color: 'color-mix(in srgb, var(--theme-ink-strong, #1f2a44) 90%, #0f172a 10%)',
+    color: '#0f172a',
     textTransform: 'capitalize',
     lineHeight: 1.3,
     maxHeight: 56,
     overflowY: 'auto',
     overflowX: 'hidden',
     scrollbarGutter: 'stable both-edges'
-  },
-  narratorTextOverlay: {
-    color: '#0f172a'
   }
 });
 
@@ -122,7 +109,6 @@ interface NarratorProps {
   backgroundSrc?: string;
   onClose?: () => void;
   className?: string;
-  tone?: 'default' | 'overlay';
 }
 
 function Narrator({
@@ -131,8 +117,7 @@ function Narrator({
   title = 'Professor Espino',
   backgroundSrc,
   onClose,
-  className,
-  tone = 'default'
+  className
 }: NarratorProps) {
   const classes = useStyles();
   const [showImage, setShowImage] = useState(true);
@@ -157,25 +142,9 @@ function Narrator({
       ) : (
         <div className={classes.narratorAvatar}>PC</div>
       )}
-      <div
-        className={`${classes.narratorBubble} ${
-          tone === 'overlay' ? classes.narratorBubbleOverlay : ''
-        }`}
-      >
-        <p
-          className={`${classes.narratorTitle} ${
-            tone === 'overlay' ? classes.narratorTitleOverlay : ''
-          }`}
-        >
-          {title}
-        </p>
-        <p
-          className={`${classes.narratorText} ${
-            tone === 'overlay' ? classes.narratorTextOverlay : ''
-          }`}
-        >
-          {label}
-        </p>
+      <div className={classes.narratorBubble}>
+        <p className={classes.narratorTitle}>{title}</p>
+        <p className={classes.narratorText}>{label}</p>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import PokemonCard from '../components/PokemonCard';
 import { useFetchUrl } from '../hooks';
 import type { Pokemon } from '../types/pokemon';
@@ -13,11 +14,14 @@ import type {
 } from '../types/pokeapi';
 import { getTypeTheme } from '../styles/typeTheme';
 import { formatPokemonDisplayName } from '../utils/pokemonName';
+import type { AppDispatch } from '../redux';
+import { requestClearListSearch } from '../redux/uiSlice';
 
 const emptyPokemon: Pokemon = { name: '', abilities: [], types: [], sprites: {}, cries: {} };
 
 function PokemonViewData() {
   const { name: pokemonName } = useParams<{ name: string }>();
+  const dispatch = useDispatch<AppDispatch>();
   const [pokemon, setPokemon] = useState<Pokemon>(emptyPokemon);
   const [speciesText, setSpeciesText] = useState<string>('');
   const [genus, setGenus] = useState<string>('');
@@ -69,6 +73,10 @@ function PokemonViewData() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [pokemonName]);
+
+  useEffect(() => {
+    dispatch(requestClearListSearch());
+  }, [dispatch, pokemonName]);
 
   useEffect(() => {
     const previousBodyOverflow = document.body.style.overflow;
@@ -307,18 +315,23 @@ interface PokemonSpriteResponse {
     front_shiny?: string | null;
     other?: {
       ['official-artwork']?: { front_default?: string | null; front_shiny?: string | null };
-      home?: { front_default?: string | null };
+      home?: { front_default?: string | null; front_shiny?: string | null };
     };
   };
 }
 
 const resolveSprite = (data: PokemonSpriteResponse) => {
+  const idFallback = data?.id
+    ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png`
+    : undefined;
   return (
-    data?.sprites?.front_default ??
     data?.sprites?.other?.['official-artwork']?.front_default ??
     data?.sprites?.other?.home?.front_default ??
-    data?.sprites?.front_shiny ??
+    data?.sprites?.front_default ??
     data?.sprites?.other?.['official-artwork']?.front_shiny ??
+    data?.sprites?.other?.home?.front_shiny ??
+    data?.sprites?.front_shiny ??
+    idFallback ??
     (data?.id
       ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png`
       : '')

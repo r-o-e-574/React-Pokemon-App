@@ -8,7 +8,7 @@ interface SpeechOverlayProps {
   title?: string;
   backgroundSrc?: string;
   onClose?: () => void;
-  tone?: 'default' | 'overlay';
+  compact?: boolean;
 }
 
 const useStyles = createUseStyles({
@@ -22,7 +22,14 @@ const useStyles = createUseStyles({
     zIndex: 60,
     width: 340,
     maxWidth: 'calc(100vw - 40px)',
-    pointerEvents: 'none'
+    pointerEvents: 'auto'
+  },
+  overlayCompact: {
+    right: 10,
+    bottom: 10,
+    width: 260,
+    transform: 'scale(0.78)',
+    transformOrigin: 'bottom right'
   }
 });
 
@@ -33,20 +40,22 @@ function SpeechOverlay({
   title = 'Professor Espino',
   backgroundSrc,
   onClose,
-  tone = 'default'
+  compact = false
 }: SpeechOverlayProps) {
   const classes = useStyles();
   if (!visible) return null;
 
   return (
-    <div className={classes.overlay} aria-live="polite">
+    <div
+      className={`${classes.overlay} ${compact ? classes.overlayCompact : ''}`}
+      aria-live="polite"
+    >
       <Narrator
         label={label}
         imageSrc={imageSrc}
         title={title}
         backgroundSrc={backgroundSrc}
         onClose={onClose}
-        tone={tone}
       />
     </div>
   );

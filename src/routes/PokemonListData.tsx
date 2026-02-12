@@ -28,6 +28,7 @@ import { getTypeTheme } from '../styles/typeTheme';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../redux';
 import { mergePokemonMedia, type PokemonMedia } from '../redux/pokemonMediaSlice';
+import { consumeClearListSearch } from '../redux/uiSlice';
 import {
   useGetPokemonListQuery,
   useGetTypeListQuery,
@@ -73,15 +74,33 @@ const getIdFromUrl = (url: string, prefix: string) =>
   Number(url.replace(prefix, '').replace(/\/$/, ''));
 
 const resolveSprite = (data: any) => {
+  const idFallback = data?.id
+    ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png`
+    : undefined;
   return (
-    data?.sprites?.front_default ??
     data?.sprites?.other?.['official-artwork']?.front_default ??
     data?.sprites?.other?.home?.front_default ??
-    data?.sprites?.front_shiny ??
+    data?.sprites?.front_default ??
     data?.sprites?.other?.['official-artwork']?.front_shiny ??
+    data?.sprites?.other?.home?.front_shiny ??
+    data?.sprites?.front_shiny ??
+    idFallback ??
     (data?.id
       ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png`
       : '')
+  );
+};
+
+const resolveShinySprite = (data: any) => {
+  const idFallback = data?.id
+    ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/${data.id}.png`
+    : undefined;
+  return (
+    data?.sprites?.other?.['official-artwork']?.front_shiny ??
+    data?.sprites?.other?.home?.front_shiny ??
+    data?.sprites?.front_shiny ??
+    idFallback ??
+    ''
   );
 };
 
@@ -148,6 +167,9 @@ function PokemonListData() {
   const [typeFilteredIds, setTypeFilteredIds] = useState<Set<number> | null>(null);
   const [resolvedNameMap, setResolvedNameMap] = useState<Record<string, string>>({});
   const pokemonMedia = useSelector((state: RootState) => state.pokemonMedia);
+  const clearListSearchRequested = useSelector(
+    (state: RootState) => state.ui.clearListSearchRequested
+  );
   const dispatch = useDispatch<AppDispatch>();
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const [featuredHistory, setFeaturedHistory] = useState<{ stack: number[]; index: number }>({
@@ -269,6 +291,14 @@ function PokemonListData() {
   }, [searchTerm, selectedTypes]);
 
   useEffect(() => {
+    if (!clearListSearchRequested) {
+      return;
+    }
+    setSearchTerm('');
+    dispatch(consumeClearListSearch());
+  }, [clearListSearchRequested, dispatch]);
+
+  useEffect(() => {
     try {
       localStorage.setItem('pokemonMedia', JSON.stringify(pokemonMedia));
     } catch {
@@ -278,6 +308,9 @@ function PokemonListData() {
 
   const filteredPokemon = useMemo(() => {
     let baseList = pokemons;
+    if (selectedTypes.length > 0 && typeFilteredIds === null) {
+      baseList = [];
+    }
     if (typeFilteredIds) {
       baseList = baseList.filter(({ id }) => typeFilteredIds.has(id));
     }
@@ -286,7 +319,7 @@ function PokemonListData() {
       return baseList;
     }
     return baseList.filter(({ name }) => name.toLowerCase().includes(normalizedSearch));
-  }, [pokemons, typeFilteredIds, searchTerm]);
+  }, [pokemons, selectedTypes.length, typeFilteredIds, searchTerm]);
 
   const featuredPool = pokemons;
   const featuredCount = Math.max(featuredPool.length, 1);
@@ -356,7 +389,7 @@ function PokemonListData() {
       if (!pokemon) return '';
       return (
         pokemonMedia[pokemon.name]?.sprite ??
-        `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`
+        `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`
       );
     },
     [pokemonMedia]
@@ -537,6 +570,7 @@ function PokemonListData() {
             data = null;
           }
           let sprite = resolveSprite(data);
+          let shiny = resolveShinySprite(data);
           let cry = data?.cries?.latest ?? data?.cries?.legacy ?? '';
           let resolvedName = name;
 
@@ -550,6 +584,7 @@ function PokemonListData() {
                   `https://pokeapi.co/api/v2/pokemon/${fallbackName}`
                 ).unwrap();
                 sprite = resolveSprite(fallbackData);
+                shiny = shiny || resolveShinySprite(fallbackData);
                 cry = cry || fallbackData?.cries?.latest || fallbackData?.cries?.legacy || '';
                 resolvedName = fallbackName;
               }
@@ -561,10 +596,10 @@ function PokemonListData() {
           if (!sprite) {
             console.warn('[pokemon-media] missing sprite', name);
           }
-          return { name, sprite, cry, resolvedName };
+          return { name, sprite, shiny, cry, resolvedName };
         } catch (error) {
           console.warn('[pokemon-media] error', name, error);
-          return { name, sprite: '', cry: '', resolvedName: name };
+          return { name, sprite: '', shiny: '', cry: '', resolvedName: name };
         }
       })
     ).then((mediaList) => {
@@ -572,7 +607,7 @@ function PokemonListData() {
         return;
       }
       const nextMedia = mediaList.reduce<Record<string, PokemonMedia>>((acc, item) => {
-        acc[item.name] = { sprite: item.sprite, cry: item.cry };
+        acc[item.name] = { sprite: item.sprite, shiny: item.shiny, cry: item.cry };
         return acc;
       }, {});
       dispatch(mergePokemonMedia(nextMedia));
@@ -773,11 +808,11 @@ function PokemonListData() {
       <div className={classes.mainPageTiles} />
       <SpeechOverlay
         visible={Boolean(quizSpeechLabel)}
+        compact={quizOpen}
         label={quizSpeechLabel ?? ''}
         title="Professor Espino"
         imageSrc={professorImage}
         backgroundSrc={labImage}
-        tone="overlay"
       />
       {panelOpen ? (
         <div

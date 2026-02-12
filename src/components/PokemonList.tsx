@@ -24,6 +24,15 @@ function PokemonList({ pokemons = [] }: PokemonListProps) {
   const [brokenSpriteIds, setBrokenSpriteIds] = useState<Record<string, true>>({});
   const sparkleTimeoutRef = useRef<number | null>(null);
   const navigateTimeoutRef = useRef<number | null>(null);
+  const listBodyRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    window.requestAnimationFrame(() => {
+      if (listBodyRef.current) {
+        listBodyRef.current.scrollTop = 0;
+      }
+    });
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -88,7 +97,7 @@ function PokemonList({ pokemons = [] }: PokemonListProps) {
         bodyClassName={panelClasses.body}
         title={<h2 className={classes.listTitle}>Pokemon Library</h2>}
       >
-        <div className={classes.listBody}>
+        <div className={classes.listBody} ref={listBodyRef}>
           <ul className={classes.pokeListItems}>
             {pokemons.map(({ name: pokeName, displayName, apiName, sprite, cry }) => {
               const routeName = apiName ?? pokeName;
